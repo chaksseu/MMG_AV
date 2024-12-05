@@ -13,7 +13,7 @@ from lvdm.basics import (
     avg_pool_nd,
     normalization
 )
-from lvdm.modules.attention import SpatialTransformer, TemporalTransformer
+from lvdm.modules.attention import SpatialTransformer, TemporalTransformer, CrossModalTransformer
 
 
 class TimestepBlock(nn.Module):

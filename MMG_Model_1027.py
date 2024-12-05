@@ -3,13 +3,133 @@ from diffusers import PNDMScheduler, UNet2DConditionModel
 
 from lvdm.models.utils_diffusion import timestep_embedding
 from lvdm.modules.networks.openaimodel3d import (
-    ResBlock, SpatialTransformer, TemporalTransformer,
+    ResBlock, SpatialTransformer, TemporalTransformer, CrossModalTransformer,
     Downsample, Upsample, TimestepBlock
 )
 from lvdm.common import checkpoint
 from einops import rearrange
 from omegaconf import OmegaConf
 from utils.utils import instantiate_from_config
+
+
+from torch.cuda.amp import autocast, GradScaler
+import torch.nn as nn
+
+
+'''
+    크로스모달 트랜스포머 arguments
+    in_channels = 해당 레이어의 c
+    n_heads = 해당 레이어의 c // d_head(64)
+    d_head = 64
+    depth=1
+    context_dim= 해당 레이어의 c (오디오와 비디오 모두 채널 수는 동일하기에)
+    use_checkpoint=True
+    disable_self_attn=False
+    use_linear=True
+    img_cross_attention=False
+'''
+
+#################### CrossModalTransformer Blocks ##############################
+
+device = "cuda" if torch.cuda.is_available() else "cpu"
+
+AudioCMT = [] # AudioCrossModalTransformer
+VideoCMT = [] # VideoCrossModalTransformer
+layer_channels = [320, 640, 1280, 1280, 1280, 640]
+
+# CrossModalTransformer 초기화 함수
+def initialize_basic_transformer_block(block):
+    """
+    BasicTransformerBlock 내부의 가중치를 초기화합니다.
+    """
+    for name, param in block.named_parameters():
+        if param.dim() > 1:  # 2차원 이상의 텐서에 대해 Xavier 초기화 적용
+            torch.nn.init.xavier_uniform_(param)
+        elif param.dim() == 1:  # 1차원 텐서 (bias 등)
+            torch.nn.init.zeros_(param)
+
+def initialize_cross_modal_transformer(transformer):
+    """
+    CrossModalTransformer 전체 가중치를 초기화합니다.
+    """
+    # proj_in 초기화
+    if isinstance(transformer.proj_in, nn.Conv2d) or isinstance(transformer.proj_in, nn.Linear):
+        torch.nn.init.xavier_uniform_(transformer.proj_in.weight)
+        if transformer.proj_in.bias is not None:
+            torch.nn.init.zeros_(transformer.proj_in.bias)
+
+    # transformer_blocks 초기화
+    for block in transformer.transformer_blocks:
+        initialize_basic_transformer_block(block)
+
+    # proj_out 초기화
+    if isinstance(transformer.proj_out, nn.Conv2d) or isinstance(transformer.proj_out, nn.Linear):
+        torch.nn.init.xavier_uniform_(transformer.proj_out.weight)
+        if transformer.proj_out.bias is not None:
+            torch.nn.init.zeros_(transformer.proj_out.bias)
+
+
+# CrossModalTransformer 생성 및 초기화
+for layer_channel in layer_channels:
+    ch = layer_channel
+    d_head = 64
+    n_heads = layer_channel // d_head
+    depth = 1
+    context_dim = layer_channel
+    use_checkpoint = True
+    use_linear = True
+    img_cross_attention = False
+
+    # Audio Transformer
+    audio_transformer = CrossModalTransformer(
+        ch, n_heads, d_head, depth=depth, context_dim=context_dim,
+        use_linear=use_linear, use_checkpoint=use_checkpoint,
+        disable_self_attn=False, img_cross_attention=img_cross_attention
+    ).to(device).half()
+
+    # Video Transformer
+    video_transformer = CrossModalTransformer(
+        ch, n_heads, d_head, depth=depth, context_dim=context_dim,
+        use_linear=use_linear, use_checkpoint=use_checkpoint,
+        disable_self_attn=False, img_cross_attention=img_cross_attention
+    ).to(device).half()
+
+    # 초기화 수행
+    initialize_cross_modal_transformer(audio_transformer)
+    initialize_cross_modal_transformer(video_transformer)
+
+    # 리스트에 추가
+    AudioCMT.append(audio_transformer)
+    VideoCMT.append(video_transformer)
+
+###################################################################################
+
+
+def prepare_CMMT_inputs(audio_tensor, video_tensor, t_v):
+    # 입력 크기 검증
+    b, c, f, t = audio_tensor.shape
+    if t % t_v != 0:
+        raise ValueError(f"The time dimension (t={t}) must be divisible by t_v={t_v}")
+
+    # audio_latent: (b * t_v, c, f, t / t_v)
+    cross_audio_latent = rearrange(audio_tensor, 'b c f (t t_v) -> (b t_v) c f t', t_v=t_v).contiguous()
+
+    # audio_condition: (b * t_v, f * (t / t_v), c)
+    cross_audio_condition = rearrange(audio_tensor, 'b c f (t t_v) -> (b t_v) (f t) c', t_v=t_v).contiguous()
+    cross_video_condition = rearrange(video_tensor, 'b c h w -> b (h w) c').contiguous()
+    
+    return cross_audio_latent, cross_audio_condition, cross_video_condition
+
+def revert_audio_latent(audio_latent, audio_shape, t_v):
+    b, c, f, t = audio_shape
+    # 원본 크기 검증
+    if t % t_v != 0:
+        raise ValueError(f"The time dimension (t={t}) must be divisible by t_v={t_v}")
+
+    # (b * t_v, c, f, t / t_v) -> (b, c, f, t)
+    audio_tensor = rearrange(audio_latent, '(b t_v) c f t -> b c f (t t_v)', b=b, t_v=t_v).contiguous()
+    return audio_tensor
+
 
 
 
@@ -182,10 +302,24 @@ def mm_forward(audio_unet, audio_latents, audio_timestep, audio_encoder_hidden_s
     h, hs = video_down_block(0, video_unet, h, video_emb, video_context, b, hs)
     h, hs = video_down_block(1, video_unet, h, video_emb, video_context, b, hs)
     h, hs = video_down_block(2, video_unet, h, video_emb, video_context, b, hs)
-    ### Audio CrossModal Transformer ###
-    print("latent_audio_shape:", audio_hidden_states.shape)
-    print("latent_video_shape:", h.shape)
-    ### Video CrossModal Transformer ###
+    
+    #################################################### Cross-Modal Transformer ###################################################
+
+    #print("latent_audio_shape0:", audio_hidden_states.shape) 
+    #print("latent_video_shape0:", h.shape)
+    #latent_audio_shape0: torch.Size([1, 320, 8, 16])
+    #latent_video_shape0: torch.Size([2, 320, 16, 32])
+    
+    print(f"  [CrossModalTransformers] 0")
+    b = audio_hidden_states.shape[0]
+    cross_audio_latent = rearrange(audio_hidden_states, 'b c f (t t_v) -> (b t_v) c f t', t_v=video_fps).contiguous()
+    _h = VideoCMT[0](h, cross_audio_latent)
+    cross_audio_latent = AudioCMT[0](cross_audio_latent, h)
+    audio_hidden_states = rearrange(cross_audio_latent, '(b t_v) c f t -> b c f (t t_v)', b=b, t_v=video_fps).contiguous()
+    h = _h
+    
+    ##################################################################################################################################
+
     print(f"    [audio_down_block][downsampler]")
     audio_hidden_states = audio_unet.down_blocks[0].downsamplers[0](audio_hidden_states) # audio_downsample
     audio_down_block_res_samples = audio_down_block_res_samples + (audio_hidden_states,) 
@@ -195,10 +329,22 @@ def mm_forward(audio_unet, audio_latents, audio_timestep, audio_encoder_hidden_s
     audio_hidden_states, audio_down_block_res_samples = audio_down_blocks(down_block= audio_unet.down_blocks[1], hidden_states = audio_hidden_states, encoder_hidden_states=audio_encoder_hidden_states, emb=audio_emb, attention_mask=audio_attention_mask, cross_attention_kwargs=audio_cross_attention_kwargs, output_states=audio_down_block_res_samples)
     h, hs = video_down_block(4, video_unet, h, video_emb, video_context, b, hs)
     h, hs = video_down_block(5, video_unet, h, video_emb, video_context, b, hs)
-    ### Audio CrossModal Transformer ###
-    print("latent_audio_shape:", audio_hidden_states.shape)
-    print("latent_video_shape:", h.shape)
-    ### Video CrossModal Transformer ###
+
+    #################################################### Cross-Modal Transformer ###################################################
+    #print("latent_audio_shape1:", audio_hidden_states.shape) # latent_audio_shape1: torch.Size([1, 640, 4, 8])
+    #print("latent_video_shape1:", h.shape) # latent_video_shape1: torch.Size([2, 640, 8, 16])
+    
+    print(f"  [CrossModalTransformers] 1")
+    b = audio_hidden_states.shape[0]
+    cross_audio_latent = rearrange(audio_hidden_states, 'b c f (t t_v) -> (b t_v) c f t', t_v=video_fps).contiguous()
+    _h = VideoCMT[1](h, cross_audio_latent)
+    cross_audio_latent = AudioCMT[1](cross_audio_latent, h)
+    audio_hidden_states = rearrange(cross_audio_latent, '(b t_v) c f t -> b c f (t t_v)', b=b, t_v=video_fps).contiguous()
+    h = _h
+    
+    ################################################################################################################################
+
+    
     print(f"    [audio_down_block][downsampler]")
     audio_hidden_states = audio_unet.down_blocks[1].downsamplers[0](audio_hidden_states) # audio_downsample
     audio_down_block_res_samples = audio_down_block_res_samples + (audio_hidden_states,)   
@@ -208,10 +354,21 @@ def mm_forward(audio_unet, audio_latents, audio_timestep, audio_encoder_hidden_s
     audio_hidden_states, audio_down_block_res_samples = audio_down_blocks(down_block= audio_unet.down_blocks[2], hidden_states = audio_hidden_states, encoder_hidden_states=audio_encoder_hidden_states, emb=audio_emb, attention_mask=audio_attention_mask, cross_attention_kwargs=audio_cross_attention_kwargs, output_states=audio_down_block_res_samples)
     h, hs = video_down_block(7, video_unet, h, video_emb, video_context, b, hs)
     h, hs = video_down_block(8, video_unet, h, video_emb, video_context, b, hs)
-    ### Audio CrossModal Transformer ###
-    print("latent_audio_shape:", audio_hidden_states.shape)
-    print("latent_video_shape:", h.shape)
-    ### Video CrossModal Transformer ###    
+    
+    #################################################### Cross-Modal Transformer ###################################################
+    #print("latent_audio_shape2:", audio_hidden_states.shape) # latent_audio_shape2: torch.Size([1, 1280, 2, 4])
+    #print("latent_video_shape2:", h.shape) # latent_video_shape2: torch.Size([2, 1280, 4, 8])
+
+    print(f"  [CrossModalTransformers] 2")
+    b = audio_hidden_states.shape[0]
+    cross_audio_latent = rearrange(audio_hidden_states, 'b c f (t t_v) -> (b t_v) c f t', t_v=video_fps).contiguous()
+    _h = VideoCMT[2](h, cross_audio_latent)
+    cross_audio_latent = AudioCMT[2](cross_audio_latent, h)
+    audio_hidden_states = rearrange(cross_audio_latent, '(b t_v) c f t -> b c f (t t_v)', b=b, t_v=video_fps).contiguous()
+    h = _h
+    
+    ################################################################################################################################
+    
     print(f"    [audio_down_block][downsampler]")
     audio_hidden_states = audio_unet.down_blocks[2].downsamplers[0](audio_hidden_states) # audio_downsample
     audio_down_block_res_samples = audio_down_block_res_samples + (audio_hidden_states,)   
@@ -242,10 +399,22 @@ def mm_forward(audio_unet, audio_latents, audio_timestep, audio_encoder_hidden_s
     h, hs = video_up_block(0, video_unet, h, hs, video_emb, video_context, b)
     h, hs = video_up_block(1, video_unet, h, hs, video_emb, video_context, b)
     h, hs = video_up_block(2, video_unet, h, hs, video_emb, video_context, b) # R,U -> R
-    ### Audio CrossModal Transformer ###
-    print("latent_audio_shape:", audio_hidden_states.shape)
-    print("latent_video_shape:", h.shape)
-    ### Video CrossModal Transformer ###
+
+    #################################################### Cross-Modal Transformer ###################################################
+    #print("latent_audio_shape3:", audio_hidden_states.shape) # latent_audio_shape3: torch.Size([1, 1280, 1, 2])
+    #print("latent_video_shape3:", h.shape) # latent_video_shape3: torch.Size([2, 1280, 2, 4])
+
+    print(f"  [CrossModalTransformers] 3")
+    b = audio_hidden_states.shape[0]
+    cross_audio_latent = rearrange(audio_hidden_states, 'b c f (t t_v) -> (b t_v) c f t', t_v=video_fps).contiguous()
+    _h = VideoCMT[3](h, cross_audio_latent)
+    cross_audio_latent = AudioCMT[3](cross_audio_latent, h)
+    audio_hidden_states = rearrange(cross_audio_latent, '(b t_v) c f t -> b c f (t t_v)', b=b, t_v=video_fps).contiguous()
+    h = _h
+    
+    
+    ################################################################################################################################
+
     print(f"    [audio_up_block][upsampler]")
     audio_hidden_states = audio_unet.up_blocks[0].upsamplers[0](audio_hidden_states) # audio_upsample
     h, hs = video_upsample(2, video_unet, h, hs, video_emb, video_context, b) # video_upsample
@@ -260,10 +429,25 @@ def mm_forward(audio_unet, audio_latents, audio_timestep, audio_encoder_hidden_s
     h, hs = video_up_block(3, video_unet, h, hs, video_emb, video_context, b)
     h, hs = video_up_block(4, video_unet, h, hs, video_emb, video_context, b)
     h, hs = video_up_block(5, video_unet, h, hs, video_emb, video_context, b) # R,S,T,U -> R,S,T
-    ### Audio CrossModal Transformer ###
-    print("latent_audio_shape:", audio_hidden_states.shape)
-    print("latent_video_shape:", h.shape)
-    ### Video CrossModal Transformer ###
+    
+    #################################################### Cross-Modal Transformer ###################################################
+    #print("latent_audio_shape4:", audio_hidden_states.shape) # latent_audio_shape4: torch.Size([1, 1280, 2, 4])
+    
+    print(f"  [CrossModalTransformers] 4")
+    b = audio_hidden_states.shape[0]
+    cross_audio_latent = rearrange(audio_hidden_states, 'b c f (t t_v) -> (b t_v) c f t', t_v=video_fps).contiguous()
+    _h = VideoCMT[4](h, cross_audio_latent)
+    cross_audio_latent = AudioCMT[4](cross_audio_latent, h)
+    audio_hidden_states = rearrange(cross_audio_latent, '(b t_v) c f t -> b c f (t t_v)', b=b, t_v=video_fps).contiguous()
+    h = _h
+
+    #print("latent_video_shape4:", h.shape) # latent_video_shape4: torch.Size([2, 1280, 4, 8])
+
+
+    ################################################################################################################################
+
+
+    
     print(f"    [audio_up_block][upsampler]")
     audio_hidden_states = audio_unet.up_blocks[1].upsamplers[0](audio_hidden_states) # audio_upsample
     h, hs = video_upsample(5, video_unet, h, hs, video_emb, video_context, b) # video_upsample
@@ -278,10 +462,22 @@ def mm_forward(audio_unet, audio_latents, audio_timestep, audio_encoder_hidden_s
     h, hs = video_up_block(6, video_unet, h, hs, video_emb, video_context, b)
     h, hs = video_up_block(7, video_unet, h, hs, video_emb, video_context, b)
     h, hs = video_up_block(8, video_unet, h, hs, video_emb, video_context, b) # R,S,T,U -> R,S,T
-    ### Audio CrossModal Transformer ###
-    print("latent_audio_shape:", audio_hidden_states.shape)
-    print("latent_video_shape:", h.shape)
-    ### Video CrossModal Transformer ###
+    #################################################### Cross-Modal Transformer ###################################################
+    
+    #print("latent_audio_shape5:", audio_hidden_states.shape) # latent_audio_shape5: torch.Size([1, 640, 4, 8])
+    #print("latent_video_shape5:", h.shape) # latent_video_shape5: torch.Size([2, 640, 8, 16])
+
+    print(f"  [CrossModalTransformers] 5")
+    b = audio_hidden_states.shape[0]
+    cross_audio_latent = rearrange(audio_hidden_states, 'b c f (t t_v) -> (b t_v) c f t', t_v=video_fps).contiguous()
+    _h = VideoCMT[5](h, cross_audio_latent)
+    cross_audio_latent = AudioCMT[5](cross_audio_latent, h)
+    audio_hidden_states = rearrange(cross_audio_latent, '(b t_v) c f t -> b c f (t t_v)', b=b, t_v=video_fps).contiguous()
+    h = _h
+    
+    ################################################################################################################################
+
+    
     print(f"    [audio_up_block][upsampler]")
     audio_hidden_states = audio_unet.up_blocks[2].upsamplers[0](audio_hidden_states) # audio_upsample
     h, hs = video_upsample(8, video_unet, h, hs, video_emb, video_context, b) # video_upsample
@@ -330,8 +526,8 @@ def main():
     
     # audio 입력 데이터 준비
     
-    audio_height = 64  # 필요한 값으로 변경 가능
-    audio_width = 128  # 필요한 값으로 변경 가능
+    audio_height = 256  # 필요한 값으로 변경 가능
+    audio_width = 1024  # 필요한 값으로 변경 가능
     generator = torch.Generator(device=device).manual_seed(42)
     audio_encoder_hidden_states = torch.randn((batch_size, 77, audio_unet.config.cross_attention_dim), device=device, dtype=dtype)
 
@@ -352,12 +548,13 @@ def main():
     # 원본 audio UNet 출력 계산
     print("Computing original UNet output...")
     with torch.no_grad():
-        audio_original_output = audio_unet(
-            audio_latents,
-            t,
-            encoder_hidden_states=audio_encoder_hidden_states,
-            return_dict=False,
-        )[0]
+        with autocast(dtype=torch.float16):
+            audio_original_output = audio_unet(
+                audio_latents,
+                t,
+                encoder_hidden_states=audio_encoder_hidden_states,
+                return_dict=False,
+            )[0]
 
 
     ############################# video 준비 #############################
@@ -372,21 +569,23 @@ def main():
 
 
     # 입력 데이터 생성
-    video_latents = torch.randn(1, 4, 2, 16, 32)  # (B, C, T, H, W) => torch.randn(1, 4, 16, 64, 64)
+    video_fps = 16
+
+    video_latents = torch.randn(1, 4, video_fps, 64, 64)  # (B, C, T, H, W) => torch.randn(1, 4, 16, 64, 64)
 
     video_timestep = torch.tensor([10])
     video_context = torch.randn(1, 77, 1024)  # 예시로 텍스트 임베딩 사용
-    video_fps = 8
 
     # 모델과 텐서를 디바이스로 이동
-    video_unet = video_unet.to(device)
+    video_unet = video_unet.to(device).half()
     video_latents = video_latents.to(device)
     video_timestep = video_timestep.to(device)
     video_context = video_context.to(device)
     #video_fps = video_fps.to(device)
 
     # 원본 video UNet 출력 계산
-    video_original_output = video_unet(video_latents, video_timestep, context=video_context, fps=video_fps)
+    with autocast(dtype=torch.float16):
+        video_original_output = video_unet(video_latents, video_timestep, context=video_context, fps=video_fps)
 
 
     ######################## multi modal unet 실행 ########################
@@ -394,18 +593,19 @@ def main():
 
     # mm_forward
     print("Computing extracted layers multi UNet output...")
-    with torch.no_grad(): 
-        extract_model_output = mm_forward(
-            audio_unet = audio_unet,
-            video_unet = video_unet,
-            audio_latents = audio_latents,
-            video_latents = video_latents,
-            video_timestep = video_timestep,
-            audio_timestep = t,
-            audio_encoder_hidden_states = audio_encoder_hidden_states,
-            video_context = video_context,
-            video_fps = video_fps
-        )
+    with torch.no_grad():
+        with autocast(dtype=torch.float16):
+            extract_model_output = mm_forward(
+                audio_unet = audio_unet,
+                video_unet = video_unet,
+                audio_latents = audio_latents,
+                video_latents = video_latents,
+                video_timestep = video_timestep,
+                audio_timestep = t,
+                audio_encoder_hidden_states = audio_encoder_hidden_states,
+                video_context = video_context,
+                video_fps = video_fps
+            )
 
 
 
