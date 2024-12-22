@@ -5,7 +5,6 @@ from multimodal_dataset_vggsoundsync import load_data
 import csv
 from pathlib import Path
 
-os.environ["CUDA_VISIBLE_DEVICES"]= "0,1"
 
 
 # 데이터를 저장할 기본 폴더 설정

@@ -5,11 +5,10 @@ from multimodal_dataset import load_data
 import csv
 from pathlib import Path
 
-os.environ["CUDA_VISIBLE_DEVICES"]= "0,1"
 
 
 # 데이터를 저장할 기본 폴더 설정
-OUTPUT_DIR = "_processed_data_vggsound_sparse_32s_40frame_new_noramlization"
+OUTPUT_DIR = "_processed_data"
 VIDEO_DIR = os.path.join(OUTPUT_DIR, "video")
 AUDIO_DIR = os.path.join(OUTPUT_DIR, "audio")
 TEXT_DIR = os.path.join(OUTPUT_DIR, "text")
@@ -68,11 +67,11 @@ if __name__ == '__main__':
         parser = argparse.ArgumentParser(description="멀티모달 데이터 로더 예제")
         parser.add_argument('--data_dir', type=str, default='Dataset/vggsound_sparse/vggsound_sparse', help='비디오 파일들이 저장된 데이터셋 디렉토리 경로')
         parser.add_argument('--batch_size', type=int, default=1, help='배치 크기')
-        parser.add_argument('--seconds', type=float, default=3.2, help='클립 길이(초)')
-        parser.add_argument('--video_fps', type=float, default=12.5, help='비디오 프레임 속도')
+        parser.add_argument('--seconds', type=float, default=4, help='클립 길이(초)')
+        parser.add_argument('--video_fps', type=int, default=16, help='비디오 프레임 속도')
         parser.add_argument('--audio_fps', type=int, default=16000, help='오디오 샘플링 속도')
         parser.add_argument('--image_resolution', type=int, default=256, help='이미지 해상도')
-        parser.add_argument('--frame_gap', type=int, default=40, help='프레임 간격')
+        parser.add_argument('--frame_gap', type=int, default=64, help='프레임 간격')
         parser.add_argument('--num_workers', type=int, default=64, help='num_workers')
         parser.add_argument('--random_flip', action='store_true', help='랜덤 수평 뒤집기 사용')
         parser.add_argument('--device', type=str, default='cpu', help='사용할 디바이스 (cpu 또는 cuda)')
@@ -116,10 +115,6 @@ if __name__ == '__main__':
         device=args.device
     )
 
-
-    
-
-
     # 출력 폴더 및 CSV 파일 생성
     create_output_directory()
     create_csv_file()
@@ -134,33 +129,14 @@ if __name__ == '__main__':
             batch_text = batch['text']    # [N]
             batch_video = batch_video.detach().cpu()
             batch_audio = batch_audio.detach().cpu()
-
-            
-            print(f"\n=== 배치 {batch_idx} ===")
-            print(f"batch_video shape: {batch_video.shape}")
-            print(f"batch_audio shape: {batch_audio.shape}")
-            
-            # batch_video 통계 출력
-            video_max = batch_video.max().item()
-            video_min = batch_video.min().item()
-            video_mean = batch_video.mean().item()
-            video_std = batch_video.std().item()
-            print(f"batch_video - max: {video_max}, min: {video_min}, mean: {video_mean}, std: {video_std}")
-
-            # batch_audio 통계 출력
-            audio_max = batch_audio.max().item()
-            audio_min = batch_audio.min().item()
-            audio_mean = batch_audio.mean().item()
-            audio_std = batch_audio.std().item()
-            print(f"batch_audio - max: {audio_max}, min: {audio_min}, mean: {audio_mean}, std: {audio_std}")
-            
-
+            print("batch_video", batch_video.shape)
+            print("batch_audio", batch_audio.shape)
 
             # 각 데이터 항목 저장 및 CSV 기록
             for i in range(len(batch_video)):
                 index = batch_idx * args.batch_size + i
-                #print(f"batch_video[{i}]", batch_video[i].shape)
-                #print(f"batch_audio[{i}]", batch_audio[i].shape)
+                print(f"batch_video[{i}]", batch_video[i].shape)
+                print(f"batch_audio[{i}]", batch_audio[i].shape)
 
                 save_item(batch_video[i], batch_audio[i], index)
                 video_file_name = f"video_{index}.pt"
