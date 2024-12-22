@@ -2,7 +2,19 @@
 *pyc
 .vscode
 __pycache__
-*.egg-info
+ipynb_checkpoints
+.ipynb_checkpoints
+wandb
 
+*.egg-info
 checkpoints
 results
+*.safetensors
+*.bin
+*.pkl
+*.pt
+*.mp4
+*.wav
+*.csv
+*.out
+*.ckpt

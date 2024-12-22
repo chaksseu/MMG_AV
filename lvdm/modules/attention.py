@@ -7,6 +7,7 @@ try:
     import xformers
     import xformers.ops
     XFORMERS_IS_AVAILBLE = True
+    #XFORMERS_IS_AVAILBLE = False
 except:
     XFORMERS_IS_AVAILBLE = False
 from lvdm.common import (
@@ -17,6 +18,8 @@ from lvdm.common import (
 from lvdm.basics import (
     zero_module,
 )
+
+import math
 
 class RelativePosition(nn.Module):
     """ https://github.com/evelinehong/Transformer_Relative_Position_PyTorch/blob/master/relative_position.py """
@@ -43,7 +46,7 @@ class RelativePosition(nn.Module):
 class CrossAttention(nn.Module):
 
     def __init__(self, query_dim, context_dim=None, heads=8, dim_head=64, dropout=0., 
-                 relative_position=False, temporal_length=None, img_cross_attention=False):
+                 relative_position=False, temporal_length=None, img_cross_attention=False, use_lora=True):
         super().__init__()
         inner_dim = dim_head * heads
         context_dim = default(context_dim, query_dim)
@@ -51,10 +54,19 @@ class CrossAttention(nn.Module):
         self.scale = dim_head**-0.5
         self.heads = heads
         self.dim_head = dim_head
+
         self.to_q = nn.Linear(query_dim, inner_dim, bias=False)
         self.to_k = nn.Linear(context_dim, inner_dim, bias=False)
         self.to_v = nn.Linear(context_dim, inner_dim, bias=False)
         self.to_out = nn.Sequential(nn.Linear(inner_dim, query_dim), nn.Dropout(dropout))
+
+        self.add_lora = use_lora
+        if self.add_lora:
+            self.lora_block = nn.ModuleList()
+            self.lora_block.append(LoRALinear(query_dim, inner_dim))
+            self.lora_block.append(LoRALinear(context_dim, inner_dim))
+            self.lora_block.append(LoRALinear(context_dim, inner_dim))
+            self.lora_block.append(LoRALinear(inner_dim, query_dim))
 
         self.image_cross_attention_scale = 1.0
         self.text_context_len = 77
@@ -76,7 +88,10 @@ class CrossAttention(nn.Module):
     def forward(self, x, context=None, mask=None):
         h = self.heads
 
-        q = self.to_q(x)
+        if self.add_lora:
+            q = self.to_q(x) + self.lora_block[0](x) #!@#$
+        else:
+            q = self.to_q(x)
         context = default(context, x)
         ## considering image token additionally
         if context is not None and self.img_cross_attention:
@@ -86,8 +101,12 @@ class CrossAttention(nn.Module):
             k_ip = self.to_k_ip(context_img)
             v_ip = self.to_v_ip(context_img)
         else:
-            k = self.to_k(context)
-            v = self.to_v(context)
+            if self.add_lora:
+                k = self.to_k(context) + self.lora_block[1](context) #!@#$
+                v = self.to_v(context) + self.lora_block[2](context) #!@#$
+            else:
+                k = self.to_k(context)
+                v = self.to_v(context)
 
         q, k, v = map(lambda t: rearrange(t, 'b n (h d) -> (b h) n d', h=h), (q, k, v))
         sim = torch.einsum('b i d, b j d -> b i j', q, k) * self.scale
@@ -124,10 +143,18 @@ class CrossAttention(nn.Module):
             out = out + self.image_cross_attention_scale * out_ip
         del q
 
+        if self.add_lora:
+            return self.to_out(out) + self.lora_block[3](out) #!@#$
         return self.to_out(out)
+
     
     def efficient_forward(self, x, context=None, mask=None):
-        q = self.to_q(x)
+
+
+        if self.add_lora:
+            q = self.to_q(x) + self.lora_block[0](x) #!@#$
+        else:
+            q = self.to_q(x)
         context = default(context, x)
 
         ## considering image token additionally
@@ -138,10 +165,16 @@ class CrossAttention(nn.Module):
             k_ip = self.to_k_ip(context_img)
             v_ip = self.to_v_ip(context_img)
         else:
-            k = self.to_k(context)
-            v = self.to_v(context)
+            if self.add_lora:
+                k = self.to_k(context) + self.lora_block[1](context) #!@#$
+                v = self.to_v(context) + self.lora_block[2](context) #!@#$
+            else:
+                k = self.to_k(context)
+                v = self.to_v(context)
 
         b, _, _ = q.shape
+
+
         q, k, v = map(
             lambda t: t.unsqueeze(3)
             .reshape(b, t.shape[1], self.heads, self.dim_head)
@@ -181,7 +214,11 @@ class CrossAttention(nn.Module):
         )
         if context is not None and self.img_cross_attention:
             out = out + self.image_cross_attention_scale * out_ip
+
+        if self.add_lora:
+            return self.to_out(out) + self.lora_block[3](out) #!@#$
         return self.to_out(out)
+
 
 
 class BasicTransformerBlock(nn.Module):
@@ -525,17 +562,23 @@ class CrossModalTransformer(nn.Module):
         self.context_norm = torch.nn.GroupNorm(num_groups=32, num_channels=in_channels, eps=1e-6, affine=True)
 
     def forward(self, x, context=None):
-        b, c, h, w = x.shape
+        #b, c, h, w = x.shape
         x_in = x
         x = self.norm(x)
         
         
         context = self.context_norm(context)
-        context = rearrange(context, 'b c h w -> b (h w) c').contiguous()
-        
+        #context = rearrange(context, 'b c h w -> b (h w) c').contiguous()
+        context = rearrange(context, 'b c l -> b l c').contiguous()
+
+
+
         if not self.use_linear:
-            x = self.proj_in(x)         
-        x = rearrange(x, 'b c h w -> b (h w) c').contiguous()
+            x = self.proj_in(x)  
+
+        #x = rearrange(x, 'b c h w -> b (h w) c').contiguous()
+        x = rearrange(x, 'b c l -> b l c').contiguous()
+        
         if self.use_linear:
             x = self.proj_in(x)
         for i, block in enumerate(self.transformer_blocks):
@@ -544,7 +587,39 @@ class CrossModalTransformer(nn.Module):
             x = block(x, context=context)
         if self.use_linear:
             x = self.proj_out(x)
-        x = rearrange(x, 'b (h w) c -> b c h w', h=h, w=w).contiguous()
+        #x = rearrange(x, 'b (h w) c -> b c h w', h=h, w=w).contiguous()
+        x = rearrange(x, 'b l c -> b c l').contiguous()
+
         if not self.use_linear:
             x = self.proj_out(x)
         return x + x_in
+
+########################################
+# LoRA Module
+########################################
+
+class LoRALinear(nn.Module):
+    def __init__(self, 
+                 in_features, 
+                 out_features, 
+                 r=8, 
+                 lora_alpha=8.0):
+        super().__init__()
+        self.in_features = in_features
+        self.out_features = out_features
+        self.r = r
+        self.lora_alpha = lora_alpha
+
+        # LoRA A and B matrices
+        self.lora_A = nn.Linear(in_features, r, bias=False)
+        self.lora_B = nn.Linear(r, out_features, bias=False)
+        nn.init.kaiming_uniform_(self.lora_A.weight, a=math.sqrt(5))
+        nn.init.zeros_(self.lora_B.weight)
+        # Scaling
+        self.scaling = self.lora_alpha / self.r
+
+
+    def forward(self, x):
+        lora_output = self.lora_B(self.lora_A(x)) * self.scaling
+        return lora_output
+ 

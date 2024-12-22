@@ -27,11 +27,11 @@ def get_parser():
     parser.add_argument("--n_samples", type=int, default=1, help="num of samples per prompt",)
     parser.add_argument("--ddim_steps", type=int, default=50, help="steps of ddim if positive, otherwise use DDPM",)
     parser.add_argument("--ddim_eta", type=float, default=1.0, help="eta for ddim sampling (0.0 yields deterministic sampling)",)
-    parser.add_argument("--bs", type=int, default=1, help="batch size for inference")
+    parser.add_argument("--bs", type=int, default=2, help="batch size for inference")
     parser.add_argument("--height", type=int, default=512, help="image height, in pixel space")
     parser.add_argument("--width", type=int, default=512, help="image width, in pixel space")
     parser.add_argument("--frames", type=int, default=-1, help="frames num to inference")
-    parser.add_argument("--fps", type=int, default=24)
+    parser.add_argument("--fps", type=float, default=24)
     parser.add_argument("--unconditional_guidance_scale", type=float, default=1.0, help="prompt classifier-free guidance")
     parser.add_argument("--unconditional_guidance_scale_temporal", type=float, default=None, help="temporal consistency guidance")
     ## for conditional i2v only
