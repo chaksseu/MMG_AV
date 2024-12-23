@@ -12,4 +12,7 @@ conda activate MMG
 #conda install pytorch torchvision torchaudio pytorch-cuda=12.1 -c pytorch -c nvidia
 #pip install -U pip
 #pip install -r requirements.txt
+#chown -R 1002:1002 /workspace
+#conda install -c conda-forge mpi4py openmpi
+
 export HF_HOME=/workspace/huggingface_cache
