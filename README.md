@@ -1,4 +1,3 @@
-```markdown
 # 🎥 Multi-Modal Generative Diffusion Model (MMG)
 
 The **Multi-Modal Generative Diffusion Model** (MMG) is an advanced framework for generating synchronized audio and video content from text inputs. By addressing challenges in temporal and semantic alignment, MMGDM improves the practicality and efficiency of multimodal AI systems for diverse applications.
@@ -131,4 +130,4 @@ If you find this work useful, please cite the following:
 - Integrating with AR/VR platforms.
 
 ---
-```
+

@@ -224,15 +224,15 @@ class CrossAttention(nn.Module):
 class BasicTransformerBlock(nn.Module):
 
     def __init__(self, dim, n_heads, d_head, dropout=0., context_dim=None, gated_ff=True, checkpoint=True,
-                disable_self_attn=False, attention_cls=None, img_cross_attention=False):
+                disable_self_attn=False, attention_cls=None, img_cross_attention=False, use_lora=True):
         super().__init__()
         attn_cls = CrossAttention if attention_cls is None else attention_cls
         self.disable_self_attn = disable_self_attn
         self.attn1 = attn_cls(query_dim=dim, heads=n_heads, dim_head=d_head, dropout=dropout,
-            context_dim=context_dim if self.disable_self_attn else None)
+            context_dim=context_dim if self.disable_self_attn else None, use_lora=use_lora)
         self.ff = FeedForward(dim, dropout=dropout, glu=gated_ff)
         self.attn2 = attn_cls(query_dim=dim, context_dim=context_dim, heads=n_heads, dim_head=d_head, dropout=dropout,
-            img_cross_attention=img_cross_attention)
+            img_cross_attention=img_cross_attention, use_lora=use_lora)
         self.norm1 = nn.LayerNorm(dim)
         self.norm2 = nn.LayerNorm(dim)
         self.norm3 = nn.LayerNorm(dim)

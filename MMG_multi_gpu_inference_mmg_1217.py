@@ -25,12 +25,11 @@ from moviepy.editor import VideoFileClip, AudioFileClip, ImageSequenceClip
 
 from accelerate import Accelerator
 
-# 이 부분은 사용자가 가진 함수/클래스에 따라 변경 필요
 from scripts.evaluation.funcs import load_model_checkpoint, load_prompts
 from utils.utils import instantiate_from_config
 from lvdm.models.utils_diffusion import make_ddim_sampling_parameters, make_ddim_timesteps
 from lvdm.common import noise_like
-from train_MMG_Model_1217 import CrossModalCoupledUNet
+from train_MMG_Model_1220_LoRA import CrossModalCoupledUNet
 from auffusion_pipe_functions import (
     prepare_extra_step_kwargs, ConditionAdapter, import_model_class_from_model_name_or_path, Generator
 )
