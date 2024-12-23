@@ -85,7 +85,7 @@ def get_dirlist(path):
     return list
 
 
-def load_model_checkpoint(model, ckpt):
+def load_model_checkpoint(model, ckpt, full_strict=True):
     def load_checkpoint(model, ckpt, full_strict):
         state_dict = torch.load(ckpt, map_location="cpu")
         try:
@@ -99,7 +99,7 @@ def load_model_checkpoint(model, ckpt):
                 state_dict = state_dict["state_dict"]
             model.load_state_dict(state_dict, strict=full_strict)
         return model
-    load_checkpoint(model, ckpt, full_strict=True)
+    load_checkpoint(model, ckpt, full_strict=full_strict)
     print('>>> model checkpoint loaded.')
     return model
 

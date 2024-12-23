@@ -356,7 +356,7 @@ def run_inference(
         model_config = config.pop("model", OmegaConf.create())
         video_pipeline = instantiate_from_config(model_config).to(device)
         assert os.path.exists(args.ckpt_path), f"Checkpoint [{args.ckpt_path}] not found!"
-        video_pipeline = load_model_checkpoint(video_pipeline, args.ckpt_path)
+        video_pipeline = load_model_checkpoint(video_pipeline, args.ckpt_path, full_strict=False)
         video_pipeline.eval()
         video_unet = video_pipeline.model.diffusion_model.to(device, dtype)
 
@@ -372,6 +372,7 @@ def run_inference(
         audio_unet = load_audio_unet(model_dir, device, dtype)
         cross_modal_model = load_cross_modal_unet(audio_unet, video_unet, args.cross_modal_checkpoint_path, device, dtype)
 
+ 
         assert (args.height % 16 == 0) and (args.width % 16 == 0), "Video dimensions must be multiples of 16!"
         latent_h, latent_w = args.height // 8, args.width // 8
         frames = video_pipeline.temporal_length if args.frames < 0 else args.frames

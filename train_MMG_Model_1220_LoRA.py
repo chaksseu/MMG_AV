@@ -113,7 +113,7 @@ class CrossModalCoupledUNet(nn.Module):
             else:
                 param.requires_grad = False
 
-
+        
         self.audio_cmt = nn.ModuleList()
         self.video_cmt = nn.ModuleList()
         layer_channels = cross_modal_config['layer_channels']
