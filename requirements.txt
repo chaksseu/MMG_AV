@@ -27,7 +27,7 @@ scikit-learn
 scipy
 soundfile
 tokenizers
-moviepy
+#moviepy
 #mpi4py
 imageio[ffmpeg]
 ninja

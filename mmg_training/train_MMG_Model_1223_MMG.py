@@ -17,9 +17,6 @@ from accelerate import Accelerator
 from tqdm import tqdm
 import wandb
 
-os.environ['CUDA_LAUNCH_BLOCKING'] = "0"
-os.environ['TORCH_USE_CUDA_DSA'] = "0"
-
 
 def normalize_data(data, data_min, data_max):
     # Normalize to [-1, 1]
@@ -73,6 +70,7 @@ class LatentsDataset(torch.utils.data.Dataset):
             "video_text_embed": video_text_embed,
             "audio_text_embed": audio_text_embed
         }
+        
         return sample
 
 
@@ -102,9 +100,6 @@ class CrossModalCoupledUNet(nn.Module):
         self.video_cmt = nn.ModuleList()
         layer_channels = cross_modal_config['layer_channels']
 
-        # Adaptation layers for linear transformations before cross-modal attention
-        self.audio_adaptation_in = nn.ModuleList()
-        self.video_adaptation_in = nn.ModuleList()
 
         for channel in layer_channels:
             d_head = cross_modal_config.get('d_head', 64)
@@ -124,10 +119,6 @@ class CrossModalCoupledUNet(nn.Module):
             self.initialize_cross_modal_transformer(video_transformer)
             self.video_cmt.append(video_transformer)
 
-            self.audio_adaptation_in.append(nn.Linear(channel, channel))
-            self.video_adaptation_in.append(nn.Linear(channel, channel))
-
-        self.initialize_linear_layers()
 
     def initialize_linear_layers(self):
         # Initialize linear layers
@@ -264,15 +255,6 @@ class CrossModalCoupledUNet(nn.Module):
 
         condition_cross_audio_latent_token = cross_audio_latent_token
         condition_cross_video_latent_token = cross_video_latent_token
-
-        # Linear adaptation
-        condition_cross_video_latent_token = rearrange(condition_cross_video_latent_token, 'b c n -> (b n) c')
-        condition_cross_video_latent_token = self.video_adaptation_in[index](condition_cross_video_latent_token)
-        condition_cross_video_latent_token = rearrange(condition_cross_video_latent_token, '(b n) c -> b c n', b=b_a*t_a)
-
-        condition_cross_audio_latent_token = rearrange(condition_cross_audio_latent_token, 'bt c f -> (bt f) c')
-        condition_cross_audio_latent_token = self.audio_adaptation_in[index](condition_cross_audio_latent_token)
-        condition_cross_audio_latent_token = rearrange(condition_cross_audio_latent_token, '(bt f) c -> bt c f', bt=b_a*t_a)
 
         # Cross-modal attention
         cross_video_latent_token = self.video_cmt[index](cross_video_latent_token, condition_cross_audio_latent_token)
@@ -463,57 +445,98 @@ class CrossModalCoupledUNet(nn.Module):
         return audio_hidden_states, h
 
 
+def parse_args():
+    parser = argparse.ArgumentParser(description="Cross-Modal Coupled UNet Training Script")
+
+    # 데이터 관련 인자
+    parser.add_argument('--processed_data_dir', type=str, default="latents_data_32s_40frames_vggsound_sparse_new_normalization",
+                        help='데이터가 저장된 루트 디렉토리 경로')
+    parser.add_argument('--csv_file', type=str, default=None,
+                        help='데이터셋 정보가 담긴 CSV 파일 경로 (root_dir이 설정되지 않은 경우 필수)')
+
+    # 모델 관련 인자
+    parser.add_argument('--audio_model_name', type=str, default="auffusion/auffusion-full",
+                        help='오디오 모델의 이름 또는 경로')
+    parser.add_argument('--videocrafter_ckpt', type=str, default='scripts/evaluation/model.ckpt',
+                        help='비디오 Crafter 모델의 체크포인트 경로')
+    parser.add_argument('--videocrafter_config', type=str, default='configs/inference_t2v_512_v2.0.yaml',
+                        help='비디오 Crafter 모델의 설정 파일 경로')
+
+    # 학습 관련 인자
+    parser.add_argument('--num_epochs', type=int, default=1000, help='학습할 에폭 수')
+    parser.add_argument('--num_gpus', type=int, default=1, help='학습할 에폭 수')
+    parser.add_argument('--batch_size', type=int, default=4, help='배치 사이즈')
+    parser.add_argument('--gradient_accumulation_steps', type=int, default=32, help='그래디언트 누적 스텝 수')
+    parser.add_argument('--learning_rate', type=float, default=1e-5, help='학습률')
+    parser.add_argument('--video_fps', type=float, default=12.5, help='비디오 FPS')
+    parser.add_argument('--date', type=str, default="1223_MMG", help='체크포인트 및 wandb 이름에 사용될 날짜 또는 식별자')
+
+    # 손실 가중치
+    parser.add_argument('--audio_loss_weight', type=float, default=1.0, help='오디오 손실 가중치')
+    parser.add_argument('--video_loss_weight', type=float, default=4.0, help='비디오 손실 가중치')
+
+    # 기타 설정
+    parser.add_argument('--dataset_name', type=str, default="vggsound_sparse", help='데이터셋 이름')
+    parser.add_argument('--num_workers', type=int, default=0, help='DataLoader의 num_workers')
+    parser.add_argument('--wandb_project', type=str, default="MMG_auffusion_videocrafter",
+                        help='WandB 프로젝트 이름')
+    parser.add_argument('--checkpoint_dir', type=str, default="MMG_CHECKPOINTS_1223",
+                        help='체크포인트가 저장될 디렉토리')
+
+    args = parser.parse_args()
+    
+    # CSV 파일 경로 설정
+    if args.csv_file is None:
+        args.csv_file = os.path.join(args.root_dir, "dataset_info.csv")
+    
+    return args
+
+
 
 def main():
-    root_dir = "latents_data_32s_40frames_vggsound_sparse_new_normalization"
-    audio_model_name="auffusion/auffusion-full"
-    videocrafter_ckpt='scripts/evaluation/model.ckpt'
-    videocrafter_config='configs/inference_t2v_512_v2.0.yaml'
-    csv_file = os.path.join(root_dir, "dataset_info.csv")
-    dataset_name = "vggsound_sparse"
-    num_epochs = 1000
-    batch_size = 4
-    gr_ac = 32
-    lr = 1e-5
-    full_batch_size = batch_size * 4 * gr_ac
-    video_fps = 12.5
-    date = "1217_MMG"
-    video_fps = torch.tensor([video_fps] * batch_size).long()
-    audio_loss_weight, video_loss_weight = 1.0, 4.0
+    args = parse_args()
+    # 데이터 로더 설정
+    dataloader = get_dataloader(processed_data_dir=args.processed_data_dir, csv_file=args.csv_file,
+                                batch_size=args.batch_size, shuffle=True, num_workers=args.num_workers)
 
-
-    dataloader = get_dataloader(root_dir, csv_file, batch_size=batch_size, shuffle=True, num_workers=0)
-    accelerator = Accelerator(mixed_precision="bf16", gradient_accumulation_steps=gr_ac)
+    accelerator = Accelerator(mixed_precision="bf16", gradient_accumulation_steps=args.gradient_accumulation_steps)
     device = accelerator.device
 
-    # Audio UNet
-    audio_unet = UNet2DConditionModel.from_pretrained(audio_model_name, subfolder="unet")
+
+    # Audio UNet 로드 및 평가 모드 설정
+    audio_unet = UNet2DConditionModel.from_pretrained(args.audio_model_name, subfolder="unet")
     audio_unet.eval()
 
-    # Video UNet
-    video_config = OmegaConf.load(videocrafter_config)
+    # Video UNet 로드
+    video_config = OmegaConf.load(args.videocrafter_config)
     video_model = instantiate_from_config(video_config.model)
-    state_dict = torch.load(videocrafter_ckpt)['state_dict']
+    state_dict = torch.load(args.videocrafter_ckpt)['state_dict']
     video_model.load_state_dict(state_dict, strict=True)
     video_model.to(device)
     video_unet = video_model.model.diffusion_model.eval()
 
+    # Cross-modal config 설정
     cross_modal_config = {
-        'layer_channels': [320, 640, 1280, 1280, 1280, 640],
-        'd_head': 64,
+        'layer_channels': args.layer_channels,
+        'd_head': args.d_head,
         'device': device
     }
 
+    # 모델 초기화
     model = CrossModalCoupledUNet(audio_unet, video_unet, cross_modal_config)
-    noise_scheduler = DDPMScheduler.from_pretrained(audio_model_name, subfolder="scheduler")
-
+    noise_scheduler = DDPMScheduler.from_pretrained(args.audio_model_name, subfolder="scheduler")
+    
+    # 파라미터 수 출력
     total_params = sum(p.numel() for p in model.parameters())
     trainable_params = sum(p.numel() for p in filter(lambda p: p.requires_grad, model.parameters()))
     if accelerator.is_main_process:
         print(f"Total params: {total_params}")
         print(f"Trainable params: {trainable_params}")
 
-    optimizer = optim.AdamW(filter(lambda p: p.requires_grad, model.parameters()), lr=lr)
+    # 옵티마이저 설정
+    optimizer = optim.AdamW(filter(lambda p: p.requires_grad, model.parameters()), lr=args.learning_rate)
+    
+    # 모델, 옵티마이저, 데이터로더 준비
     model, optimizer, dataloader = accelerator.prepare(model, optimizer, dataloader)
     model.train()
 
@@ -522,13 +545,26 @@ def main():
     losses_video = []
     losses_audio = []
 
+    # WandB 설정
+    if accelerator.is_main_process:
+        wandb.init(project=args.wandb_project, 
+                   name=f"{args.date}_lr_{args.learning_rate}_batch_{args.batch_size * args.num_gpus * args.gradient_accumulation_steps}_a_w_{args.audio_loss_weight}_v_w_{args.video_loss_weight}_{args.dataset_name}")
+    else:
+        os.environ["WANDB_MODE"] = "offline"
+
+
+    video_fps=args.video_fps
+    video_fps = torch.tensor([video_fps] * batch_size).long()
+
+
+
     if accelerator.is_main_process:
         wandb.init(project="MMG_auffusion_videocrafter", name=f"{date}_lr_{lr}_batch_{full_batch_size}_a_w_{audio_loss_weight}_v_w_{video_loss_weight}_{dataset_name}")
     else:
         os.environ["WANDB_MODE"] = "offline"
 
-    for epoch in range(num_epochs):
-        with tqdm(dataloader, desc=f"Epoch {epoch+1}/{num_epochs}", unit="batch") as tepoch:
+    for epoch in range(args.num_epochs):
+        with tqdm(dataloader, desc=f"Epoch {epoch+1}/{args.num_epochs}", unit="batch") as tepoch:
             for batch_idx, batch in enumerate(tepoch):
                 audio_latents = batch["audio_latent"]
                 video_latents = batch["video_latent"]
@@ -561,9 +597,8 @@ def main():
                 )
 
                 # Weighted loss
-                
-                loss_audio = audio_loss_weight * F.mse_loss(audio_output, noise_audio)
-                loss_video = video_loss_weight * F.mse_loss(video_output, noise_video)
+                loss_audio = args.audio_loss_weight * F.mse_loss(audio_output, noise_audio)
+                loss_video = args.video_loss_weight * F.mse_loss(video_output, noise_video)
                 loss = loss_audio + loss_video
 
                 losses.append(loss.item())
@@ -576,7 +611,7 @@ def main():
                 optimizer.zero_grad()
                 global_step += 1
 
-                if accelerator.is_main_process and batch_idx % gr_ac == 0:
+                if accelerator.is_main_process and (batch_idx + 1) % args.gradient_accumulation_steps == 0:
                     avg_losses = sum(losses) / len(losses)
                     avg_losses_video = sum(losses_video) / len(losses_video)
                     avg_losses_audio = sum(losses_audio) / len(losses_audio)
@@ -592,10 +627,13 @@ def main():
                         "step": global_step
                     })
 
-            if accelerator.is_main_process and (epoch+1) % 10 == 0:
-                checkpoint_path = f"MMG_CHECKPOINTS_1217/{date}_lr_{lr}_batch_{full_batch_size}_epoch_{epoch+1}_{dataset_name}"
+            if accelerator.is_main_process and (epoch + 1) % 10 == 0:
+                checkpoint_path = os.path.join(args.checkpoint_dir, f"{args.date}_lr_{args.learning_rate}_batch_{args.batch_size * 4 * args.gradient_accumulation_steps}_epoch_{epoch+1}_{args.dataset_name}")
+                os.makedirs(args.checkpoint_dir, exist_ok=True)
                 accelerator.save_state(checkpoint_path)
 
+    if accelerator.is_main_process:
+        wandb.finish()
     print("Training Done.")
 
 

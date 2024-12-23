@@ -1,6 +1,6 @@
-# 🎥 Multi-Modal Generative Diffusion Model (MMG)
+# 🎥 Multi-Modal Generation (MMG)
 
-The **Multi-Modal Generative Diffusion Model** (MMG) is an advanced framework for generating synchronized audio and video content from text inputs. By addressing challenges in temporal and semantic alignment, MMGDM improves the practicality and efficiency of multimodal AI systems for diverse applications.
+The **Multi-Modal Generative Diffusion Model** (MMG) is an advanced framework for generating synchronized audio and video content from text inputs. By addressing challenges in temporal and semantic alignment, MMG improves the practicality and efficiency of multimodal AI systems for diverse applications.
 
 ---
 
@@ -11,7 +11,7 @@ This project aims to:
 - Develop a **Class Activation Map (CAM)**-based evaluation metric for assessing audio-video synchronization.
 - Build a high-quality, time-aligned multimodal dataset.
 
-The MMGDM framework advances the state-of-the-art in text-to-video (T2V) and text-to-audio (T2A) generation, setting a new standard for multimodal AI research.
+The MMG framework advances the state-of-the-art in text-to-video (T2V) and text-to-audio (T2A) generation, setting a new standard for multimodal AI research.
 
 ---
 
@@ -42,7 +42,7 @@ The MMGDM framework advances the state-of-the-art in text-to-video (T2V) and tex
 
 ### 1. Install Environment via Anaconda (Recommended)
 ```bash
-conda create -n mmg python=3.8.5
+conda create -n mmg python=3.8.5 # 3.10
 conda activate mmg
 pip install -r requirements.txt
 ```

@@ -14,5 +14,6 @@ conda activate MMG
 #pip install -r requirements.txt
 #chown -R 1002:1002 /workspace
 #conda install -c conda-forge mpi4py openmpi
+#conda install -c conda-forge moviepy
 
 export HF_HOME=/workspace/huggingface_cache
