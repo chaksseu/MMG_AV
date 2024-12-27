@@ -8,7 +8,7 @@ from moviepy.editor import ImageSequenceClip, AudioFileClip
 import soundfile as sf
 
 # multimodal_dataset.py에서 필요한 함수 및 클래스 임포트
-from multimodal_dataset import load_data
+from multimodal_dataset_vggsound_sparse import load_data
 
 # converter.py와 util.py에서 필요한 함수 및 클래스 임포트
 from converter import (
@@ -136,8 +136,8 @@ def main():
     import argparse
     
     parser = argparse.ArgumentParser(description="멀티모달 데이터 복원 및 저장")
-    parser.add_argument('--data_dir', type=str, default='Dataset/vggsound_sparse/vggsound_sparse', help='비디오 파일들이 저장된 데이터셋 디렉토리 경로')
-    parser.add_argument('--batch_size', type=int, default=64, help='배치 크기')
+    parser.add_argument('--data_dir', type=str, default='/workspace/dataset/vggsound_sparse', help='비디오 파일들이 저장된 데이터셋 디렉토리 경로')
+    parser.add_argument('--batch_size', type=int, default=8, help='배치 크기')
     parser.add_argument('--seconds', type=float, default=3.2, help='클립 길이(초)')
     parser.add_argument('--video_fps', type=int, default=12.5, help='비디오 프레임 속도')
     parser.add_argument('--audio_fps', type=int, default=16000, help='오디오 샘플링 속도')
@@ -145,7 +145,7 @@ def main():
     parser.add_argument('--frame_gap', type=int, default=40, help='프레임 간격')
     parser.add_argument('--random_flip', action='store_true', help='랜덤 수평 뒤집기 사용')
     parser.add_argument('--num_batches', type=int, default=1000000, help='reconstruction해서 저장할 배치 개수')
-    parser.add_argument('--num_workers', type=int, default=64, help='num_workers')
+    parser.add_argument('--num_workers', type=int, default=8, help='num_workers')
     parser.add_argument('--device', type=str, default= 'cpu', help='사용할 디바이스 (cpu 또는 cuda)')
 
     return parser.parse_args()

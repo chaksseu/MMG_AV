@@ -31,3 +31,8 @@ tokenizers
 #mpi4py
 imageio[ffmpeg]
 ninja
+wandb
+peft
+laion-clap
+ffmpeg_quality_metrics
+pytorchvideo

@@ -8,12 +8,12 @@ apt-get upgrade -y
 apt-get install ffmpeg wget git zip unzip gcc libopenmpi-dev libmpich-dev curl tar libjpeg-dev libpng-dev libgl1-mesa-glx libglib2.0-0 libsndfile1 ninja-build -y
 apt-get update
 apt-get upgrade -y
-conda activate MMG
+conda activate mmg
 #conda install pytorch torchvision torchaudio pytorch-cuda=12.1 -c pytorch -c nvidia
 #pip install -U pip
 #pip install -r requirements.txt
-#chown -R 1002:1002 /workspace
-#conda install -c conda-forge mpi4py openmpi
+#chown -R 1001:1001 /workspace
+#conda install -c conda-forge mpi4py
 #conda install -c conda-forge moviepy
-
+chown -R 1001:1001 /workspace
 export HF_HOME=/workspace/huggingface_cache

@@ -29,8 +29,8 @@ from scripts.evaluation.funcs import load_model_checkpoint, load_prompts
 from utils.utils import instantiate_from_config
 from lvdm.models.utils_diffusion import make_ddim_sampling_parameters, make_ddim_timesteps
 from lvdm.common import noise_like
-from train_MMG_Model_1220_LoRA import CrossModalCoupledUNet
-from auffusion_pipe_functions import (
+from mmg_training.train_MMG_Model_1220_BASE import CrossModalCoupledUNet
+from mmg_inference.auffusion_pipe_functions import (
     prepare_extra_step_kwargs, ConditionAdapter, import_model_class_from_model_name_or_path, Generator
 )
 
@@ -553,7 +553,7 @@ def run_inference(
             for i, prompt in enumerate(current_prompts):
                 safe_prompt = sanitize_filename(prompt)
                 sample_index = start_idx + i
-                base_filename = f"{safe_prompt}_batch_{sample_index}_proc_{accelerator.process_index}"
+                base_filename = f"{safe_prompt}_batch_{sample_index}_proc_{accelerator.process_index}_batch"
 
                 # Save audio
                 audio_filepath = os.path.join(audio_dir, f"{base_filename}.wav")

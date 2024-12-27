@@ -5,6 +5,7 @@ __pycache__
 ipynb_checkpoints
 .ipynb_checkpoints
 wandb
+checkpoints
 
 *.egg-info
 checkpoints
@@ -21,3 +22,4 @@ results
 *.tar.gz
 *.tar
 *.zip
+*.pth
