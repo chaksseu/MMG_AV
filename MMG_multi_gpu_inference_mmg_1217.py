@@ -29,13 +29,15 @@ from scripts.evaluation.funcs import load_model_checkpoint, load_prompts
 from utils.utils import instantiate_from_config
 from lvdm.models.utils_diffusion import make_ddim_sampling_parameters, make_ddim_timesteps
 from lvdm.common import noise_like
-from mmg_training.train_MMG_Model_1220_BASE import CrossModalCoupledUNet
+from mmg_training.train_MMG_Model_1223_MMG import CrossModalCoupledUNet
 from mmg_inference.auffusion_pipe_functions import (
     prepare_extra_step_kwargs, ConditionAdapter, import_model_class_from_model_name_or_path, Generator
 )
 
 
 
+import os
+os.environ["CUDA_VISIBLE_DEVICES"] = "0,1,3"
 
 
 ############################################################
