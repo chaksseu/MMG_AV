@@ -113,7 +113,9 @@ class CrossModalCoupledUNet(nn.Module):
             else:
                 param.requires_grad = False
 
-        
+        for name, param in self.video_unet.named_parameters():
+            if param.requires_grad == True:
+                print(name)
         
 
     def initialize_basic_transformer_block(self, block):

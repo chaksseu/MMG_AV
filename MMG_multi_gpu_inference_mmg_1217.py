@@ -29,7 +29,7 @@ from scripts.evaluation.funcs import load_model_checkpoint, load_prompts
 from utils.utils import instantiate_from_config
 from lvdm.models.utils_diffusion import make_ddim_sampling_parameters, make_ddim_timesteps
 from lvdm.common import noise_like
-from mmg_training.train_MMG_Model_1223_MMG import CrossModalCoupledUNet
+from mmg_training.train_MMG_Model_0103_MMG_LoRA import CrossModalCoupledUNet
 from mmg_inference.auffusion_pipe_functions import (
     prepare_extra_step_kwargs, ConditionAdapter, import_model_class_from_model_name_or_path, Generator
 )
@@ -37,8 +37,7 @@ from mmg_inference.auffusion_pipe_functions import (
 
 
 import os
-os.environ["CUDA_VISIBLE_DEVICES"] = "0,1,3"
-
+os.environ["CUDA_VISIBLE_DEVICES"] = "0"
 
 ############################################################
 # Utility Functions
@@ -595,8 +594,8 @@ def main():
     all_prompts = load_prompts(args.prompt_file)
 
     # Accelerate 초기화
-    #accelerator = Accelerator()
     accelerator = Accelerator(mixed_precision="bf16")
+
 
     # 전체 프롬프트를 num_processes에 맞게 균등 분배
     num_processes = accelerator.num_processes
