@@ -62,7 +62,6 @@ class CrossAttention(nn.Module):
 
         self.add_lora = use_lora
 
-        #if self.add_lora:
         if self.add_lora:
             self.lora_block = nn.ModuleList()
             self.lora_block.append(LoRALinear(query_dim, inner_dim))
@@ -153,9 +152,9 @@ class CrossAttention(nn.Module):
     def efficient_forward(self, x, context=None, mask=None):
         if self.add_lora:
             q = self.to_q(x) + self.lora_block[0](x) #!@#$
-            print(self.lora_block[0](x))
+            #print(self.lora_block[0](x))
         else:
-            print('NO_LoRA_NO_LoRA_NO_LoRA_NO_LoRA_NO_LoRA_NO_LoRA_')
+            #print('NO_LoRA_NO_LoRA_NO_LoRA_NO_LoRA_NO_LoRA_NO_LoRA_')
             q = self.to_q(x)
         context = default(context, x)
 
@@ -218,7 +217,7 @@ class CrossAttention(nn.Module):
             out = out + self.image_cross_attention_scale * out_ip
 
         if self.add_lora:
-            print(1123412341234)
+            #print(1123412341234)
             return self.to_out(out) + self.lora_block[3](out) #!@#$
         return self.to_out(out)
 
@@ -227,7 +226,7 @@ class CrossAttention(nn.Module):
 class BasicTransformerBlock(nn.Module):
 
     def __init__(self, dim, n_heads, d_head, dropout=0., context_dim=None, gated_ff=True, checkpoint=True,
-                disable_self_attn=False, attention_cls=None, img_cross_attention=False, use_lora=True):
+                disable_self_attn=False, attention_cls=None, img_cross_attention=False, use_lora=False):
         super().__init__()
         attn_cls = CrossAttention if attention_cls is None else attention_cls
         self.disable_self_attn = disable_self_attn

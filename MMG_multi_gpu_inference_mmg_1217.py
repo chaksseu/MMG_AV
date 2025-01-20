@@ -29,7 +29,7 @@ from scripts.evaluation.funcs import load_model_checkpoint, load_prompts
 from utils.utils import instantiate_from_config
 from lvdm.models.utils_diffusion import make_ddim_sampling_parameters, make_ddim_timesteps
 from lvdm.common import noise_like
-from mmg_training.train_MMG_Model_0103_MMG_LoRA import CrossModalCoupledUNet
+from mmg_training.train_MMG_Model_1220_BASE import CrossModalCoupledUNet
 from mmg_inference.auffusion_pipe_functions import (
     prepare_extra_step_kwargs, ConditionAdapter, import_model_class_from_model_name_or_path, Generator
 )
@@ -299,8 +299,8 @@ def load_cross_modal_unet(
         'device': device
     }
     cross_modal_model = CrossModalCoupledUNet(audio_unet, video_unet, cross_modal_config).to(device, dtype).eval()
-    checkpoint = load_file(checkpoint_path)
-    cross_modal_model.load_state_dict(checkpoint)
+    #checkpoint = load_file(checkpoint_path)
+    #cross_modal_model.load_state_dict(checkpoint)
     return cross_modal_model
 
 def get_parser() -> argparse.ArgumentParser:
@@ -348,7 +348,9 @@ def run_inference(
             return
 
         audio_length = int(args.duration * 16000)
-        latent_time = int(args.fps * args.duration)
+        #latent_time = int(args.fps * args.duration)
+        latent_time = int(12.5 * args.duration)
+
         do_audio_cfg = args.guidance_scale > 1.0
         do_video_cfg = args.unconditional_guidance_scale > 1.0
 

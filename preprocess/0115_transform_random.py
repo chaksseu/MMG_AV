@@ -7,11 +7,11 @@ from pydub import AudioSegment
 ###############################################################################
 # 0. 사용자 지정 경로 & 파라미터
 ###############################################################################
-ORIGINAL_FOLDER = "vggsound_sparse_train"  # 원본 MP4가 있는 폴더
-OUTPUT_FOLDER = "0110_vggsound_sparse_train_random_final"  # 최종 결과물이 저장될 폴더
+ORIGINAL_FOLDER = "/workspace/dataset/vggsound_sparse_test_curated"  # 원본 MP4가 있는 폴더
+OUTPUT_FOLDER = "/workspace/dataset/0115_vggsound_sparse_test_random_128s_16f"  # 최종 결과물이 저장될 폴더
 
-TRIM_LENGTH = 3.2           # 잘라낼 길이(초)
-TARGET_FRAME_COUNT = 40     # 최종 영상의 총 프레임 수 (40장)
+TRIM_LENGTH = 1.28           # 잘라낼 길이(초)
+TARGET_FRAME_COUNT = 16     # 최종 영상의 총 프레임 수 (40장)
 RESIZE_WIDTH = 512
 RESIZE_HEIGHT = 320
 
