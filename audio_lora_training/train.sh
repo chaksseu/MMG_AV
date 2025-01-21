@@ -3,25 +3,25 @@
 # 기본값 설정
 csv_path="path/to/csv"  # 실제 CSV 파일 경로
 audio_dir="path/to/audio"  # 실제 오디오 파일 폴더 경로
-OUTPUT_DIR="checkpoints" # checkpoint 저장 폴더 경로
-WANDB_PROJECT="audio_teacher_lora"
+OUTPUT_DIR="audio_teacher_LoRA_checkpoint" # checkpoint 저장 폴더 경로
+WANDB_PROJECT="audio_teacher_lora_training"
 TRAIN_BATCH_SIZE=1
 GRAD_ACC_STEPS=1
 LR=1e-5
 NUM_EPOCHS=10
-EVAL_EVERY=1  # N 에폭마다 평가
 MIXED_PRECISION="bf16"
 PRETRAINED_MODEL="auffusion/auffusion-full"
 NUM_WORKERS=4
 SAVE_CHECKPOINT=1
 
 # Evaluation 관련
+EVAL_EVERY=1  # N 에폭마다 평가
 INFERENCE_BATCH_SIZE=1
-INFERENCE_SAVE_PATH="audio_teacher_lora" # inference 저장 경로
+INFERENCE_SAVE_PATH="path/to/saving_inference" # inference 저장 경로
 ETA_AUDIO=0.0
 GUIDANCE_SCALE=7.5
 NUM_INFERENCE_STEPS=50
-TARGET_FOLDER="target_folder" # 비교한 gt test 데이터
+TARGET_FOLDER="path/to/test/gt" # 비교한 gt test 데이터
 
 # 기타 dataset 파라미터
 SAMPLE_RATE=16000

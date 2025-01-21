@@ -256,7 +256,7 @@ def main():
         # Save checkpoint
         if (epoch + 1) % args.save_checkpoint == 0 and accelerator.is_main_process:
             # accelerator.save_state expects a directory, so we use a folder name
-            ckpt_dir = os.path.join(args.output_dir, f"audio_teacher_unet_checkpoint/checkpoint-epoch-{epoch+1}")
+            ckpt_dir = os.path.join(args.output_dir, f"checkpoint-epoch-{epoch+1}")
             accelerator.save_state(ckpt_dir)
             print(f"[Epoch {epoch+1}] Checkpoint saved at: {ckpt_dir}")
 
