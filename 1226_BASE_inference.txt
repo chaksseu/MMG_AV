@@ -1,190 +1,0 @@
-[rank: 0] Seed set to 12
-[rank: 3] Seed set to 15
-[rank: 1] Seed set to 13
-[rank: 2] Seed set to 14
-AE working on z of shape (1, 4, 64, 64) = 16384 dimensions.
-AE working on z of shape (1, 4, 64, 64) = 16384 dimensions.
-AE working on z of shape (1, 4, 64, 64) = 16384 dimensions.
-AE working on z of shape (1, 4, 64, 64) = 16384 dimensions.
-WARNING:py.warnings:/workspace/conda/envs/mmg/lib/python3.10/site-packages/timm/models/layers/__init__.py:48: FutureWarning: Importing from timm.models.layers is deprecated, please import via timm.layers
-  warnings.warn(f"Importing from {__name__} is deprecated, please import via timm.layers", FutureWarning)
-
-WARNING:py.warnings:/workspace/conda/envs/mmg/lib/python3.10/site-packages/timm/models/layers/__init__.py:48: FutureWarning: Importing from timm.models.layers is deprecated, please import via timm.layers
-  warnings.warn(f"Importing from {__name__} is deprecated, please import via timm.layers", FutureWarning)
-
-WARNING:py.warnings:/workspace/conda/envs/mmg/lib/python3.10/site-packages/timm/models/layers/__init__.py:48: FutureWarning: Importing from timm.models.layers is deprecated, please import via timm.layers
-  warnings.warn(f"Importing from {__name__} is deprecated, please import via timm.layers", FutureWarning)
-
-WARNING:py.warnings:/workspace/conda/envs/mmg/lib/python3.10/site-packages/timm/models/layers/__init__.py:48: FutureWarning: Importing from timm.models.layers is deprecated, please import via timm.layers
-  warnings.warn(f"Importing from {__name__} is deprecated, please import via timm.layers", FutureWarning)
-
-INFO:root:Loaded ViT-H-14 model config.
-INFO:root:Loaded ViT-H-14 model config.
-INFO:root:Loaded ViT-H-14 model config.
-INFO:root:Loaded ViT-H-14 model config.
-WARNING:py.warnings:/workspace/MMG_01/scripts/evaluation/funcs.py:90: FutureWarning: You are using `torch.load` with `weights_only=False` (the current default value), which uses the default pickle module implicitly. It is possible to construct malicious pickle data which will execute arbitrary code during unpickling (See https://github.com/pytorch/pytorch/blob/main/SECURITY.md#untrusted-models for more details). In a future release, the default value for `weights_only` will be flipped to `True`. This limits the functions that could be executed during unpickling. Arbitrary objects will no longer be allowed to be loaded via this mode unless they are explicitly allowlisted by the user via `torch.serialization.add_safe_globals`. We recommend you start setting `weights_only=True` for any use case where you don't have full control of the loaded file. Please open an issue on GitHub for any issues related to this experimental feature.
-  state_dict = torch.load(ckpt, map_location="cpu")
-
-WARNING:py.warnings:/workspace/MMG_01/scripts/evaluation/funcs.py:90: FutureWarning: You are using `torch.load` with `weights_only=False` (the current default value), which uses the default pickle module implicitly. It is possible to construct malicious pickle data which will execute arbitrary code during unpickling (See https://github.com/pytorch/pytorch/blob/main/SECURITY.md#untrusted-models for more details). In a future release, the default value for `weights_only` will be flipped to `True`. This limits the functions that could be executed during unpickling. Arbitrary objects will no longer be allowed to be loaded via this mode unless they are explicitly allowlisted by the user via `torch.serialization.add_safe_globals`. We recommend you start setting `weights_only=True` for any use case where you don't have full control of the loaded file. Please open an issue on GitHub for any issues related to this experimental feature.
-  state_dict = torch.load(ckpt, map_location="cpu")
-
-WARNING:py.warnings:/workspace/MMG_01/scripts/evaluation/funcs.py:90: FutureWarning: You are using `torch.load` with `weights_only=False` (the current default value), which uses the default pickle module implicitly. It is possible to construct malicious pickle data which will execute arbitrary code during unpickling (See https://github.com/pytorch/pytorch/blob/main/SECURITY.md#untrusted-models for more details). In a future release, the default value for `weights_only` will be flipped to `True`. This limits the functions that could be executed during unpickling. Arbitrary objects will no longer be allowed to be loaded via this mode unless they are explicitly allowlisted by the user via `torch.serialization.add_safe_globals`. We recommend you start setting `weights_only=True` for any use case where you don't have full control of the loaded file. Please open an issue on GitHub for any issues related to this experimental feature.
-  state_dict = torch.load(ckpt, map_location="cpu")
-
-WARNING:py.warnings:/workspace/MMG_01/scripts/evaluation/funcs.py:90: FutureWarning: You are using `torch.load` with `weights_only=False` (the current default value), which uses the default pickle module implicitly. It is possible to construct malicious pickle data which will execute arbitrary code during unpickling (See https://github.com/pytorch/pytorch/blob/main/SECURITY.md#untrusted-models for more details). In a future release, the default value for `weights_only` will be flipped to `True`. This limits the functions that could be executed during unpickling. Arbitrary objects will no longer be allowed to be loaded via this mode unless they are explicitly allowlisted by the user via `torch.serialization.add_safe_globals`. We recommend you start setting `weights_only=True` for any use case where you don't have full control of the loaded file. Please open an issue on GitHub for any issues related to this experimental feature.
-  state_dict = torch.load(ckpt, map_location="cpu")
-
->>> model checkpoint loaded.
->>> model checkpoint loaded.
->>> model checkpoint loaded.
->>> model checkpoint loaded.
-Fetching 19 files:   0%|          | 0/19 [00:00<?, ?it/s]Fetching 19 files: 100%|██████████| 19/19 [00:00<00:00, 7208.01it/s]
-Fetching 19 files:   0%|          | 0/19 [00:00<?, ?it/s]WARNING:py.warnings:/workspace/conda/envs/mmg/lib/python3.10/site-packages/torch/nn/utils/weight_norm.py:143: FutureWarning: `torch.nn.utils.weight_norm` is deprecated in favor of `torch.nn.utils.parametrizations.weight_norm`.
-  WeightNorm.apply(module, name, dim)
-
-Fetching 19 files: 100%|██████████| 19/19 [00:00<00:00, 17090.24it/s]
-Fetching 19 files:   0%|          | 0/19 [00:00<?, ?it/s]Fetching 19 files: 100%|██████████| 19/19 [00:00<00:00, 8773.73it/s]
-WARNING:py.warnings:/workspace/conda/envs/mmg/lib/python3.10/site-packages/torch/nn/utils/weight_norm.py:143: FutureWarning: `torch.nn.utils.weight_norm` is deprecated in favor of `torch.nn.utils.parametrizations.weight_norm`.
-  WeightNorm.apply(module, name, dim)
-
-WARNING:py.warnings:/workspace/conda/envs/mmg/lib/python3.10/site-packages/torch/nn/utils/weight_norm.py:143: FutureWarning: `torch.nn.utils.weight_norm` is deprecated in favor of `torch.nn.utils.parametrizations.weight_norm`.
-  WeightNorm.apply(module, name, dim)
-
-Fetching 19 files:   0%|          | 0/19 [00:00<?, ?it/s]Fetching 19 files: 100%|██████████| 19/19 [00:00<00:00, 16710.37it/s]
-WARNING:py.warnings:/workspace/conda/envs/mmg/lib/python3.10/site-packages/torch/nn/utils/weight_norm.py:143: FutureWarning: `torch.nn.utils.weight_norm` is deprecated in favor of `torch.nn.utils.parametrizations.weight_norm`.
-  WeightNorm.apply(module, name, dim)
-
-WARNING:py.warnings:/workspace/MMG_01/mmg_inference/auffusion_pipe_functions.py:318: FutureWarning: You are using `torch.load` with `weights_only=False` (the current default value), which uses the default pickle module implicitly. It is possible to construct malicious pickle data which will execute arbitrary code during unpickling (See https://github.com/pytorch/pytorch/blob/main/SECURITY.md#untrusted-models for more details). In a future release, the default value for `weights_only` will be flipped to `True`. This limits the functions that could be executed during unpickling. Arbitrary objects will no longer be allowed to be loaded via this mode unless they are explicitly allowlisted by the user via `torch.serialization.add_safe_globals`. We recommend you start setting `weights_only=True` for any use case where you don't have full control of the loaded file. Please open an issue on GitHub for any issues related to this experimental feature.
-  state_dict_g = torch.load(ckpt_path)
-
-WARNING:py.warnings:/workspace/MMG_01/mmg_inference/auffusion_pipe_functions.py:318: FutureWarning: You are using `torch.load` with `weights_only=False` (the current default value), which uses the default pickle module implicitly. It is possible to construct malicious pickle data which will execute arbitrary code during unpickling (See https://github.com/pytorch/pytorch/blob/main/SECURITY.md#untrusted-models for more details). In a future release, the default value for `weights_only` will be flipped to `True`. This limits the functions that could be executed during unpickling. Arbitrary objects will no longer be allowed to be loaded via this mode unless they are explicitly allowlisted by the user via `torch.serialization.add_safe_globals`. We recommend you start setting `weights_only=True` for any use case where you don't have full control of the loaded file. Please open an issue on GitHub for any issues related to this experimental feature.
-  state_dict_g = torch.load(ckpt_path)
-
-WARNING:py.warnings:/workspace/MMG_01/mmg_inference/auffusion_pipe_functions.py:318: FutureWarning: You are using `torch.load` with `weights_only=False` (the current default value), which uses the default pickle module implicitly. It is possible to construct malicious pickle data which will execute arbitrary code during unpickling (See https://github.com/pytorch/pytorch/blob/main/SECURITY.md#untrusted-models for more details). In a future release, the default value for `weights_only` will be flipped to `True`. This limits the functions that could be executed during unpickling. Arbitrary objects will no longer be allowed to be loaded via this mode unless they are explicitly allowlisted by the user via `torch.serialization.add_safe_globals`. We recommend you start setting `weights_only=True` for any use case where you don't have full control of the loaded file. Please open an issue on GitHub for any issues related to this experimental feature.
-  state_dict_g = torch.load(ckpt_path)
-
-WARNING:py.warnings:/workspace/MMG_01/mmg_inference/auffusion_pipe_functions.py:318: FutureWarning: You are using `torch.load` with `weights_only=False` (the current default value), which uses the default pickle module implicitly. It is possible to construct malicious pickle data which will execute arbitrary code during unpickling (See https://github.com/pytorch/pytorch/blob/main/SECURITY.md#untrusted-models for more details). In a future release, the default value for `weights_only` will be flipped to `True`. This limits the functions that could be executed during unpickling. Arbitrary objects will no longer be allowed to be loaded via this mode unless they are explicitly allowlisted by the user via `torch.serialization.add_safe_globals`. We recommend you start setting `weights_only=True` for any use case where you don't have full control of the loaded file. Please open an issue on GitHub for any issues related to this experimental feature.
-  state_dict_g = torch.load(ckpt_path)
-
-Removing weight norm...
-An error occurred while trying to fetch /workspace/huggingface_cache/hub/models--auffusion--auffusion-full/snapshots/db5169f1890d4e5d926ac4c5524da0cc3d4b9a5b: Error no file named diffusion_pytorch_model.safetensors found in directory /workspace/huggingface_cache/hub/models--auffusion--auffusion-full/snapshots/db5169f1890d4e5d926ac4c5524da0cc3d4b9a5b.
-Defaulting to unsafe serialization. Pass `allow_pickle=False` to raise an error instead.
-Removing weight norm...
-An error occurred while trying to fetch /workspace/huggingface_cache/hub/models--auffusion--auffusion-full/snapshots/db5169f1890d4e5d926ac4c5524da0cc3d4b9a5b: Error no file named diffusion_pytorch_model.safetensors found in directory /workspace/huggingface_cache/hub/models--auffusion--auffusion-full/snapshots/db5169f1890d4e5d926ac4c5524da0cc3d4b9a5b.
-Defaulting to unsafe serialization. Pass `allow_pickle=False` to raise an error instead.
-Removing weight norm...
-Removing weight norm...
-An error occurred while trying to fetch /workspace/huggingface_cache/hub/models--auffusion--auffusion-full/snapshots/db5169f1890d4e5d926ac4c5524da0cc3d4b9a5b: Error no file named diffusion_pytorch_model.safetensors found in directory /workspace/huggingface_cache/hub/models--auffusion--auffusion-full/snapshots/db5169f1890d4e5d926ac4c5524da0cc3d4b9a5b.
-Defaulting to unsafe serialization. Pass `allow_pickle=False` to raise an error instead.
-An error occurred while trying to fetch /workspace/huggingface_cache/hub/models--auffusion--auffusion-full/snapshots/db5169f1890d4e5d926ac4c5524da0cc3d4b9a5b: Error no file named diffusion_pytorch_model.safetensors found in directory /workspace/huggingface_cache/hub/models--auffusion--auffusion-full/snapshots/db5169f1890d4e5d926ac4c5524da0cc3d4b9a5b.
-Defaulting to unsafe serialization. Pass `allow_pickle=False` to raise an error instead.
-You are using a model of type clip_text_model to instantiate a model of type . This is not supported for all configurations of models and can yield errors.
-You are using a model of type clip_text_model to instantiate a model of type . This is not supported for all configurations of models and can yield errors.
-You are using a model of type clip_text_model to instantiate a model of type . This is not supported for all configurations of models and can yield errors.
-You are using a model of type clip_text_model to instantiate a model of type . This is not supported for all configurations of models and can yield errors.
-INITIATED: ConditionAdapter: {'text_encoder_name': 'text_encoder_0', 'condition_adapter_name': 'condition_adapter_0', 'condition_type': 'clip-vit-large-patch14_text', 'pretrained_model_name_or_path': 'openai/clip-vit-large-patch14', 'condition_max_length': 77, 'condition_dim': 768, 'cross_attention_dim': 768}
-WARNING:py.warnings:/workspace/MMG_01/mmg_inference/auffusion_pipe_functions.py:111: FutureWarning: You are using `torch.load` with `weights_only=False` (the current default value), which uses the default pickle module implicitly. It is possible to construct malicious pickle data which will execute arbitrary code during unpickling (See https://github.com/pytorch/pytorch/blob/main/SECURITY.md#untrusted-models for more details). In a future release, the default value for `weights_only` will be flipped to `True`. This limits the functions that could be executed during unpickling. Arbitrary objects will no longer be allowed to be loaded via this mode unless they are explicitly allowlisted by the user via `torch.serialization.add_safe_globals`. We recommend you start setting `weights_only=True` for any use case where you don't have full control of the loaded file. Please open an issue on GitHub for any issues related to this experimental feature.
-  instance.load_state_dict(torch.load(ckpt_path))
-
-LOADED: ConditionAdapter from /workspace/huggingface_cache/hub/models--auffusion--auffusion-full/snapshots/db5169f1890d4e5d926ac4c5524da0cc3d4b9a5b/condition_adapter_0
-An error occurred while trying to fetch /workspace/huggingface_cache/hub/models--auffusion--auffusion-full/snapshots/db5169f1890d4e5d926ac4c5524da0cc3d4b9a5b: Error no file named diffusion_pytorch_model.safetensors found in directory /workspace/huggingface_cache/hub/models--auffusion--auffusion-full/snapshots/db5169f1890d4e5d926ac4c5524da0cc3d4b9a5b.
-Defaulting to unsafe serialization. Pass `allow_pickle=False` to raise an error instead.
-The config attributes {'decay': 0.9999, 'inv_gamma': 1.0, 'min_decay': 0.0, 'optimization_step': 100000, 'power': 0.6666666666666666, 'update_after_step': 0, 'use_ema_warmup': False} were passed to UNet2DConditionModel, but are not expected and will be ignored. Please verify your config.json configuration file.
-INITIATED: ConditionAdapter: {'text_encoder_name': 'text_encoder_0', 'condition_adapter_name': 'condition_adapter_0', 'condition_type': 'clip-vit-large-patch14_text', 'pretrained_model_name_or_path': 'openai/clip-vit-large-patch14', 'condition_max_length': 77, 'condition_dim': 768, 'cross_attention_dim': 768}
-WARNING:py.warnings:/workspace/MMG_01/mmg_inference/auffusion_pipe_functions.py:111: FutureWarning: You are using `torch.load` with `weights_only=False` (the current default value), which uses the default pickle module implicitly. It is possible to construct malicious pickle data which will execute arbitrary code during unpickling (See https://github.com/pytorch/pytorch/blob/main/SECURITY.md#untrusted-models for more details). In a future release, the default value for `weights_only` will be flipped to `True`. This limits the functions that could be executed during unpickling. Arbitrary objects will no longer be allowed to be loaded via this mode unless they are explicitly allowlisted by the user via `torch.serialization.add_safe_globals`. We recommend you start setting `weights_only=True` for any use case where you don't have full control of the loaded file. Please open an issue on GitHub for any issues related to this experimental feature.
-  instance.load_state_dict(torch.load(ckpt_path))
-
-LOADED: ConditionAdapter from /workspace/huggingface_cache/hub/models--auffusion--auffusion-full/snapshots/db5169f1890d4e5d926ac4c5524da0cc3d4b9a5b/condition_adapter_0
-An error occurred while trying to fetch /workspace/huggingface_cache/hub/models--auffusion--auffusion-full/snapshots/db5169f1890d4e5d926ac4c5524da0cc3d4b9a5b: Error no file named diffusion_pytorch_model.safetensors found in directory /workspace/huggingface_cache/hub/models--auffusion--auffusion-full/snapshots/db5169f1890d4e5d926ac4c5524da0cc3d4b9a5b.
-Defaulting to unsafe serialization. Pass `allow_pickle=False` to raise an error instead.
-The config attributes {'decay': 0.9999, 'inv_gamma': 1.0, 'min_decay': 0.0, 'optimization_step': 100000, 'power': 0.6666666666666666, 'update_after_step': 0, 'use_ema_warmup': False} were passed to UNet2DConditionModel, but are not expected and will be ignored. Please verify your config.json configuration file.
-INITIATED: ConditionAdapter: {'text_encoder_name': 'text_encoder_0', 'condition_adapter_name': 'condition_adapter_0', 'condition_type': 'clip-vit-large-patch14_text', 'pretrained_model_name_or_path': 'openai/clip-vit-large-patch14', 'condition_max_length': 77, 'condition_dim': 768, 'cross_attention_dim': 768}
-WARNING:py.warnings:/workspace/MMG_01/mmg_inference/auffusion_pipe_functions.py:111: FutureWarning: You are using `torch.load` with `weights_only=False` (the current default value), which uses the default pickle module implicitly. It is possible to construct malicious pickle data which will execute arbitrary code during unpickling (See https://github.com/pytorch/pytorch/blob/main/SECURITY.md#untrusted-models for more details). In a future release, the default value for `weights_only` will be flipped to `True`. This limits the functions that could be executed during unpickling. Arbitrary objects will no longer be allowed to be loaded via this mode unless they are explicitly allowlisted by the user via `torch.serialization.add_safe_globals`. We recommend you start setting `weights_only=True` for any use case where you don't have full control of the loaded file. Please open an issue on GitHub for any issues related to this experimental feature.
-  instance.load_state_dict(torch.load(ckpt_path))
-
-LOADED: ConditionAdapter from /workspace/huggingface_cache/hub/models--auffusion--auffusion-full/snapshots/db5169f1890d4e5d926ac4c5524da0cc3d4b9a5b/condition_adapter_0
-An error occurred while trying to fetch /workspace/huggingface_cache/hub/models--auffusion--auffusion-full/snapshots/db5169f1890d4e5d926ac4c5524da0cc3d4b9a5b: Error no file named diffusion_pytorch_model.safetensors found in directory /workspace/huggingface_cache/hub/models--auffusion--auffusion-full/snapshots/db5169f1890d4e5d926ac4c5524da0cc3d4b9a5b.
-Defaulting to unsafe serialization. Pass `allow_pickle=False` to raise an error instead.
-The config attributes {'decay': 0.9999, 'inv_gamma': 1.0, 'min_decay': 0.0, 'optimization_step': 100000, 'power': 0.6666666666666666, 'update_after_step': 0, 'use_ema_warmup': False} were passed to UNet2DConditionModel, but are not expected and will be ignored. Please verify your config.json configuration file.
-INITIATED: ConditionAdapter: {'text_encoder_name': 'text_encoder_0', 'condition_adapter_name': 'condition_adapter_0', 'condition_type': 'clip-vit-large-patch14_text', 'pretrained_model_name_or_path': 'openai/clip-vit-large-patch14', 'condition_max_length': 77, 'condition_dim': 768, 'cross_attention_dim': 768}
-WARNING:py.warnings:/workspace/MMG_01/mmg_inference/auffusion_pipe_functions.py:111: FutureWarning: You are using `torch.load` with `weights_only=False` (the current default value), which uses the default pickle module implicitly. It is possible to construct malicious pickle data which will execute arbitrary code during unpickling (See https://github.com/pytorch/pytorch/blob/main/SECURITY.md#untrusted-models for more details). In a future release, the default value for `weights_only` will be flipped to `True`. This limits the functions that could be executed during unpickling. Arbitrary objects will no longer be allowed to be loaded via this mode unless they are explicitly allowlisted by the user via `torch.serialization.add_safe_globals`. We recommend you start setting `weights_only=True` for any use case where you don't have full control of the loaded file. Please open an issue on GitHub for any issues related to this experimental feature.
-  instance.load_state_dict(torch.load(ckpt_path))
-
-LOADED: ConditionAdapter from /workspace/huggingface_cache/hub/models--auffusion--auffusion-full/snapshots/db5169f1890d4e5d926ac4c5524da0cc3d4b9a5b/condition_adapter_0
-An error occurred while trying to fetch /workspace/huggingface_cache/hub/models--auffusion--auffusion-full/snapshots/db5169f1890d4e5d926ac4c5524da0cc3d4b9a5b: Error no file named diffusion_pytorch_model.safetensors found in directory /workspace/huggingface_cache/hub/models--auffusion--auffusion-full/snapshots/db5169f1890d4e5d926ac4c5524da0cc3d4b9a5b.
-Defaulting to unsafe serialization. Pass `allow_pickle=False` to raise an error instead.
-The config attributes {'decay': 0.9999, 'inv_gamma': 1.0, 'min_decay': 0.0, 'optimization_step': 100000, 'power': 0.6666666666666666, 'update_after_step': 0, 'use_ema_warmup': False} were passed to UNet2DConditionModel, but are not expected and will be ignored. Please verify your config.json configuration file.
-[rank3]:[W1227 02:59:04.627519654 ProcessGroupNCCL.cpp:4115] [PG ID 0 PG GUID 0 Rank 3]  using GPU 3 to perform barrier as devices used by this process are currently unknown. This can potentially cause a hang if this rank to GPU mapping is incorrect.Specify device_ids in barrier() to force use of a particular device,or call init_process_group() with a device_id.
-[rank1]:[W1227 02:59:04.868947932 ProcessGroupNCCL.cpp:4115] [PG ID 0 PG GUID 0 Rank 1]  using GPU 1 to perform barrier as devices used by this process are currently unknown. This can potentially cause a hang if this rank to GPU mapping is incorrect.Specify device_ids in barrier() to force use of a particular device,or call init_process_group() with a device_id.
-[rank2]:[W1227 02:59:04.899993341 ProcessGroupNCCL.cpp:4115] [PG ID 0 PG GUID 0 Rank 2]  using GPU 2 to perform barrier as devices used by this process are currently unknown. This can potentially cause a hang if this rank to GPU mapping is incorrect.Specify device_ids in barrier() to force use of a particular device,or call init_process_group() with a device_id.
-[rank0]:[W1227 02:59:04.989540888 ProcessGroupNCCL.cpp:4115] [PG ID 0 PG GUID 0 Rank 0]  using GPU 0 to perform barrier as devices used by this process are currently unknown. This can potentially cause a hang if this rank to GPU mapping is incorrect.Specify device_ids in barrier() to force use of a particular device,or call init_process_group() with a device_id.
-Generating:   0%|          | 0/80 [00:00<?, ?it/s]Generating:   1%|▏         | 1/80 [05:28<7:12:57, 328.82s/it]Generating:   2%|▎         | 2/80 [10:57<7:07:20, 328.72s/it]Generating:   4%|▍         | 3/80 [16:26<7:01:52, 328.73s/it]Generating:   5%|▌         | 4/80 [21:54<6:56:21, 328.70s/it]Generating:   6%|▋         | 5/80 [27:23<6:50:48, 328.65s/it]Generating:   8%|▊         | 6/80 [32:52<6:45:31, 328.81s/it]Generating:   9%|▉         | 7/80 [38:21<6:39:56, 328.72s/it]Generating:  10%|█         | 8/80 [43:49<6:34:26, 328.69s/it]Generating:  11%|█▏        | 9/80 [49:18<6:28:56, 328.68s/it]Generating:  12%|█▎        | 10/80 [54:46<6:23:25, 328.64s/it]Generating:  14%|█▍        | 11/80 [1:00:15<6:17:57, 328.65s/it]Generating:  15%|█▌        | 12/80 [1:05:44<6:12:26, 328.63s/it]Generating:  16%|█▋        | 13/80 [1:11:12<6:07:00, 328.67s/it]Generating:  18%|█▊        | 14/80 [1:16:41<6:01:31, 328.67s/it]Generating:  19%|█▉        | 15/80 [1:22:10<5:56:01, 328.65s/it]Generating:  20%|██        | 16/80 [1:27:38<5:50:31, 328.62s/it]Generating:  21%|██▏       | 17/80 [1:33:07<5:45:04, 328.65s/it]Generating:  22%|██▎       | 18/80 [1:38:36<5:39:40, 328.72s/it]Generating:  24%|██▍       | 19/80 [1:44:04<5:34:08, 328.67s/it]Generating:  25%|██▌       | 20/80 [1:49:33<5:28:39, 328.66s/it]Generating:  26%|██▋       | 21/80 [1:55:02<5:23:09, 328.64s/it]Generating:  28%|██▊       | 22/80 [2:00:30<5:17:42, 328.67s/it]Generating:  29%|██▉       | 23/80 [2:05:59<5:12:17, 328.72s/it]Generating:  30%|███       | 24/80 [2:11:28<5:06:48, 328.73s/it]Generating:  31%|███▏      | 25/80 [2:16:57<5:01:21, 328.76s/it]Generating:  32%|███▎      | 26/80 [2:22:26<4:55:56, 328.82s/it]Generating:  34%|███▍      | 27/80 [2:27:55<4:50:27, 328.82s/it]Generating:  35%|███▌      | 28/80 [2:33:24<4:45:00, 328.86s/it]Generating:  36%|███▋      | 29/80 [2:38:52<4:39:27, 328.78s/it]Generating:  38%|███▊      | 30/80 [2:44:21<4:34:01, 328.82s/it]Generating:  39%|███▉      | 31/80 [2:49:50<4:28:34, 328.86s/it]Generating:  40%|████      | 32/80 [2:55:19<4:23:03, 328.82s/it]Generating:  41%|████▏     | 33/80 [3:00:47<4:17:32, 328.79s/it]Generating:  42%|████▎     | 34/80 [3:06:16<4:12:03, 328.77s/it]Generating:  44%|████▍     | 35/80 [3:11:45<4:06:34, 328.77s/it]Generating:  45%|████▌     | 36/80 [3:17:14<4:01:09, 328.85s/it]Generating:  46%|████▋     | 37/80 [3:22:43<3:55:41, 328.87s/it]Generating:  48%|████▊     | 38/80 [3:28:12<3:50:16, 328.96s/it]Generating:  49%|████▉     | 39/80 [3:33:41<3:44:48, 328.99s/it]Generating:  50%|█████     | 40/80 [3:39:10<3:39:21, 329.05s/it]Generating:  51%|█████▏    | 41/80 [3:44:39<3:33:50, 328.99s/it]Generating:  52%|█████▎    | 42/80 [3:50:08<3:28:20, 328.96s/it]Generating:  54%|█████▍    | 43/80 [3:55:37<3:22:48, 328.88s/it]Generating:  55%|█████▌    | 44/80 [4:01:06<3:17:20, 328.91s/it]Generating:  56%|█████▋    | 45/80 [4:06:36<3:12:08, 329.40s/it]Generating:  57%|█████▊    | 46/80 [4:12:05<3:06:35, 329.29s/it]Generating:  59%|█████▉    | 47/80 [4:17:34<3:01:03, 329.21s/it]Generating:  60%|██████    | 48/80 [4:23:04<2:55:35, 329.22s/it]Generating:  61%|██████▏   | 49/80 [4:28:33<2:50:03, 329.16s/it]Generating:  62%|██████▎   | 50/80 [4:34:02<2:44:35, 329.19s/it]Generating:  64%|██████▍   | 51/80 [4:39:31<2:39:06, 329.17s/it]Generating:  65%|██████▌   | 52/80 [4:45:00<2:33:38, 329.22s/it]Generating:  66%|██████▋   | 53/80 [4:50:29<2:28:08, 329.19s/it]Generating:  68%|██████▊   | 54/80 [4:55:59<2:22:39, 329.20s/it]Generating:  69%|██████▉   | 55/80 [5:01:28<2:17:08, 329.14s/it]Generating:  70%|███████   | 56/80 [5:06:57<2:11:39, 329.14s/it]Generating:  71%|███████▏  | 57/80 [5:12:26<2:06:08, 329.09s/it]Generating:  72%|███████▎  | 58/80 [5:17:55<2:00:41, 329.17s/it]Generating:  74%|███████▍  | 59/80 [5:23:24<1:55:11, 329.12s/it]Generating:  75%|███████▌  | 60/80 [5:28:53<1:49:42, 329.14s/it]Generating:  76%|███████▋  | 61/80 [5:34:24<1:44:20, 329.52s/it]Generating:  78%|███████▊  | 62/80 [5:39:53<1:38:50, 329.48s/it]Generating:  79%|███████▉  | 63/80 [5:45:22<1:33:19, 329.40s/it]Generating:  80%|████████  | 64/80 [5:50:51<1:27:48, 329.28s/it]Generating:  81%|████████▏ | 65/80 [5:56:20<1:22:17, 329.18s/it]Generating:  82%|████████▎ | 66/80 [6:01:49<1:16:48, 329.14s/it]Generating:  84%|████████▍ | 67/80 [6:07:18<1:11:18, 329.10s/it]Generating:  85%|████████▌ | 68/80 [6:12:47<1:05:49, 329.12s/it]Generating:  86%|████████▋ | 69/80 [6:18:17<1:00:20, 329.11s/it]Generating:  88%|████████▊ | 70/80 [6:23:46<54:51, 329.19s/it]  Generating:  89%|████████▉ | 71/80 [6:29:15<49:21, 329.08s/it]Generating:  90%|█████████ | 72/80 [6:34:44<43:52, 329.07s/it]Generating:  91%|█████████▏| 73/80 [6:40:13<38:23, 329.03s/it]Generating:  92%|█████████▎| 74/80 [6:45:42<32:53, 329.00s/it]Generating:  94%|█████████▍| 75/80 [6:51:11<27:24, 328.97s/it]Generating:  95%|█████████▌| 76/80 [6:56:40<21:55, 328.99s/it]Generating:  96%|█████████▋| 77/80 [7:02:09<16:27, 329.07s/it]Generating:  98%|█████████▊| 78/80 [7:07:38<10:58, 329.08s/it]Generating:  99%|█████████▉| 79/80 [7:13:07<05:28, 328.92s/it]Generating: 100%|██████████| 80/80 [7:18:35<00:00, 328.87s/it]Generating: 100%|██████████| 80/80 [7:18:35<00:00, 328.95s/it]
-Process 0: Completed inference. Results saved in 1226_output_BASE_epoch90_50steps.
-[rank0]:[E1227 10:27:40.162258895 ProcessGroupNCCL.cpp:616] [Rank 0] Watchdog caught collective operation timeout: WorkNCCL(SeqNum=2, OpType=ALLREDUCE, NumelIn=1, NumelOut=1, Timeout(ms)=600000) ran for 600030 milliseconds before timing out.
-[rank0]:[E1227 10:27:40.167188946 ProcessGroupNCCL.cpp:1785] [PG ID 0 PG GUID 0(default_pg) Rank 0] Exception (either an error or timeout) detected by watchdog at work: 2, last enqueued NCCL work: 2, last completed NCCL work: 1.
-[rank0]:[E1227 10:27:41.072284555 ProcessGroupNCCL.cpp:1834] [PG ID 0 PG GUID 0(default_pg) Rank 0] Timeout at NCCL work: 2, last enqueued NCCL work: 2, last completed NCCL work: 1.
-[rank0]:[E1227 10:27:41.072307399 ProcessGroupNCCL.cpp:630] [Rank 0] Some NCCL operations have failed or timed out. Due to the asynchronous nature of CUDA kernels, subsequent GPU operations might run on corrupted/incomplete data.
-[rank0]:[E1227 10:27:41.072311988 ProcessGroupNCCL.cpp:636] [Rank 0] To avoid data inconsistency, we are taking the entire process down.
-[rank0]:[E1227 10:27:41.077496386 ProcessGroupNCCL.cpp:1595] [PG ID 0 PG GUID 0(default_pg) Rank 0] Process group watchdog thread terminated with exception: [Rank 0] Watchdog caught collective operation timeout: WorkNCCL(SeqNum=2, OpType=ALLREDUCE, NumelIn=1, NumelOut=1, Timeout(ms)=600000) ran for 600030 milliseconds before timing out.
-Exception raised from checkTimeout at /opt/conda/conda-bld/pytorch_1729647352509/work/torch/csrc/distributed/c10d/ProcessGroupNCCL.cpp:618 (most recent call first):
-frame #0: c10::Error::Error(c10::SourceLocation, std::string) + 0x96 (0x7fc178ab6446 in /workspace/conda/envs/mmg/lib/python3.10/site-packages/torch/lib/libc10.so)
-frame #1: c10d::ProcessGroupNCCL::WorkNCCL::checkTimeout(std::optional<std::chrono::duration<long, std::ratio<1l, 1000l> > >) + 0x282 (0x7fc179e1c7f2 in /workspace/conda/envs/mmg/lib/python3.10/site-packages/torch/lib/libtorch_cuda.so)
-frame #2: c10d::ProcessGroupNCCL::watchdogHandler() + 0x233 (0x7fc179e23c33 in /workspace/conda/envs/mmg/lib/python3.10/site-packages/torch/lib/libtorch_cuda.so)
-frame #3: c10d::ProcessGroupNCCL::ncclCommWatchdog() + 0x14d (0x7fc179e2569d in /workspace/conda/envs/mmg/lib/python3.10/site-packages/torch/lib/libtorch_cuda.so)
-frame #4: <unknown function> + 0x145c0 (0x7fc1c9d595c0 in /workspace/conda/envs/mmg/lib/python3.10/site-packages/torch/lib/libtorch.so)
-frame #5: <unknown function> + 0x8609 (0x7fc1d6443609 in /usr/lib/x86_64-linux-gnu/libpthread.so.0)
-frame #6: clone + 0x43 (0x7fc1d620e353 in /usr/lib/x86_64-linux-gnu/libc.so.6)
-
-terminate called after throwing an instance of 'c10::DistBackendError'
-  what():  [PG ID 0 PG GUID 0(default_pg) Rank 0] Process group watchdog thread terminated with exception: [Rank 0] Watchdog caught collective operation timeout: WorkNCCL(SeqNum=2, OpType=ALLREDUCE, NumelIn=1, NumelOut=1, Timeout(ms)=600000) ran for 600030 milliseconds before timing out.
-Exception raised from checkTimeout at /opt/conda/conda-bld/pytorch_1729647352509/work/torch/csrc/distributed/c10d/ProcessGroupNCCL.cpp:618 (most recent call first):
-frame #0: c10::Error::Error(c10::SourceLocation, std::string) + 0x96 (0x7fc178ab6446 in /workspace/conda/envs/mmg/lib/python3.10/site-packages/torch/lib/libc10.so)
-frame #1: c10d::ProcessGroupNCCL::WorkNCCL::checkTimeout(std::optional<std::chrono::duration<long, std::ratio<1l, 1000l> > >) + 0x282 (0x7fc179e1c7f2 in /workspace/conda/envs/mmg/lib/python3.10/site-packages/torch/lib/libtorch_cuda.so)
-frame #2: c10d::ProcessGroupNCCL::watchdogHandler() + 0x233 (0x7fc179e23c33 in /workspace/conda/envs/mmg/lib/python3.10/site-packages/torch/lib/libtorch_cuda.so)
-frame #3: c10d::ProcessGroupNCCL::ncclCommWatchdog() + 0x14d (0x7fc179e2569d in /workspace/conda/envs/mmg/lib/python3.10/site-packages/torch/lib/libtorch_cuda.so)
-frame #4: <unknown function> + 0x145c0 (0x7fc1c9d595c0 in /workspace/conda/envs/mmg/lib/python3.10/site-packages/torch/lib/libtorch.so)
-frame #5: <unknown function> + 0x8609 (0x7fc1d6443609 in /usr/lib/x86_64-linux-gnu/libpthread.so.0)
-frame #6: clone + 0x43 (0x7fc1d620e353 in /usr/lib/x86_64-linux-gnu/libc.so.6)
-
-Exception raised from ncclCommWatchdog at /opt/conda/conda-bld/pytorch_1729647352509/work/torch/csrc/distributed/c10d/ProcessGroupNCCL.cpp:1601 (most recent call first):
-frame #0: c10::Error::Error(c10::SourceLocation, std::string) + 0x96 (0x7fc178ab6446 in /workspace/conda/envs/mmg/lib/python3.10/site-packages/torch/lib/libc10.so)
-frame #1: <unknown function> + 0xea30eb (0x7fc179a990eb in /workspace/conda/envs/mmg/lib/python3.10/site-packages/torch/lib/libtorch_cuda.so)
-frame #2: <unknown function> + 0x145c0 (0x7fc1c9d595c0 in /workspace/conda/envs/mmg/lib/python3.10/site-packages/torch/lib/libtorch.so)
-frame #3: <unknown function> + 0x8609 (0x7fc1d6443609 in /usr/lib/x86_64-linux-gnu/libpthread.so.0)
-frame #4: clone + 0x43 (0x7fc1d620e353 in /usr/lib/x86_64-linux-gnu/libc.so.6)
-
-W1227 10:27:42.233000 156851 site-packages/torch/distributed/elastic/multiprocessing/api.py:897] Sending process 156896 closing signal SIGTERM
-W1227 10:27:42.234000 156851 site-packages/torch/distributed/elastic/multiprocessing/api.py:897] Sending process 156897 closing signal SIGTERM
-W1227 10:27:42.235000 156851 site-packages/torch/distributed/elastic/multiprocessing/api.py:897] Sending process 156898 closing signal SIGTERM
-E1227 10:27:42.864000 156851 site-packages/torch/distributed/elastic/multiprocessing/api.py:869] failed (exitcode: -6) local_rank: 0 (pid: 156895) of binary: /workspace/conda/envs/mmg/bin/python
-Traceback (most recent call last):
-  File "/workspace/conda/envs/mmg/bin/accelerate", line 8, in <module>
-    sys.exit(main())
-  File "/workspace/conda/envs/mmg/lib/python3.10/site-packages/accelerate/commands/accelerate_cli.py", line 48, in main
-    args.func(args)
-  File "/workspace/conda/envs/mmg/lib/python3.10/site-packages/accelerate/commands/launch.py", line 1159, in launch_command
-    multi_gpu_launcher(args)
-  File "/workspace/conda/envs/mmg/lib/python3.10/site-packages/accelerate/commands/launch.py", line 793, in multi_gpu_launcher
-    distrib_run.run(args)
-  File "/workspace/conda/envs/mmg/lib/python3.10/site-packages/torch/distributed/run.py", line 910, in run
-    elastic_launch(
-  File "/workspace/conda/envs/mmg/lib/python3.10/site-packages/torch/distributed/launcher/api.py", line 138, in __call__
-    return launch_agent(self._config, self._entrypoint, list(args))
-  File "/workspace/conda/envs/mmg/lib/python3.10/site-packages/torch/distributed/launcher/api.py", line 269, in launch_agent
-    raise ChildFailedError(
-torch.distributed.elastic.multiprocessing.errors.ChildFailedError: 
-=======================================================
-MMG_multi_gpu_inference_mmg_1217.py FAILED
--------------------------------------------------------
-Failures:
-  <NO_OTHER_FAILURES>
--------------------------------------------------------
-Root Cause (first observed failure):
-[0]:
-  time      : 2024-12-27_10:27:42
-  host      : 29b86fdba56f
-  rank      : 0 (local_rank: 0)
-  exitcode  : -6 (pid: 156895)
-  error_file: <N/A>
-  traceback : Signal 6 (SIGABRT) received by PID 156895
-=======================================================

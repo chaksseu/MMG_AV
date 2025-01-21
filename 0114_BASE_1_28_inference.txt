@@ -1,30 +1,0 @@
-Seed set to 1234
-WARNING:py.warnings:/workspace/conda/envs/mmg/lib/python3.10/site-packages/timm/models/layers/__init__.py:48: FutureWarning: Importing from timm.models.layers is deprecated, please import via timm.layers
-  warnings.warn(f"Importing from {__name__} is deprecated, please import via timm.layers", FutureWarning)
-
-INFO:root:Loaded ViT-H-14 model config.
-WARNING:py.warnings:/workspace/MMG_01/scripts/evaluation/funcs.py:90: FutureWarning: You are using `torch.load` with `weights_only=False` (the current default value), which uses the default pickle module implicitly. It is possible to construct malicious pickle data which will execute arbitrary code during unpickling (See https://github.com/pytorch/pytorch/blob/main/SECURITY.md#untrusted-models for more details). In a future release, the default value for `weights_only` will be flipped to `True`. This limits the functions that could be executed during unpickling. Arbitrary objects will no longer be allowed to be loaded via this mode unless they are explicitly allowlisted by the user via `torch.serialization.add_safe_globals`. We recommend you start setting `weights_only=True` for any use case where you don't have full control of the loaded file. Please open an issue on GitHub for any issues related to this experimental feature.
-  state_dict = torch.load(ckpt, map_location="cpu")
-
-AE working on z of shape (1, 4, 64, 64) = 16384 dimensions.
->>> model checkpoint loaded.
-Fetching 19 files:   0%|          | 0/19 [00:00<?, ?it/s]Fetching 19 files: 100%|██████████| 19/19 [00:00<00:00, 42456.99it/s]
-WARNING:py.warnings:/workspace/conda/envs/mmg/lib/python3.10/site-packages/torch/nn/utils/weight_norm.py:143: FutureWarning: `torch.nn.utils.weight_norm` is deprecated in favor of `torch.nn.utils.parametrizations.weight_norm`.
-  WeightNorm.apply(module, name, dim)
-
-WARNING:py.warnings:/workspace/MMG_01/mmg_inference/auffusion_pipe_functions.py:318: FutureWarning: You are using `torch.load` with `weights_only=False` (the current default value), which uses the default pickle module implicitly. It is possible to construct malicious pickle data which will execute arbitrary code during unpickling (See https://github.com/pytorch/pytorch/blob/main/SECURITY.md#untrusted-models for more details). In a future release, the default value for `weights_only` will be flipped to `True`. This limits the functions that could be executed during unpickling. Arbitrary objects will no longer be allowed to be loaded via this mode unless they are explicitly allowlisted by the user via `torch.serialization.add_safe_globals`. We recommend you start setting `weights_only=True` for any use case where you don't have full control of the loaded file. Please open an issue on GitHub for any issues related to this experimental feature.
-  state_dict_g = torch.load(ckpt_path)
-
-An error occurred while trying to fetch /workspace/huggingface_cache/hub/models--auffusion--auffusion-full/snapshots/db5169f1890d4e5d926ac4c5524da0cc3d4b9a5b: Error no file named diffusion_pytorch_model.safetensors found in directory /workspace/huggingface_cache/hub/models--auffusion--auffusion-full/snapshots/db5169f1890d4e5d926ac4c5524da0cc3d4b9a5b.
-Defaulting to unsafe serialization. Pass `allow_pickle=False` to raise an error instead.
-You are using a model of type clip_text_model to instantiate a model of type . This is not supported for all configurations of models and can yield errors.
-WARNING:py.warnings:/workspace/MMG_01/mmg_inference/auffusion_pipe_functions.py:111: FutureWarning: You are using `torch.load` with `weights_only=False` (the current default value), which uses the default pickle module implicitly. It is possible to construct malicious pickle data which will execute arbitrary code during unpickling (See https://github.com/pytorch/pytorch/blob/main/SECURITY.md#untrusted-models for more details). In a future release, the default value for `weights_only` will be flipped to `True`. This limits the functions that could be executed during unpickling. Arbitrary objects will no longer be allowed to be loaded via this mode unless they are explicitly allowlisted by the user via `torch.serialization.add_safe_globals`. We recommend you start setting `weights_only=True` for any use case where you don't have full control of the loaded file. Please open an issue on GitHub for any issues related to this experimental feature.
-  instance.load_state_dict(torch.load(ckpt_path))
-
-An error occurred while trying to fetch /workspace/huggingface_cache/hub/models--auffusion--auffusion-full/snapshots/db5169f1890d4e5d926ac4c5524da0cc3d4b9a5b: Error no file named diffusion_pytorch_model.safetensors found in directory /workspace/huggingface_cache/hub/models--auffusion--auffusion-full/snapshots/db5169f1890d4e5d926ac4c5524da0cc3d4b9a5b.
-Defaulting to unsafe serialization. Pass `allow_pickle=False` to raise an error instead.
-The config attributes {'decay': 0.9999, 'inv_gamma': 1.0, 'min_decay': 0.0, 'optimization_step': 100000, 'power': 0.6666666666666666, 'update_after_step': 0, 'use_ema_warmup': False} were passed to UNet2DConditionModel, but are not expected and will be ignored. Please verify your config.json configuration file.
-Removing weight norm...
-INITIATED: ConditionAdapter: {'text_encoder_name': 'text_encoder_0', 'condition_adapter_name': 'condition_adapter_0', 'condition_type': 'clip-vit-large-patch14_text', 'pretrained_model_name_or_path': 'openai/clip-vit-large-patch14', 'condition_max_length': 77, 'condition_dim': 768, 'cross_attention_dim': 768}
-LOADED: ConditionAdapter from /workspace/huggingface_cache/hub/models--auffusion--auffusion-full/snapshots/db5169f1890d4e5d926ac4c5524da0cc3d4b9a5b/condition_adapter_0
-Generating:   0%|          | 0/292 [00:00<?, ?it/s]Generating:   0%|          | 1/292 [01:27<7:04:22, 87.50s/it]Generating:   1%|          | 2/292 [02:54<7:01:54, 87.29s/it]Generating:   1%|          | 3/292 [04:21<7:00:15, 87.25s/it]Generating:   1%|▏         | 4/292 [05:49<6:58:52, 87.26s/it]
