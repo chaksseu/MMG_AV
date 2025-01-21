@@ -1,85 +1,120 @@
 #!/bin/bash
 
 # 기본값 설정
-OUTPUT_DIR="checkpoints"
+csv_path="path/to/csv"  # 실제 CSV 파일 경로
+audio_dir="path/to/audio"  # 실제 오디오 파일 폴더 경로
+OUTPUT_DIR="checkpoints" # checkpoint 저장 폴더 경로
 WANDB_PROJECT="audio_teacher_lora"
 TRAIN_BATCH_SIZE=1
 GRAD_ACC_STEPS=1
-VAL_BATCH_SIZE=1
 LR=1e-5
 NUM_EPOCHS=10
-EVAL_EVERY=100
+EVAL_EVERY=1  # N 에폭마다 평가
+MIXED_PRECISION="bf16"
+PRETRAINED_MODEL="auffusion/auffusion-full"
+NUM_WORKERS=4
+SAVE_CHECKPOINT=1
+
+# Evaluation 관련
+INFERENCE_BATCH_SIZE=1
+INFERENCE_SAVE_PATH="audio_teacher_lora" # inference 저장 경로
+ETA_AUDIO=0.0
+GUIDANCE_SCALE=7.5
+NUM_INFERENCE_STEPS=50
+TARGET_FOLDER="target_folder" # 비교한 gt test 데이터
+
+# 기타 dataset 파라미터
 SAMPLE_RATE=16000
-SLICE_DURATION=3.2
+SLICE_DURATION=3.2  # 초 단위
 HOP_SIZE=160
 N_MELS=256
-MIXED_PRECISION="bf16"
+SEED=42
 
+# 디렉토리 확인 및 생성
+mkdir -p "$OUTPUT_DIR"
+mkdir -p "$INFERENCE_SAVE_PATH"
 
-# 사용법 출력 함수
-usage() {
-    echo "Usage: $0 --csv_path PATH --audio_dir PATH [options]"
-    echo "Options:"
-    echo "  --output_dir PATH         Directory to save checkpoints (default: checkpoints)"
-    echo "  --wandb_project NAME      Weights & Biases project name (default: audio_teacher_lora)"
-    echo "  --train_batch_size INT    Training batch size (default: 2)"
-    echo "  --val_batch_size INT      Validation batch size (default: 2)"
-    echo "  --lr FLOAT                Learning rate (default: 1e-5)"
-    echo "  --num_epochs INT          Number of training epochs (default: 10)"
-    echo "  --gradient_accumulation_steps INT (default: 32)"
-    echo "  --eval_every INT          Evaluate every N epochs (default: 2)"
-    echo "  --sample_rate INT         Audio sample rate (default: 16000)"
-    echo "  --slice_duration FLOAT    Audio slice duration in seconds (default: 3.2)"
-    echo "  --hop_size INT            Hop size for spectrogram (default: 160)"
-    echo "  --n_mels INT              Number of mel bands (default: 256)"
-    echo "  --device DEVICE           Device to use (cuda or cpu) (default: cuda)"
+if [ ! -f "$csv_path" ]; then
+    echo "Error: CSV 파일을 찾을 수 없습니다 at $csv_path"
     exit 1
-}
-
-# 명령줄 인자 파싱
-while [[ "$#" -gt 0 ]]; do
-    case $1 in
-        --csv_path) csv_path="$2"; shift ;;
-        --audio_dir) audio_dir="$2"; shift ;;
-        --output_dir) OUTPUT_DIR="$2"; shift ;;
-        --wandb_project) WANDB_PROJECT="$2"; shift ;;
-        --train_batch_size) TRAIN_BATCH_SIZE="$2"; shift ;;
-        --val_batch_size) VAL_BATCH_SIZE="$2"; shift ;;
-        --lr) LR="$2"; shift ;;
-        --num_epochs) NUM_EPOCHS="$2"; shift ;;
-        --gradient_accumulation_steps) GRAD_ACC_STEPS="$2"; shift ;;
-        --eval_every) EVAL_EVERY="$2"; shift ;;
-        --sample_rate) SAMPLE_RATE="$2"; shift ;;
-        --slice_duration) SLICE_DURATION="$2"; shift ;;
-        --hop_size) HOP_SIZE="$2"; shift ;;
-        --n_mels) N_MELS="$2"; shift ;;
-        --device) DEVICE="$2"; shift ;;
-        -h|--help) usage ;;
-        *) echo "Unknown parameter: $1"; usage ;;
-    esac
-    shift
-done
-
-# 필수 인자 체크
-if [ -z "$csv_path" ] || [ -z "$audio_dir" ]; then
-    echo "Error: --csv_path and --audio_dir are required."
-    usage
 fi
 
+if [ ! -d "$audio_dir" ]; then
+    echo "Error: audio_dir 디렉토리를 찾을 수 없습니다 at $audio_dir"
+    exit 1
+fi
+
+if [ ! -d "$TARGET_FOLDER" ]; then
+    echo "Error: target_folder 디렉토리를 찾을 수 없습니다 at $TARGET_FOLDER"
+    exit 1
+fi
+
+# 환경 변수 체크
+if [ -z "$WANDB_PROJECT" ]; then
+    echo "Warning: WANDB_PROJECT가 설정되지 않았습니다. 기본값을 사용합니다: $WANDB_PROJECT"
+fi
+
+# 로깅
+echo "======================= Training Configuration ======================="
+echo "CSV Path: $csv_path"
+echo "Audio Directory: $audio_dir"
+echo "Output Directory: $OUTPUT_DIR"
+echo "WandB Project: $WANDB_PROJECT"
+echo "Train Batch Size: $TRAIN_BATCH_SIZE"
+echo "Learning Rate: $LR"
+echo "Number of Epochs: $NUM_EPOCHS"
+echo "Gradient Accumulation Steps: $GRAD_ACC_STEPS"
+echo "Evaluate Every (epochs): $EVAL_EVERY"
+echo "Mixed Precision: $MIXED_PRECISION"
+echo "Pretrained Model: $PRETRAINED_MODEL"
+echo "Number of Workers: $NUM_WORKERS"
+echo "Save Checkpoint Every: $SAVE_CHECKPOINT steps"
+echo "Sample Rate: $SAMPLE_RATE"
+echo "Slice Duration: $SLICE_DURATION seconds"
+echo "Hop Size: $HOP_SIZE"
+echo "Number of Mel Bands: $N_MELS"
+echo "Random Seed: $SEED"
+echo ""
+echo "======================= Evaluation Configuration ======================="
+echo "Inference Batch Size: $INFERENCE_BATCH_SIZE"
+echo "Inference Save Path: $INFERENCE_SAVE_PATH"
+echo "ETA Audio: $ETA_AUDIO"
+echo "Guidance Scale: $GUIDANCE_SCALE"
+echo "Number of Inference Steps: $NUM_INFERENCE_STEPS"
+echo "Target Folder: $TARGET_FOLDER"
+echo "=========================================================================="
+
 # train.py 실행
-python train.py \
+accelerate launch audio_lora_training/train.py \
     --csv_path "$csv_path" \
     --audio_dir "$audio_dir" \
     --output_dir "$OUTPUT_DIR" \
     --wandb_project "$WANDB_PROJECT" \
     --train_batch_size "$TRAIN_BATCH_SIZE" \
-    --val_batch_size "$VAL_BATCH_SIZE" \
     --lr "$LR" \
     --num_epochs "$NUM_EPOCHS" \
     --gradient_accumulation_steps "$GRAD_ACC_STEPS" \
     --eval_every "$EVAL_EVERY" \
+    --mixed_precision "$MIXED_PRECISION" \
+    --pretrained_model_name_or_path "$PRETRAINED_MODEL" \
+    --num_workers "$NUM_WORKERS" \
+    --save_checkpoint "$SAVE_CHECKPOINT" \
+    --inference_batch_size "$INFERENCE_BATCH_SIZE" \
+    --inference_save_path "$INFERENCE_SAVE_PATH" \
+    --eta_audio "$ETA_AUDIO" \
+    --guidance_scale "$GUIDANCE_SCALE" \
+    --num_inference_steps "$NUM_INFERENCE_STEPS" \
+    --target_folder "$TARGET_FOLDER" \
     --sample_rate "$SAMPLE_RATE" \
     --slice_duration "$SLICE_DURATION" \
     --hop_size "$HOP_SIZE" \
     --n_mels "$N_MELS" \
-    --mixed_precision "$MIXED_PRECISION"
+    --seed "$SEED"
+
+# 종료 메시지
+if [ $? -eq 0 ]; then
+    echo "Training completed successfully."
+else
+    echo "Training failed. Please check the logs for more details."
+    exit 1
+fi

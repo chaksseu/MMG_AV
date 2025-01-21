@@ -64,11 +64,9 @@ def parse_args():
     parser.add_argument("--csv_path", type=str, required=True, help="CSV 파일 경로")
     parser.add_argument("--audio_dir", type=str, required=True, help="오디오(flac) 파일 폴더 경로")
     parser.add_argument("--train_batch_size", type=int, default=2, help="학습 배치 사이즈")
-    parser.add_argument("--val_batch_size", type=int, default=2, help="평가 배치 사이즈")
     parser.add_argument("--lr", type=float, default=1e-5, help="학습률")
     parser.add_argument("--num_epochs", type=int, default=10, help="에폭 수")
     parser.add_argument("--gradient_accumulation_steps", type=int, default=32, help="그래디언트 누적 스텝")
-    parser.add_argument("--eval_every", type=int, default=2, help="N 에폭마다 평가")
     parser.add_argument("--wandb_project", type=str, default="audio_teacher_lora", help="WandB 프로젝트 이름")
     parser.add_argument("--output_dir", type=str, default="checkpoints", help="체크포인트 저장 디렉토리")
     parser.add_argument("--mixed_precision", type=str, default="bf16", choices=["no", "fp16", "bf16"], help="혼합 정밀도 설정")
@@ -77,6 +75,7 @@ def parse_args():
     parser.add_argument("--save_checkpoint", type=int, default=100, help="save_checkpoint")
 
     # evaluation 관련
+    parser.add_argument("--eval_every", type=int, default=2, help="N 에폭마다 평가")
     parser.add_argument("--inference_batch_size", type=int, default=1, help="inference batch size")
     parser.add_argument("--inference_save_path", type=str, default="audio_teacher_lora", help="inference 저장 위치")
     parser.add_argument("--eta_audio", type=float, default=0.0, help="inference eta_audio")
