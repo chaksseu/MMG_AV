@@ -8,8 +8,17 @@ from torch.utils.data import Dataset
 import torchaudio
 
 from huggingface_hub import snapshot_download
-from diffusers import AutoencoderKL, VaeImageProcessor
+from diffusers import AutoencoderKL
+from diffusers.image_processor import VaeImageProcessor
 from transformers import AutoTokenizer
+
+
+
+import sys
+sys.path.append(os.path.join(os.path.dirname(__file__), '../'))
+
+
+
 
 from preprocess.converter import (
     get_mel_spectrogram_from_audio,
@@ -17,7 +26,7 @@ from preprocess.converter import (
 )
 from preprocess.utils import pad_spec
 
-from preprocess.auffusion_pipe_functions import (
+from mmg_inference.auffusion_pipe_functions import (
     encode_audio_prompt,
     ConditionAdapter,
     import_model_class_from_model_name_or_path,

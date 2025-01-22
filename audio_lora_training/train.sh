@@ -1,8 +1,8 @@
 #!/bin/bash
 
 # 기본값 설정
-csv_path="path/to/csv"  # 실제 CSV 파일 경로
-audio_dir="path/to/audio"  # 실제 오디오 파일 폴더 경로
+csv_path="/workspace/data/MMG_TA_dataset_audiocaps_wavcaps/MMG_TA_dataset_preprocessed.csv"  # 실제 CSV 파일 경로
+audio_dir="/workspace/data/MMG_TA_dataset_audiocaps_wavcaps/preprocessed_audio"  # 실제 오디오 파일 폴더 경로
 OUTPUT_DIR="audio_teacher_LoRA_checkpoint" # checkpoint 저장 폴더 경로
 WANDB_PROJECT="audio_teacher_lora_training"
 TRAIN_BATCH_SIZE=1
@@ -17,11 +17,11 @@ SAVE_CHECKPOINT=1
 # Evaluation 관련
 EVAL_EVERY=1  # N 에폭마다 평가
 INFERENCE_BATCH_SIZE=1
-INFERENCE_SAVE_PATH="path/to/saving_inference" # inference 저장 경로
+INFERENCE_SAVE_PATH="audio_lora_training_inference_data" # inference 저장 경로
 ETA_AUDIO=0.0
 GUIDANCE_SCALE=7.5
 NUM_INFERENCE_STEPS=50
-TARGET_FOLDER="path/to/test/gt" # 비교한 gt test 데이터
+TARGET_FOLDER="/workspace/data/MMG_TA_dataset_audiocaps_wavcaps/preprocessed_audio_random_3_2s" # 비교한 gt test 데이터
 
 # 기타 dataset 파라미터
 SAMPLE_RATE=16000

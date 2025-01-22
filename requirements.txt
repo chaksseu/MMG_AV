@@ -36,3 +36,4 @@ peft
 laion-clap
 ffmpeg_quality_metrics
 pytorchvideo
+laion_clap

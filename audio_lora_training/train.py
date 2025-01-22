@@ -14,7 +14,7 @@ from accelerate import Accelerator
 # 사용자 정의 모듈 임포트
 from dataset import AudioTextDataset
 
-from preprocess.auffusion_pipe_functions import (
+from mmg_inference.auffusion_pipe_functions import (
     encode_audio_prompt, ConditionAdapter, import_model_class_from_model_name_or_path, retrieve_latents
 )
 from MMG_audio_teacher_inference import run_inference
@@ -79,7 +79,7 @@ def parse_args():
     parser.add_argument("--inference_batch_size", type=int, default=1, help="inference batch size")
     parser.add_argument("--inference_save_path", type=str, default="audio_teacher_lora", help="inference 저장 위치")
     parser.add_argument("--eta_audio", type=float, default=0.0, help="inference eta_audio")
-    parser.add_argument("--guidance_scale", type=int, default=1, help="inference cfg guidance scale")
+    parser.add_argument("--guidance_scale", type=float, default=1.0, help="inference cfg guidance scale")
     parser.add_argument("--num_inference_steps", type=int, default=50, help="num_inference_steps")
     parser.add_argument("--target_folder", type=str, default="target_folder", help="Path to the folder with GT audio files.")
 
@@ -104,7 +104,7 @@ def main():
         gradient_accumulation_steps=args.gradient_accumulation_steps
     )
     device = accelerator.device
-    dtype = accelerator.dtype
+    dtype = torch.bfloat16
 
     torch.manual_seed(args.seed)
     torch.cuda.manual_seed_all(args.seed)

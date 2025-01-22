@@ -320,7 +320,7 @@ def run_inference(
                 )[0]
 
                 if do_audio_cfg:
-                    audio_out = audio_out_uncond + .guidance_scale * (audio_out - audio_out_uncond)
+                    audio_out = audio_out_uncond + guidance_scale * (audio_out - audio_out_uncond)
 
                 # Update audio latents
                 audio_latents = audio_scheduler.step(audio_out, audio_step, audio_latents, **extra_step_kwargs, return_dict=False)[0]
