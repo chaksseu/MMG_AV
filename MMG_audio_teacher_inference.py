@@ -25,10 +25,9 @@ import csv
 from accelerate import Accelerator
 from peft import LoraConfig
 
-from mmg_inference.auffusion_pipe_functions import (
-    prepare_extra_step_kwargs, ConditionAdapter, import_model_class_from_model_name_or_path, Generator
+from mmg_inference.auffusion_pipe_functions_copy_0123 import (
+    encode_audio_prompt, prepare_extra_step_kwargs, ConditionAdapter, import_model_class_from_model_name_or_path, Generator
 )
-
 
 
 def load_prompts(prompt_file: str) -> List[str]:
@@ -46,7 +45,9 @@ def load_prompts(prompt_file: str) -> List[str]:
                         prompts.append(caption)
     except Exception as e:
         print(f"Error reading prompt file: {e}")
-    return prompts
+
+    
+    return prompts[:128]
 
 
 def sanitize_filename(text: str) -> str:
@@ -88,7 +89,7 @@ def split_prompts_evenly(prompts: List[str], num_splits: int) -> List[List[str]]
         start += length
     return subsets
 
-
+'''
 def encode_audio_prompt(
     text_encoders: List[torch.nn.Module],
     tokenizers: List[AutoTokenizer],
@@ -114,7 +115,7 @@ def encode_audio_prompt(
             cond_embs_list = []
             for idx in range(len(text_encoders)):
                 input_ids = tokenizers[idx](p, return_tensors="pt").input_ids.to(device)
-                encoded = text_encoders[idx](input_ids).last_hidden_state
+                encoded = text_encoders[idx](input_ids).last_hidden_state.to(device)
 
                 # Pad/truncate
                 if encoded.shape[1] < max_length:
@@ -136,6 +137,7 @@ def encode_audio_prompt(
         prompt_embeds = get_prompt_embeds(prompt, device)
 
     return prompt_embeds.to(dtype=dtype, device=device)
+'''
 
 ############################################################
 # Model and Pipeline Initialization
@@ -185,6 +187,11 @@ def load_audio_unet(model_dir: str, device: torch.device, dtype: torch.dtype) ->
 def run_inference(
     accelerator,
     unet_model,
+    vae,
+    image_processor,
+    text_encoder_list,
+    adapter_list,
+    tokenizer_list,
     seed = 1234,
     prompt_file = None,
     savedir = '0121_audio_teacher',
@@ -196,14 +203,20 @@ def run_inference(
     eta_audio = 0.0
 ):
     try:
-        dtype = torch.bfloat16
+        
+
+        dtype = torch.float32
         
         assert os.path.exists(prompt_file), f"Prompt file not found: {prompt_file}"
         all_prompts = load_prompts(prompt_file)
 
+        print("all_prompts length", len(all_prompts))
+
         # 전체 프롬프트를 num_processes에 맞게 균등 분배
         num_processes = accelerator.num_processes
+
         prompt_subsets = split_prompts_evenly(all_prompts, num_processes)
+
 
         # 현재 프로세스 인덱스에 해당하는 프롬프트 subset
         if accelerator.process_index < len(prompt_subsets):
@@ -211,6 +224,7 @@ def run_inference(
         else:
             process_prompts = []
         prompt_sublist = process_prompts
+        
 
         # Set unique seed per process
         unique_seed = seed + accelerator.process_index
@@ -218,9 +232,10 @@ def run_inference(
         device = accelerator.device
         generator = torch.Generator(device=device).manual_seed(unique_seed)
 
+
         if not prompt_sublist:
             accelerator.print(f"Process {accelerator.process_index}: No prompts to process.")
-            return
+            #return
 
         audio_length = int(duration * 16000)
         #latent_time = int(fps * duration)
@@ -234,22 +249,17 @@ def run_inference(
             model_dir = snapshot_download(model_dir)
 
         # Load audio components
-        vocoder = load_vocoder(model_dir, device, dtype)
-        vae, image_processor = load_vae(model_dir, device, dtype)
-        text_encoders, tokenizers, adapters = load_text_encoders(model_dir, device, dtype)
+        vocoder = load_vocoder(model_dir, device, dtype)        
+        text_encoders, tokenizers, adapters = text_encoder_list, tokenizer_list, adapter_list
         
         audio_unet = unet_model
-
-        # 모델을 Accelerator로 준비
-        ###audio_unet = accelerator.prepare(audio_unet)
-
-
+        
 
         # Create output dirs (main process only)
         if accelerator.is_main_process:
             os.makedirs(savedir, exist_ok=True)
-
         accelerator.wait_for_everyone()
+        
 
         total_prompts = len(prompt_sublist)
         num_batches = (total_prompts + bs - 1) // bs
@@ -265,6 +275,7 @@ def run_inference(
         audio_scheduler = DDIMScheduler.from_pretrained(model_dir, subfolder="scheduler")
         audio_scheduler.set_timesteps(num_inference_steps, device=device)
 
+
         for batch_idx in range(num_batches):
             start_idx = batch_idx * bs
             end_idx = min(start_idx + bs, total_prompts)
@@ -274,14 +285,16 @@ def run_inference(
             
             audio_timesteps = audio_scheduler.timesteps
 
-            # Encode audio prompts
+
+
             audio_prompt_embeds = encode_audio_prompt(
-                text_encoders, tokenizers, adapters,
-                max_length=77,
+                text_encoder_list=text_encoders,
+                tokenizer_list=tokenizers,
+                adapter_list=adapters,
+                tokenizer_model_max_length=77,
                 dtype=dtype,
                 prompt=current_prompts,
-                device=device,
-                do_classifier_free_guidance=do_audio_cfg
+                device=accelerator.device
             )
 
             # Initialize audio latents
@@ -299,7 +312,6 @@ def run_inference(
             else:
                 neg_audio_prompt_embeds = None
 
-
             # Denoising loop
             for audio_step in audio_timesteps:
                 # CFG for audio
@@ -313,11 +325,13 @@ def run_inference(
 
                 audio_input = audio_scheduler.scale_model_input(audio_latents, audio_step)
 
+
                 audio_out = audio_unet(
                     audio_input,
                     audio_step,
                     encoder_hidden_states=audio_prompt_embeds
                 )[0]
+
 
                 if do_audio_cfg:
                     audio_out = audio_out_uncond + guidance_scale * (audio_out - audio_out_uncond)
@@ -325,10 +339,15 @@ def run_inference(
                 # Update audio latents
                 audio_latents = audio_scheduler.step(audio_out, audio_step, audio_latents, **extra_step_kwargs, return_dict=False)[0]
 
+
             # Decode audio
+
             audio_recon_image = vae.decode(audio_latents / vae.config.scaling_factor, return_dict=False)[0]
             do_denormalize = [True] * audio_recon_image.shape[0]
+            
+
             audio_recon_image = image_processor.postprocess(audio_recon_image, output_type="pt", do_denormalize=do_denormalize)
+
 
             audios = []
             for img in audio_recon_image:
@@ -348,7 +367,8 @@ def run_inference(
                 # Save audio
                 audio_filepath = os.path.join(savedir, f"{base_filename}.wav")
                 write(audio_filepath, 16000, audios[i])
-
+            
+            
             if pbar is not None:
                 pbar.update(1)
 

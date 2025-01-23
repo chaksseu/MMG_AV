@@ -58,7 +58,7 @@ from run_audio_eval import evaluate_audio_metrics
 
 
 
-def evaluate_model(accelerator, unet_model, csv_path, inference_path, inference_batch_size, pretrained_model_name_or_path, seed, duration, guidance_scale, num_inference_steps, eta_audio, epoch, target_folder):
+def evaluate_model(accelerator, unet_model, vae, image_processor, text_encoder_list, adapter_list, tokenizer_list, csv_path, inference_path, inference_batch_size, pretrained_model_name_or_path, seed, duration, guidance_scale, num_inference_steps, eta_audio, epoch, target_folder):
     """
     FAD, CLAP 등 계산을 위한 평가 함수.
     """
@@ -67,11 +67,16 @@ def evaluate_model(accelerator, unet_model, csv_path, inference_path, inference_
 
     inference_path = f"{inference_path}/{epoch}"
     
-    with torch.no_grad():  
+    with torch.no_grad():
         # Inference 
         run_inference(
             accelerator=accelerator,
             unet_model=unet_model,
+            vae=vae,
+            image_processor=image_processor,
+            text_encoder_list=text_encoder_list,
+            adapter_list=adapter_list,
+            tokenizer_list=tokenizer_list,
             prompt_file=csv_path,
             savedir=inference_path,
             bs=inference_batch_size,
@@ -83,18 +88,23 @@ def evaluate_model(accelerator, unet_model, csv_path, inference_path, inference_
             eta_audio=eta_audio
         )
 
+        accelerator.wait_for_everyone()
+
         # TODO: real FAD, CLAP calculation
-        fad, clap_avg, clap_std = evaluate_audio_metrics(
-            preds_folder=inference_path,
-            target_folder=target_folder,
-            metrics=['FAD','CLAP'],
-            clap_model=1,
-            device=accelerator.device
-        )
+        fad, clap_avg, clap_std = -111, -111, -111
+        if accelerator.is_main_process:
+            fad, clap_avg, clap_std = evaluate_audio_metrics(
+                preds_folder=inference_path,
+                target_folder=target_folder,
+                metrics=['FAD','CLAP'],
+                clap_model=1,
+                device=accelerator.device
+            )
+        unet_model.train()
+        accelerator.wait_for_everyone()
 
-    unet_model.train()
 
-    return fad, clap_avg, clap_std
+        return fad, clap_avg, clap_std
 
 
 def parse_args():
@@ -142,7 +152,7 @@ def main():
         gradient_accumulation_steps=args.gradient_accumulation_steps
     )
     device = accelerator.device
-    dtype = torch.bfloat16
+    dtype = torch.float32
 
     torch.manual_seed(args.seed)
     torch.cuda.manual_seed_all(args.seed)
@@ -278,33 +288,39 @@ def main():
         loop = tqdm(train_loader, desc=f"Epoch [{epoch+1}/{args.num_epochs}]", disable=not accelerator.is_main_process)
 
 
-        # For test
-        if (epoch + 1) % args.eval_every == 0:
-            if accelerator.is_main_process:
-                fad, clap_avg, clap_std= evaluate_model(
-                    accelerator=accelerator,
-                    unet_model=unet_model,
-                    csv_path=args.csv_path,
-                    inference_path=args.inference_path,
-                    inference_batch_size=args.inference_batch_size,
-                    pretrained_model_name_or_path=args.pretrained_model_name_or_path,
-                    seed=args.seed,
-                    duration=args.slice_duration,
-                    guidance_scale=args.guidance_scale,
-                    num_inference_steps=args.num_inference_steps,
-                    eta_audio=args.eta_audio,
-                    epoch=(epoch + 1),
-                    target_folder=args.target_folder
-                    )
-
-                wandb.log({
-                    "eval/fad": fad,
-                    "eval/clap_avg": clap_avg,
-                    "eval/clap_std": clap_std,
-                    "epoch": epoch + 1,
-                    "step": global_step
-                })
-
+        # # For test
+        
+        # if (epoch + 1) % args.eval_every == 0:
+        #     accelerator.wait_for_everyone()
+        #     fad, clap_avg, clap_std= evaluate_model(
+        #         accelerator=accelerator,
+        #         unet_model=unet_model,
+        #         vae=vae,
+        #         image_processor=image_processor,
+        #         text_encoder_list=text_encoder_list,
+        #         adapter_list=adapter_list,
+        #         tokenizer_list=tokenizer_list,
+        #         csv_path=args.csv_path,
+        #         inference_path=args.inference_save_path,
+        #         inference_batch_size=args.inference_batch_size,
+        #         pretrained_model_name_or_path=args.pretrained_model_name_or_path,
+        #         seed=args.seed,
+        #         duration=args.slice_duration,
+        #         guidance_scale=args.guidance_scale,
+        #         num_inference_steps=args.num_inference_steps,
+        #         eta_audio=args.eta_audio,
+        #         epoch=(epoch + 1),
+        #         target_folder=args.target_folder
+        #         )
+        #     if accelerator.is_main_process:
+        #         wandb.log({
+        #             "eval/fad": fad,
+        #             "eval/clap_avg": clap_avg,
+        #             "eval/clap_std": clap_std,
+        #             "epoch": epoch + 1,
+        #             "step": global_step
+        #         })
+        
 
         for step, batch in enumerate(loop):
             audio_latent = batch["audio_latent"]
@@ -433,23 +449,28 @@ def main():
 
         # Evaluate every n epochs
         if (epoch + 1) % args.eval_every == 0:
+            accelerator.wait_for_everyone()
+            fad, clap_avg, clap_std= evaluate_model(
+                accelerator=accelerator,
+                unet_model=unet_model,
+                vae=vae,
+                image_processor=image_processor,
+                text_encoder_list=text_encoder_list,
+                adapter_list=adapter_list,
+                tokenizer_list=tokenizer_list,
+                csv_path=args.csv_path,
+                inference_path=args.inference_save_path,
+                inference_batch_size=args.inference_batch_size,
+                pretrained_model_name_or_path=args.pretrained_model_name_or_path,
+                seed=args.seed,
+                duration=args.slice_duration,
+                guidance_scale=args.guidance_scale,
+                num_inference_steps=args.num_inference_steps,
+                eta_audio=args.eta_audio,
+                epoch=(epoch + 1),
+                target_folder=args.target_folder
+                )
             if accelerator.is_main_process:
-                fad, clap_avg, clap_std= evaluate_model(
-                    accelerator=accelerator,
-                    unet_model=unet_model,
-                    csv_path=args.csv_path,
-                    inference_path=args.inference_path,
-                    inference_batch_size=args.inference_batch_size,
-                    pretrained_model_name_or_path=args.pretrained_model_name_or_path,
-                    seed=args.seed,
-                    duration=args.slice_duration,
-                    guidance_scale=args.guidance_scale,
-                    num_inference_steps=args.num_inference_steps,
-                    eta_audio=args.eta_audio,
-                    epoch=(epoch + 1),
-                    target_folder=args.target_folder
-                    )
-
                 wandb.log({
                     "eval/fad": fad,
                     "eval/clap_avg": clap_avg,

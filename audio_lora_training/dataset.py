@@ -73,6 +73,10 @@ class AudioTextDataset(Dataset):
         self.df = pd.read_csv(csv_path)
         self.df = self.df[self.df["split"] == split].reset_index(drop=True)
 
+        #self.df = self.df.head(100)
+
+
+
         self.audio_dir = audio_dir
         self.sample_rate = sample_rate
         self.slice_duration = slice_duration  # 예: 3.2초

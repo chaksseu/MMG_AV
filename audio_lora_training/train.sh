@@ -6,23 +6,23 @@ audio_dir="/workspace/data/MMG_TA_dataset_audiocaps_wavcaps/preprocessed_audio" 
 OUTPUT_DIR="audio_teacher_LoRA_checkpoint" # checkpoint 저장 폴더 경로
 WANDB_PROJECT="audio_teacher_lora_training"
 TRAIN_BATCH_SIZE=32
-GRAD_ACC_STEPS=1
+GRAD_ACC_STEPS=8
 LR=1e-5
-NUM_EPOCHS=10
-MIXED_PRECISION="bf16"
+NUM_EPOCHS=4 
+MIXED_PRECISION="no"
 PRETRAINED_MODEL="auffusion/auffusion-full"
-NUM_WORKERS=16
+NUM_WORKERS=4
 SAVE_CHECKPOINT=1
 
 # Evaluation 관련
 EVAL_EVERY=1  # N 에폭마다 평가
-INFERENCE_BATCH_SIZE=1
+INFERENCE_BATCH_SIZE=16
 INFERENCE_SAVE_PATH="audio_lora_training_inference_data" # inference 저장 경로
 ETA_AUDIO=0.0
 GUIDANCE_SCALE=7.5
-NUM_INFERENCE_STEPS=50
-TARGET_FOLDER="/workspace/data/MMG_TA_dataset_audiocaps_wavcaps/preprocessed_audio_random_3_2s" # 비교한 gt test 데이터
-
+NUM_INFERENCE_STEPS=10
+#TARGET_FOLDER="/workspace/data/MMG_TA_dataset_audiocaps_wavcaps/preprocessed_audio_random_3_2s" # 비교한 gt test 데이터
+TARGET_FOLDER="/workspace/MMG_01/audio_lora_training_inference_data_copy/1"
 # 기타 dataset 파라미터
 SAMPLE_RATE=16000
 SLICE_DURATION=3.2  # 초 단위
