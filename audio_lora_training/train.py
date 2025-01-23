@@ -11,14 +11,52 @@ from peft import LoraConfig
 
 from accelerate import Accelerator
 
-# 사용자 정의 모듈 임포트
 from dataset import AudioTextDataset
 
-from mmg_inference.auffusion_pipe_functions import (
+from mmg_inference.auffusion_pipe_functions_copy_0123 import (
     encode_audio_prompt, ConditionAdapter, import_model_class_from_model_name_or_path, retrieve_latents
 )
+
+import os
+import json
+import random
+import pandas as pd
+import torch
+import torch.nn.functional as F
+from torch.utils.data import Dataset
+import torchaudio
+
+from huggingface_hub import snapshot_download
+from diffusers import AutoencoderKL
+from diffusers.image_processor import VaeImageProcessor
+from transformers import AutoTokenizer
+
+
+
+import sys
+sys.path.append(os.path.join(os.path.dirname(__file__), '../'))
+
+
+
+
+from preprocess.converter_copy_0123 import (
+    get_mel_spectrogram_from_audio,
+    normalize_spectrogram,
+)
+from preprocess.utils import pad_spec
+
+from mmg_inference.auffusion_pipe_functions_copy_0123 import (
+    encode_audio_prompt,
+    ConditionAdapter,
+    import_model_class_from_model_name_or_path,
+    retrieve_latents,
+)
+
+
 from MMG_audio_teacher_inference import run_inference
 from run_audio_eval import evaluate_audio_metrics
+
+
 
 def evaluate_model(accelerator, unet_model, csv_path, inference_path, inference_batch_size, pretrained_model_name_or_path, seed, duration, guidance_scale, num_inference_steps, eta_audio, epoch, target_folder):
     """
@@ -46,17 +84,17 @@ def evaluate_model(accelerator, unet_model, csv_path, inference_path, inference_
         )
 
         # TODO: real FAD, CLAP calculation
-        fad, clap = evaluate_audio_metrics(
+        fad, clap_avg, clap_std = evaluate_audio_metrics(
             preds_folder=inference_path,
             target_folder=target_folder,
-            metrics=[FAD,CLAP],
+            metrics=['FAD','CLAP'],
             clap_model=1,
             device=accelerator.device
         )
 
     unet_model.train()
 
-    return fad, flap
+    return fad, clap_avg, clap_std
 
 
 def parse_args():
@@ -108,7 +146,8 @@ def main():
 
     torch.manual_seed(args.seed)
     torch.cuda.manual_seed_all(args.seed)
-
+    
+    
     # wandb
     if accelerator.is_main_process:
         wandb.init(project=args.wandb_project, name="audio_lora_training")
@@ -131,13 +170,13 @@ def main():
     )
 
     train_loader = DataLoader(train_dataset, batch_size=args.train_batch_size, shuffle=True,
-                              num_workers=args.num_workers, pin_memory=True)
+                              num_workers=args.num_workers, pin_memory=False)
 
     # UNet + LoRA
     unet_model = UNet2DConditionModel.from_pretrained(
         args.pretrained_model_name_or_path,
         subfolder="unet"
-    ).to(device)
+    )
     unet_model.eval()
     for param in unet_model.parameters():
         param.requires_grad = False
@@ -161,10 +200,75 @@ def main():
         subfolder="scheduler"
     )
 
+
+
+
+    seed = args.seed
+    # 랜덤 시드 설정
+    generator = torch.Generator(device=device).manual_seed(seed)
+    random.seed(seed)
+
+    # ================================================
+    # 2) 모델/토크나이저/어댑터 등 로딩 (auffusion 예시)
+    # ================================================
+
+    # 2-1) pretrained_model_name_or_path가 로컬 폴더가 아니면 snapshot_download
+    if not os.path.isdir(args.pretrained_model_name_or_path):
+        pretrained_model_name_or_path = snapshot_download(args.pretrained_model_name_or_path)
+    else:
+        pretrained_model_name_or_path = args.pretrained_model_name_or_path
+
+    # 2-2) VAE 로드
+    with torch.no_grad():
+        vae = AutoencoderKL.from_pretrained(
+            pretrained_model_name_or_path,
+            subfolder="vae"
+        )
+    vae.requires_grad_(False)
+
+    # 2-3) VAE scale factor 기반 ImageProcessor
+    vae_scale_factor = 2 ** (len(vae.config.block_out_channels) - 1)
+    image_processor = VaeImageProcessor(vae_scale_factor=vae_scale_factor)
+
+    # 2-4) condition_config.json 기반으로 text_encoder_list, tokenizer_list, adapter_list 로딩
+    condition_json_path = os.path.join(pretrained_model_name_or_path, "condition_config.json")
+    with open(condition_json_path, "r", encoding="utf-8") as f:
+        condition_json_list = json.load(f)
+
+    text_encoder_list = []
+    tokenizer_list = []
+    adapter_list = []
+
+    with torch.no_grad():
+        for cond_item in condition_json_list:
+            # text encoder / tokenizer
+            text_encoder_path = os.path.join(pretrained_model_name_or_path, cond_item["text_encoder_name"])
+            tokenizer = AutoTokenizer.from_pretrained(text_encoder_path)
+            text_encoder_cls = import_model_class_from_model_name_or_path(text_encoder_path)
+            text_encoder = text_encoder_cls.from_pretrained(text_encoder_path)
+
+            text_encoder.requires_grad_(False)
+
+            tokenizer_list.append(tokenizer)
+            text_encoder_list.append(text_encoder)
+
+            # condition adapter
+            adapter_path = os.path.join(pretrained_model_name_or_path, cond_item["condition_adapter_name"])
+            adapter = ConditionAdapter.from_pretrained(adapter_path)
+            adapter.requires_grad_(False)
+            adapter_list.append(adapter)
+        
+
+
+
+
+
+
     # Prepare
-    unet_model, optimizer, train_loader, val_loader = accelerator.prepare(
-        unet_model, optimizer, train_loader, val_loader
+    unet_model, optimizer, train_loader, vae, image_processor, text_encoder_list, adapter_list = accelerator.prepare(
+        unet_model, optimizer, train_loader, vae, image_processor, text_encoder_list, adapter_list
     )
+
 
     global_step = 0
     unet_model.train()
@@ -173,15 +277,106 @@ def main():
         losses = []
         loop = tqdm(train_loader, desc=f"Epoch [{epoch+1}/{args.num_epochs}]", disable=not accelerator.is_main_process)
 
+
+        # For test
+        if (epoch + 1) % args.eval_every == 0:
+            if accelerator.is_main_process:
+                fad, clap_avg, clap_std= evaluate_model(
+                    accelerator=accelerator,
+                    unet_model=unet_model,
+                    csv_path=args.csv_path,
+                    inference_path=args.inference_path,
+                    inference_batch_size=args.inference_batch_size,
+                    pretrained_model_name_or_path=args.pretrained_model_name_or_path,
+                    seed=args.seed,
+                    duration=args.slice_duration,
+                    guidance_scale=args.guidance_scale,
+                    num_inference_steps=args.num_inference_steps,
+                    eta_audio=args.eta_audio,
+                    epoch=(epoch + 1),
+                    target_folder=args.target_folder
+                    )
+
+                wandb.log({
+                    "eval/fad": fad,
+                    "eval/clap_avg": clap_avg,
+                    "eval/clap_std": clap_std,
+                    "epoch": epoch + 1,
+                    "step": global_step
+                })
+
+
         for step, batch in enumerate(loop):
             audio_latent = batch["audio_latent"]
-            text_emb = batch["text_emb"]
+            caption = batch["caption"]
+
+                    
+            # ============================
+            # (4) VAE, Adapter 등 사용
+            # ============================
+            # 예시 코드 상, spec을 [0,1] 범위 이미지처럼 가정하기 위해 (spec+1)/2 변환
+            # 다만 실제로는 spec이 음수가 아닐 수도 있으니, 여기선 예시 그대로 두겠습니다.
+            # spec: shape [n_mels, T]
+            # 아래처럼 하면 (T, n_mels)별로 잘리는 점 주의 (원코드도 조금 애매합니다).
+            # 일단 원 코드 흐름에 맞춰 진행:
+            #print('####################')
+            #print("spec.shape", spec.shape)
+            spec = audio_latent
+            caption_text = caption
+            #spectrograms = [(row_ + 1) / 2 for row_ in spec]  # list of T개, 각각 shape [n_mels]
+            spectrograms = (spec + 1) / 2 
+            #print(111111111111111111111111111)
+            #print("spec.dtype", spec.dtype)
+            # image_processor 사용 예시
+            # 실제 VaeImageProcessor가 어떻게 preprocess하는지는 diffusers 버전에 따라 다를 수 있습니다.
+            # 보통 PIL Image나 [B,H,W,C] 텐서를 받는 식이 많으므로,
+            # 아래 로직은 실제론 맞지 않을 수 있습니다. (개념적인 예시임)
+            #print('####################')
+            #print("spectrograms.shape", spectrograms.shape)
+            #print(222222222222222222222222222)
+            #print("spectrograms.dtype", spectrograms.dtype)
+            image = image_processor.preprocess(spectrograms)  # 대략 [1, C, H, W] 형태 반환 가정
+            #print(333333333333333333333333333)
+            #print("image.dtype", image.dtype)
+            # 텍스트/오디오 프롬프트 인코딩
+            with accelerator.autocast():
+                audio_text_embed = encode_audio_prompt(
+                    text_encoder_list=text_encoder_list,
+                    tokenizer_list=tokenizer_list,
+                    adapter_list=adapter_list,
+                    tokenizer_model_max_length=77,
+                    dtype=dtype,
+                    prompt=caption_text,
+                    device=accelerator.device
+                )
+
+            # VAE 인코딩 -> latents
+            with accelerator.autocast():
+                vae_output = vae.encode(image)
+                audio_latent = retrieve_latents(vae_output, generator=generator)
+                audio_latent = vae.config.scaling_factor * audio_latent
+
+            # 배치 차원 제거 (예: [1, ...] -> [...])
+            #audio_latent = audio_latent.squeeze(0)
+            #audio_text_embed = audio_text_embed.squeeze(0)
+            text_emb = audio_text_embed
+
+
+
+
 
             bsz = audio_latent.size(0)
 
             # 10% null conditioning
             audio_null_text_emb = torch.zeros_like(text_emb)
-            mask = (torch.rand(bsz, 1, device=device) < 0.1)
+            mask = (torch.rand(bsz, 77, 768, device=device) < 0.1)
+
+
+            #print(f"mask shape: {mask.shape}")
+            #print(f"audio_null_text_emb shape: {audio_null_text_emb.shape}")
+            #print(f"text_emb shape: {text_emb.shape}")
+
+
             text_emb = torch.where(mask, audio_null_text_emb, text_emb)
 
             # Sample random timestep
@@ -190,6 +385,16 @@ def main():
             # Add noise
             noise = torch.randn_like(audio_latent)
             noised_latent = noise_scheduler.add_noise(original_samples=audio_latent, noise=noise, timesteps=timesteps)
+
+
+
+            #print(44444444444444444444444444444)
+            #print("noised_latent.dtype", noised_latent.dtype)
+            #print("text_emb.dtype", text_emb.dtype)
+            #print("timesteps.dtype", timesteps.dtype)
+
+            #print("shape(latents, text_embeds, timesteps)", noised_latent.shape, text_emb.shape, timesteps.shape)
+
 
             # Forward pass
             model_output = unet_model(
@@ -266,5 +471,10 @@ def main():
     print("Training Complete.")
 
 
+
+import torch.multiprocessing as mp
+
 if __name__ == "__main__":
+    mp.set_start_method("spawn", force=True)
     main()
+

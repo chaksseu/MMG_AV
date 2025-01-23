@@ -20,13 +20,13 @@ sys.path.append(os.path.join(os.path.dirname(__file__), '../'))
 
 
 
-from preprocess.converter import (
+from preprocess.converter_copy_0123 import (
     get_mel_spectrogram_from_audio,
     normalize_spectrogram,
 )
 from preprocess.utils import pad_spec
 
-from mmg_inference.auffusion_pipe_functions import (
+from mmg_inference.auffusion_pipe_functions_copy_0123 import (
     encode_audio_prompt,
     ConditionAdapter,
     import_model_class_from_model_name_or_path,
@@ -79,12 +79,14 @@ class AudioTextDataset(Dataset):
         self.hop_size = hop_size
         self.n_mels = n_mels
         self.pad_to_spec_len = pad_to_spec_len
-        self.device = device
-        self.dtype = dtype
+        #self.device = device
+        #self.dtype = dtype
 
         # (slice_duration 초 * sr / hop_size)로 대략 예상되는 스펙트럼 time축 길이
         self.expected_time_len = int(self.slice_duration * (self.sample_rate / self.hop_size))
 
+
+        '''
         # 랜덤 시드 설정
         self.generator = torch.Generator(device=device).manual_seed(seed)
         random.seed(seed)
@@ -128,7 +130,6 @@ class AudioTextDataset(Dataset):
                 text_encoder_cls = import_model_class_from_model_name_or_path(text_encoder_path)
                 text_encoder = text_encoder_cls.from_pretrained(text_encoder_path).to(self.device, self.dtype)
 
-                tokenizer.requires_grad_(False)
                 text_encoder.requires_grad_(False)
 
                 self.tokenizer_list.append(tokenizer)
@@ -139,6 +140,7 @@ class AudioTextDataset(Dataset):
                 adapter = ConditionAdapter.from_pretrained(adapter_path).to(self.device, self.dtype)
                 adapter.requires_grad_(False)
                 self.adapter_list.append(adapter)
+        '''
 
 
     def __len__(self):
@@ -186,18 +188,22 @@ class AudioTextDataset(Dataset):
         # ============================
         audio_np = waveform.squeeze(0).cpu().numpy()  # shape: [samples,]
         # get_mel_spectrogram_from_audio()가 (아마) (None, spec) 형태로 반환된다고 가정
-        _, spec = get_mel_spectrogram_from_audio(audio_np, device=self.device)
+        _, spec = get_mel_spectrogram_from_audio(audio_np)#, device=self.device)
+
+        #spec = spec.to(self.device, self.dtype)
+
         spec = normalize_spectrogram(spec)  # shape: [n_mels, T]
 
         # 필요시 pad/crop
         if self.pad_to_spec_len:
             spec = pad_spec(
                 spec,
-                expected_T=self.expected_time_len,
+                spec_length=self.expected_time_len,
                 pad_value=0.0,
                 random_crop=False
             )
 
+        '''
         # ============================
         # (4) VAE, Adapter 등 사용
         # ============================
@@ -206,14 +212,24 @@ class AudioTextDataset(Dataset):
         # spec: shape [n_mels, T]
         # 아래처럼 하면 (T, n_mels)별로 잘리는 점 주의 (원코드도 조금 애매합니다).
         # 일단 원 코드 흐름에 맞춰 진행:
-        spectrograms = [(row_ + 1) / 2 for row_ in spec]  # list of T개, 각각 shape [n_mels]
+        #print('####################')
+        #print("spec.shape", spec.shape)
 
+        #spectrograms = [(row_ + 1) / 2 for row_ in spec]  # list of T개, 각각 shape [n_mels]
+        spectrograms = (spec + 1) / 2 
+        print(111111111111111111111111111)
+        print("spec.dtype", spec.dtype)
         # image_processor 사용 예시
         # 실제 VaeImageProcessor가 어떻게 preprocess하는지는 diffusers 버전에 따라 다를 수 있습니다.
         # 보통 PIL Image나 [B,H,W,C] 텐서를 받는 식이 많으므로,
         # 아래 로직은 실제론 맞지 않을 수 있습니다. (개념적인 예시임)
+        #print('####################')
+        #print("spectrograms.shape", spectrograms.shape)
+        print(222222222222222222222222222)
+        print("spectrograms.dtype", spectrograms.dtype)
         image = self.image_processor.preprocess(spectrograms)  # 대략 [1, C, H, W] 형태 반환 가정
-
+        print(333333333333333333333333333)
+        print("image.dtype", image.dtype)
         # 텍스트/오디오 프롬프트 인코딩
         with torch.no_grad():
             audio_text_embed = encode_audio_prompt(
@@ -236,9 +252,10 @@ class AudioTextDataset(Dataset):
         # 배치 차원 제거 (예: [1, ...] -> [...])
         audio_latent = audio_latent.squeeze(0)
         audio_text_embed = audio_text_embed.squeeze(0)
-
+        '''
+        
         return {
-            "audio_latent": audio_latent,   # [latent_dim...] 등
-            "text_emb": audio_text_embed,   # [hidden_dim]
+            "audio_latent": spec,   # [latent_dim...] 등
+            #"text_emb": audio_text_embed,   # [hidden_dim]
             "caption": caption_text
         }

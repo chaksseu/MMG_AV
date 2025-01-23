@@ -5,13 +5,13 @@ csv_path="/workspace/data/MMG_TA_dataset_audiocaps_wavcaps/MMG_TA_dataset_prepro
 audio_dir="/workspace/data/MMG_TA_dataset_audiocaps_wavcaps/preprocessed_audio"  # 실제 오디오 파일 폴더 경로
 OUTPUT_DIR="audio_teacher_LoRA_checkpoint" # checkpoint 저장 폴더 경로
 WANDB_PROJECT="audio_teacher_lora_training"
-TRAIN_BATCH_SIZE=1
+TRAIN_BATCH_SIZE=32
 GRAD_ACC_STEPS=1
 LR=1e-5
 NUM_EPOCHS=10
 MIXED_PRECISION="bf16"
 PRETRAINED_MODEL="auffusion/auffusion-full"
-NUM_WORKERS=4
+NUM_WORKERS=16
 SAVE_CHECKPOINT=1
 
 # Evaluation 관련
