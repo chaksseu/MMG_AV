@@ -210,6 +210,8 @@ def run_inference(
         assert os.path.exists(prompt_file), f"Prompt file not found: {prompt_file}"
         all_prompts = load_prompts(prompt_file)
 
+
+        ###all_prompts = all_prompts[:100]
         print("all_prompts length", len(all_prompts))
 
         # 전체 프롬프트를 num_processes에 맞게 균등 분배

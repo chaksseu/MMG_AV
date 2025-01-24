@@ -1,28 +1,28 @@
 #!/bin/bash
 
 # 기본값 설정
-csv_path="/workspace/data/MMG_TA_dataset_audiocaps_wavcaps/MMG_TA_dataset_preprocessed.csv"  # 실제 CSV 파일 경로
-audio_dir="/workspace/data/MMG_TA_dataset_audiocaps_wavcaps/preprocessed_audio"  # 실제 오디오 파일 폴더 경로
+csv_path="/home/jupyter/MMG_TA_dataset_audiocaps_wavcaps/MMG_TA_dataset_preprocessed.csv"  # 실제 CSV 파일 경로
+audio_dir="/home/jupyter/MMG_TA_dataset_audiocaps_wavcaps/preprocessed_spec"  # spec path
 OUTPUT_DIR="audio_teacher_LoRA_checkpoint" # checkpoint 저장 폴더 경로
-WANDB_PROJECT="audio_teacher_lora_training"
-TRAIN_BATCH_SIZE=32
+WANDB_PROJECT="audio_teacher_lora_training_gcp"
+TRAIN_BATCH_SIZE=64
 GRAD_ACC_STEPS=8
 LR=1e-5
 NUM_EPOCHS=4 
 MIXED_PRECISION="no"
 PRETRAINED_MODEL="auffusion/auffusion-full"
-NUM_WORKERS=4
+NUM_WORKERS=8
 SAVE_CHECKPOINT=1
 
 # Evaluation 관련
 EVAL_EVERY=1  # N 에폭마다 평가
-INFERENCE_BATCH_SIZE=16
-INFERENCE_SAVE_PATH="audio_lora_training_inference_data" # inference 저장 경로
+INFERENCE_BATCH_SIZE=64
+INFERENCE_SAVE_PATH="/home/jupyter/MMG_TA_dataset_audiocaps_wavcaps/audio_lora_inference_0124" # inference 저장 경로
 ETA_AUDIO=0.0
 GUIDANCE_SCALE=7.5
-NUM_INFERENCE_STEPS=10
-#TARGET_FOLDER="/workspace/data/MMG_TA_dataset_audiocaps_wavcaps/preprocessed_audio_random_3_2s" # 비교한 gt test 데이터
-TARGET_FOLDER="/workspace/MMG_01/audio_lora_training_inference_data_copy/1"
+NUM_INFERENCE_STEPS=25
+TARGET_FOLDER="/home/jupyter/MMG_TA_dataset_audiocaps_wavcaps/audio_lora_processed_gt_3_2s" # 비교한 gt test 데이터
+#TARGET_FOLDER="/home/jupyter/MMG_01/"
 # 기타 dataset 파라미터
 SAMPLE_RATE=16000
 SLICE_DURATION=3.2  # 초 단위
