@@ -47,7 +47,7 @@ def load_prompts(prompt_file: str) -> List[str]:
         print(f"Error reading prompt file: {e}")
 
     
-    return prompts[:128]
+    return prompts
 
 
 def sanitize_filename(text: str) -> str:

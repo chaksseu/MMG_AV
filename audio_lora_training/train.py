@@ -290,36 +290,36 @@ def main():
 
         # # For test
         
-        # if (epoch + 1) % args.eval_every == 0:
-        #     accelerator.wait_for_everyone()
-        #     fad, clap_avg, clap_std= evaluate_model(
-        #         accelerator=accelerator,
-        #         unet_model=unet_model,
-        #         vae=vae,
-        #         image_processor=image_processor,
-        #         text_encoder_list=text_encoder_list,
-        #         adapter_list=adapter_list,
-        #         tokenizer_list=tokenizer_list,
-        #         csv_path=args.csv_path,
-        #         inference_path=args.inference_save_path,
-        #         inference_batch_size=args.inference_batch_size,
-        #         pretrained_model_name_or_path=args.pretrained_model_name_or_path,
-        #         seed=args.seed,
-        #         duration=args.slice_duration,
-        #         guidance_scale=args.guidance_scale,
-        #         num_inference_steps=args.num_inference_steps,
-        #         eta_audio=args.eta_audio,
-        #         epoch=(epoch + 1),
-        #         target_folder=args.target_folder
-        #         )
-        #     if accelerator.is_main_process:
-        #         wandb.log({
-        #             "eval/fad": fad,
-        #             "eval/clap_avg": clap_avg,
-        #             "eval/clap_std": clap_std,
-        #             "epoch": epoch + 1,
-        #             "step": global_step
-        #         })
+        if epoch == 0:
+            accelerator.wait_for_everyone()
+            fad, clap_avg, clap_std= evaluate_model(
+                accelerator=accelerator,
+                unet_model=unet_model,
+                vae=vae,
+                image_processor=image_processor,
+                text_encoder_list=text_encoder_list,
+                adapter_list=adapter_list,
+                tokenizer_list=tokenizer_list,
+                csv_path=args.csv_path,
+                inference_path=args.inference_save_path,
+                inference_batch_size=args.inference_batch_size,
+                pretrained_model_name_or_path=args.pretrained_model_name_or_path,
+                seed=args.seed,
+                duration=args.slice_duration,
+                guidance_scale=args.guidance_scale,
+                num_inference_steps=args.num_inference_steps,
+                eta_audio=args.eta_audio,
+                epoch=(epoch + 1),
+                target_folder=args.target_folder
+                )
+            if accelerator.is_main_process:
+                wandb.log({
+                    "eval/fad": fad,
+                    "eval/clap_avg": clap_avg,
+                    "eval/clap_std": clap_std,
+                    "epoch": epoch + 1,
+                    "step": global_step
+                })
         
 
         for step, batch in enumerate(loop):
