@@ -90,13 +90,13 @@ def evaluate_model(accelerator, unet_model, video_model, csv_path, inference_pat
 
         accelerator.wait_for_everyone()
 
-        # 실제 FID, CLIP 등 계산
-        fid, clip_avg, clip_std = -1111, -1111, -1111
+        # 실제 fvd, CLIP 등 계산
+        fvd, clip_avg, clip_std = -1111, -1111, -1111
         if accelerator.is_main_process:
-            fid, clip_avg, clip_std = evaluate_video_metrics(
+            fvd, clip_avg, clip_std = evaluate_video_metrics(
                 preds_folder=inference_path,
                 target_folder=target_folder,
-                metrics=['fid','clip'],
+                metrics=['fvd','clip'],
                 device=accelerator.device,
                 num_frames=frames
             )
@@ -104,7 +104,7 @@ def evaluate_model(accelerator, unet_model, video_model, csv_path, inference_pat
         unet_model.train()
         accelerator.wait_for_everyone()
 
-        return fid, clip_avg, clip_std
+        return fvd, clip_avg, clip_std
 
 
 def main(args):
@@ -168,7 +168,7 @@ def main(args):
         if (epoch + 1) % args.eval_every == 0:
             accelerator.wait_for_everyone()
             if args.vgg_csv_path is not None:
-                vgg_fid, vgg_clip_avg, vgg_clip_std = evaluate_model(
+                vgg_fvd, vgg_clip_avg, vgg_clip_std = evaluate_model(
                     accelerator=accelerator,
                     unet_model=video_unet,
                     video_model=video_model,
@@ -190,12 +190,12 @@ def main(args):
 
                 if accelerator.is_main_process:
                     wandb.log({
-                        "eval/vgg_fid": vgg_fid,
+                        "eval/vgg_fvd": vgg_fvd,
                         "eval/vgg_clip_avg": vgg_clip_avg,
                         "eval/vgg_clip_std": vgg_clip_std
                     })
 
-            fid, clip_avg, clip_std= evaluate_model(
+            fvd, clip_avg, clip_std= evaluate_model(
                     accelerator=accelerator,
                     unet_model=video_unet,
                     video_model=video_model,
@@ -216,7 +216,7 @@ def main(args):
                 )
             if accelerator.is_main_process:
                 wandb.log({
-                    "eval/fid": fid,
+                    "eval/fvd": fvd,
                     "eval/clip_avg": clip_avg,
                     "eval/clip_std": clip_std,
                     "epoch": epoch + 1,
