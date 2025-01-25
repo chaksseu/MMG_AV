@@ -226,7 +226,7 @@ class CrossAttention(nn.Module):
 class BasicTransformerBlock(nn.Module):
 
     def __init__(self, dim, n_heads, d_head, dropout=0., context_dim=None, gated_ff=True, checkpoint=True,
-                disable_self_attn=False, attention_cls=None, img_cross_attention=False, use_lora=False):
+                disable_self_attn=False, attention_cls=None, img_cross_attention=False, use_lora=True):
         super().__init__()
         attn_cls = CrossAttention if attention_cls is None else attention_cls
         self.disable_self_attn = disable_self_attn
@@ -604,8 +604,8 @@ class LoRALinear(nn.Module):
     def __init__(self, 
                  in_features, 
                  out_features, 
-                 r=8, 
-                 lora_alpha=8.0):
+                 r=128, 
+                 lora_alpha=64):
         super().__init__()
         self.in_features = in_features
         self.out_features = out_features

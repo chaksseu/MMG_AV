@@ -37,6 +37,25 @@ class VideoTextDataset(Dataset):
         self.video_dir = video_dir
         self.target_frames = target_frames
 
+
+        # # ---- 파일 유효성 검사 ----
+        # valid_indices = []
+        # for i in range(len(self.df)):
+        #     video_id = self.df.iloc[i]["id"]
+        #     video_path = os.path.join(self.video_dir, f"{video_id}")
+        #     if not os.path.isfile(video_path):
+        #         continue
+        #     try:
+        #         _, _, _ = io.read_video(video_path, pts_unit="sec")   # video shape: (T, H, W, C)
+        #         valid_indices.append(i)
+        #     except:
+        #         continue
+        
+        # 손상되지 않은 데이터만 남기기
+        self.df = self.df.iloc[valid_indices].reset_index(drop=True)
+
+
+
     def __len__(self):
         return len(self.df)
 

@@ -47,6 +47,23 @@ class AudioTextDataset(Dataset):
         # 3.2초라면, time축 길이는 대략 slice_duration * (sample_rate / hop_size)
         self.expected_time_len = int(self.slice_duration * (self.sample_rate / self.hop_size))
 
+        # ---- 파일 유효성 검사 ----
+        valid_indices = []
+        for i in range(len(self.df)):
+            audio_id = self.df.iloc[i]["id"]
+            spec_path = os.path.join(self.spectrogram_dir, f"{audio_id}.pt")
+            if not os.path.isfile(spec_path):
+                continue
+            try:
+                _ = torch.load(spec_path)
+                valid_indices.append(i)
+            except:
+                continue
+        
+        # 손상되지 않은 데이터만 남기기
+        self.df = self.df.iloc[valid_indices].reset_index(drop=True)
+
+
     def __len__(self):
         return len(self.df)
 
