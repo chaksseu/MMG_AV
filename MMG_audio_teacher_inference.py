@@ -203,8 +203,6 @@ def run_inference(
     eta_audio = 0.0
 ):
     try:
-        
-
         dtype = torch.float32
         
         assert os.path.exists(prompt_file), f"Prompt file not found: {prompt_file}"

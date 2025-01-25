@@ -97,7 +97,8 @@ def evaluate_model(accelerator, unet_model, video_model, csv_path, inference_pat
                 preds_folder=inference_path,
                 target_folder=target_folder,
                 metrics=['fid','clip'],
-                device=accelerator.device
+                device=accelerator.device,
+                num_frames=frames
             )
 
         unet_model.train()
