@@ -1,17 +1,17 @@
 #!/bin/bash
 
 # 기본값 설정
-csv_path="/home/rtrt5060/MMG_TA_dataset_preprocessed.csv"  # 실제 CSV 파일 경로
+csv_path="/home/rtrt5060/MMG_TA_dataset_preprocessed_test_10k.csv"  # 실제 CSV 파일 경로
 audio_dir="/home/rtrt5060/preprocessed_spec"  # spec path
 OUTPUT_DIR="/home/rtrt5060/audio_teacher_LoRA_checkpoint" # checkpoint 저장 폴더 경로
-WANDB_PROJECT="audio_teacher_lora_training_gc0125"
+WANDB_PROJECT="audio_teacher_lora_training_gcp0125"
 TRAIN_BATCH_SIZE=32
 GRAD_ACC_STEPS=16
 LR=1e-5
 NUM_EPOCHS=16
 MIXED_PRECISION="no"
 PRETRAINED_MODEL="auffusion/auffusion-full"
-NUM_WORKERS=16
+NUM_WORKERS=8
 SAVE_CHECKPOINT=1
 
 # Evaluation 관련
@@ -21,7 +21,7 @@ INFERENCE_SAVE_PATH="/home/rtrt5060/audio_lora_inference_0125" # inference 저�
 ETA_AUDIO=0.0
 GUIDANCE_SCALE=7.5
 NUM_INFERENCE_STEPS=25
-TARGET_FOLDER="/home/rtrt5060/audio_lora_processed_gt_3_2s" # 비교한 gt test 데이터
+TARGET_FOLDER="/home/rtrt5060/audio_lora_processed_gt_3_2s_10k" # 비교한 gt test 데이터
 #TARGET_FOLDER="/home/jupyter/MMG_01/"
 # 기타 dataset 파라미터
 SAMPLE_RATE=16000

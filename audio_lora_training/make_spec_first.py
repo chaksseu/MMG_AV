@@ -63,13 +63,13 @@ def process_audio(audio_id, args):
 
 def main():
     parser = argparse.ArgumentParser()
-    parser.add_argument("--csv_path", type=str, default="/home/jupyter/MMG_TA_dataset_audiocaps_wavcaps/MMG_TA_dataset_preprocessed.csv", help="CSV 파일 경로")
+    parser.add_argument("--csv_path", type=str, default="/home/jupyter/MMG_TA_dataset_audiocaps_wavcaps/MMG_TA_dataset_preprocessed_test_10k.csv", help="CSV 파일 경로")
     parser.add_argument("--audio_dir", type=str, default="/home/jupyter/MMG_TA_dataset_audiocaps_wavcaps/preprocessed_audio", help="오디오(flac) 파일 폴더 경로")
-    parser.add_argument("--spectrogram_dir", type=str, default="/home/jupyter/MMG_TA_dataset_audiocaps_wavcaps/preprocessed_spec", help="미리 생성된 Mel Spectrogram(*.pt) 저장 폴더 경로")
+    parser.add_argument("--spectrogram_dir", type=str, default="/home/jupyter/MMG_TA_dataset_audiocaps_wavcaps/preprocessed_spec", help="미리 생성된 Mel Spectrogram(*.pt) 저장 폴더 경로") # /home/rtrt5060/preprocessed_spec, /home/jupyter/MMG_TA_dataset_audiocaps_wavcaps/preprocessed_spec
     parser.add_argument("--sample_rate", type=int, default=16000, help="오디오 리샘플링 레이트")
     parser.add_argument("--n_mels", type=int, default=256, help="Mel bands 개수")
     parser.add_argument("--hop_size", type=int, default=160, help="hop size")
-    parser.add_argument("--num_workers", type=int, default=multiprocessing.cpu_count(), help="병렬 처리에 사용할 CPU 코어 수")
+    parser.add_argument("--num_workers", type=int, default=4, help="병렬 처리에 사용할 CPU 코어 수")
     args = parser.parse_args()
 
     os.makedirs(args.spectrogram_dir, exist_ok=True)

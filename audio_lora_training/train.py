@@ -10,6 +10,8 @@ from diffusers import UNet2DConditionModel, DDPMScheduler
 from peft import LoraConfig
 
 from accelerate import Accelerator
+from accelerate import InitProcessGroupKwargs
+from datetime import timedelta
 
 #from dataset import AudioTextDataset
 from dataset_spec import AudioTextDataset
@@ -70,30 +72,31 @@ def evaluate_model(accelerator, unet_model, vae, image_processor, text_encoder_l
     inference_path = f"{inference_path}/{epoch}"
     
     with torch.no_grad():
-        # Inference 
-        run_inference(
-            accelerator=accelerator,
-            unet_model=unet_model,
-            vae=vae,
-            image_processor=image_processor,
-            text_encoder_list=text_encoder_list,
-            adapter_list=adapter_list,
-            tokenizer_list=tokenizer_list,
-            prompt_file=csv_path,
-            savedir=inference_path,
-            bs=inference_batch_size,
-            pretrained_model_name_or_path=pretrained_model_name_or_path,
-            seed=seed,
-            duration=duration,
-            guidance_scale=guidance_scale,
-            num_inference_steps=num_inference_steps,
-            eta_audio=eta_audio
-        )
+        # Inference
+        if epoch != 1:
+            run_inference(
+                accelerator=accelerator,
+                unet_model=unet_model,
+                vae=vae,
+                image_processor=image_processor,
+                text_encoder_list=text_encoder_list,
+                adapter_list=adapter_list,
+                tokenizer_list=tokenizer_list,
+                prompt_file=csv_path,
+                savedir=inference_path,
+                bs=inference_batch_size,
+                pretrained_model_name_or_path=pretrained_model_name_or_path,
+                seed=seed,
+                duration=duration,
+                guidance_scale=guidance_scale,
+                num_inference_steps=num_inference_steps,
+                eta_audio=eta_audio
+            )
 
         accelerator.wait_for_everyone()
 
         # TODO: real FAD, CLAP calculation
-        fad, clap_avg, clap_std = -111, -111, -111
+        fad, clap_avg, clap_std = -1111, -1111, -1111
         if accelerator.is_main_process:
             fad, clap_avg, clap_std = evaluate_audio_metrics(
                 preds_folder=inference_path,
@@ -148,10 +151,15 @@ def main():
     args = parse_args()
     os.makedirs(args.output_dir, exist_ok=True)
 
+
+    # eval로 인한 멀
+    ipg_handler = InitProcessGroupKwargs(timeout=timedelta(seconds=3600)) 
+
     # Accelerator
     accelerator = Accelerator(
         mixed_precision=args.mixed_precision,
-        gradient_accumulation_steps=args.gradient_accumulation_steps
+        gradient_accumulation_steps=args.gradient_accumulation_steps,
+        kwargs_handlers=[ipg_handler]
     )
     device = accelerator.device
     dtype = torch.float32
@@ -198,7 +206,18 @@ def main():
     unet_model.add_adapter(lora_config)
 
     # Only LoRA params will be trained
+    total_params = sum(p.numel() for p in unet_model.parameters())
+
+
     trainable_params = [p for p in unet_model.parameters() if p.requires_grad]
+    total_trainable_params = sum(p.numel() for p in trainable_params)
+    
+
+
+    if accelerator.is_main_process:
+        print(f"Total params: {total_params}")
+        print(f"Total trainable parameters: {total_trainable_params}")
+
     optimizer = torch.optim.AdamW(trainable_params, lr=args.lr)
 
     # Noise Scheduler
@@ -268,9 +287,6 @@ def main():
 
 
 
-
-
-
     # Prepare
     unet_model, optimizer, train_loader, vae, image_processor, text_encoder_list, adapter_list = accelerator.prepare(
         unet_model, optimizer, train_loader, vae, image_processor, text_encoder_list, adapter_list
@@ -287,34 +303,66 @@ def main():
 
         # For test
         
-        # if (epoch + 1) % args.eval_every == 0:
-        #     accelerator.wait_for_everyone()
-        #     fad, clap_avg, clap_std= evaluate_model(
-        #         accelerator=accelerator,
-        #         unet_model=unet_model,
-        #         vae=vae,
-        #         image_processor=image_processor,
-        #         text_encoder_list=text_encoder_list,
-        #         adapter_list=adapter_list,
-        #         tokenizer_list=tokenizer_list,
-        #         csv_path="/home/rtrt5060/vggsound_sparse_curated_292.csv",
-        #         inference_path="/home/rtrt5060/audio_lora_vggsound_sparse_inference",
-        #         inference_batch_size=args.inference_batch_size,
-        #         pretrained_model_name_or_path=args.pretrained_model_name_or_path,
-        #         seed=args.seed,
-        #         duration=args.slice_duration,
-        #         guidance_scale=args.guidance_scale,
-        #         num_inference_steps=args.num_inference_steps,
-        #         eta_audio=args.eta_audio,
-        #         epoch=(epoch + 1),
-        #         target_folder="/home/rtrt5060/vggsound_sparse_test_curated_final/audio"
-        #         )
-        #     if accelerator.is_main_process:
-        #         wandb.log({
-        #             "eval/vggsparse_fad": fad,
-        #             "eval/vggsparse_clap_avg": clap_avg,
-        #             "eval/vggsparse_clap_std": clap_std
-        #         })
+        if (epoch + 1) % args.eval_every == 0:
+            accelerator.wait_for_everyone()
+            vgg_fad, vgg_clap_avg, vgg_clap_std= evaluate_model(
+                accelerator=accelerator,
+                unet_model=unet_model,
+                vae=vae,
+                image_processor=image_processor,
+                text_encoder_list=text_encoder_list,
+                adapter_list=adapter_list,
+                tokenizer_list=tokenizer_list,
+                csv_path="/home/rtrt5060/vggsound_sparse_curated_292.csv",
+                inference_path="/home/rtrt5060/audio_lora_vggsound_sparse_inference",
+                inference_batch_size=args.inference_batch_size,
+                pretrained_model_name_or_path=args.pretrained_model_name_or_path,
+                seed=args.seed,
+                duration=args.slice_duration,
+                guidance_scale=args.guidance_scale,
+                num_inference_steps=args.num_inference_steps,
+                eta_audio=args.eta_audio,
+                epoch=(epoch + 1),
+                target_folder="/home/rtrt5060/vggsound_sparse_test_curated_final/audio"
+                )
+            accelerator.wait_for_everyone()
+            if accelerator.is_main_process:
+                wandb.log({
+                    "eval/vggsparse_fad": vgg_fad,
+                    "eval/vggsparse_clap_avg": vgg_clap_avg,
+                    "eval/vggsparse_clap_std": vgg_clap_std
+                })
+
+            accelerator.wait_for_everyone()
+            fad, clap_avg, clap_std= evaluate_model(
+                accelerator=accelerator,
+                unet_model=unet_model,
+                vae=vae,
+                image_processor=image_processor,
+                text_encoder_list=text_encoder_list,
+                adapter_list=adapter_list,
+                tokenizer_list=tokenizer_list,
+                csv_path=args.csv_path,
+                inference_path=args.inference_save_path,
+                inference_batch_size=args.inference_batch_size,
+                pretrained_model_name_or_path=args.pretrained_model_name_or_path,
+                seed=args.seed,
+                duration=args.slice_duration,
+                guidance_scale=args.guidance_scale,
+                num_inference_steps=args.num_inference_steps,
+                eta_audio=args.eta_audio,
+                epoch=(epoch + 1),
+                target_folder=args.target_folder
+                )
+            accelerator.wait_for_everyone()
+            if accelerator.is_main_process:
+                wandb.log({
+                    "eval/fad": fad,
+                    "eval/clap_avg": clap_avg,
+                    "eval/clap_std": clap_std,
+                    "epoch": epoch + 1,
+                    "step": global_step
+                })
         
 
         for step, batch in enumerate(loop):
@@ -442,64 +490,64 @@ def main():
                 loop.set_postfix({"loss": loss.item()})
 
 
-        if (epoch + 1) % args.eval_every == 0:
-            accelerator.wait_for_everyone()
-            fad, clap_avg, clap_std= evaluate_model(
-                accelerator=accelerator,
-                unet_model=unet_model,
-                vae=vae,
-                image_processor=image_processor,
-                text_encoder_list=text_encoder_list,
-                adapter_list=adapter_list,
-                tokenizer_list=tokenizer_list,
-                csv_path="/home/rtrt5060/vggsound_sparse_curated_292.csv",
-                inference_path="/home/rtrt5060/audio_lora_vggsound_sparse_inference",
-                inference_batch_size=args.inference_batch_size,
-                pretrained_model_name_or_path=args.pretrained_model_name_or_path,
-                seed=args.seed,
-                duration=args.slice_duration,
-                guidance_scale=args.guidance_scale,
-                num_inference_steps=args.num_inference_steps,
-                eta_audio=args.eta_audio,
-                epoch=(epoch + 1),
-                target_folder="/home/rtrt5060/vggsound_sparse_test_curated_final/audio"
-                )
-            if accelerator.is_main_process:
-                wandb.log({
-                    "eval/vggsparse_fad": fad,
-                    "eval/vggsparse_clap_avg": clap_avg,
-                    "eval/vggsparse_clap_std": clap_std
-                })
+        # if (epoch + 1) % args.eval_every == 0:
+        #     accelerator.wait_for_everyone()
+        #     fad, clap_avg, clap_std= evaluate_model(
+        #         accelerator=accelerator,
+        #         unet_model=unet_model,
+        #         vae=vae,
+        #         image_processor=image_processor,
+        #         text_encoder_list=text_encoder_list,
+        #         adapter_list=adapter_list,
+        #         tokenizer_list=tokenizer_list,
+        #         csv_path="/home/rtrt5060/vggsound_sparse_curated_292.csv",
+        #         inference_path="/home/rtrt5060/audio_lora_vggsound_sparse_inference",
+        #         inference_batch_size=args.inference_batch_size,
+        #         pretrained_model_name_or_path=args.pretrained_model_name_or_path,
+        #         seed=args.seed,
+        #         duration=args.slice_duration,
+        #         guidance_scale=args.guidance_scale,
+        #         num_inference_steps=args.num_inference_steps,
+        #         eta_audio=args.eta_audio,
+        #         epoch=(epoch + 1),
+        #         target_folder="/home/rtrt5060/vggsound_sparse_test_curated_final/audio"
+        #         )
+        #     if accelerator.is_main_process:
+        #         wandb.log({
+        #             "eval/vggsparse_fad": fad,
+        #             "eval/vggsparse_clap_avg": clap_avg,
+        #             "eval/vggsparse_clap_std": clap_std
+        #         })
 
-            accelerator.wait_for_everyone()
-            fad, clap_avg, clap_std= evaluate_model(
-                accelerator=accelerator,
-                unet_model=unet_model,
-                vae=vae,
-                image_processor=image_processor,
-                text_encoder_list=text_encoder_list,
-                adapter_list=adapter_list,
-                tokenizer_list=tokenizer_list,
-                csv_path=args.csv_path,
-                inference_path=args.inference_save_path,
-                inference_batch_size=args.inference_batch_size,
-                pretrained_model_name_or_path=args.pretrained_model_name_or_path,
-                seed=args.seed,
-                duration=args.slice_duration,
-                guidance_scale=args.guidance_scale,
-                num_inference_steps=args.num_inference_steps,
-                eta_audio=args.eta_audio,
-                epoch=(epoch + 1),
-                target_folder=args.target_folder
-                )
-            if accelerator.is_main_process:
-                wandb.log({
-                    "eval/fad": fad,
-                    "eval/clap_avg": clap_avg,
-                    "eval/clap_std": clap_std,
-                    "epoch": epoch + 1,
-                    "step": global_step
-                })
+        #     accelerator.wait_for_everyone()
+        #     fad, clap_avg, clap_std= evaluate_model(
+        #         accelerator=accelerator,
+        #         unet_model=unet_model,
+        #         vae=vae,
+        #         image_processor=image_processor,
+        #         text_encoder_list=text_encoder_list,
+        #         adapter_list=adapter_list,
+        #         tokenizer_list=tokenizer_list,
+        #         csv_path=args.csv_path,
+        #         inference_path=args.inference_save_path,
+        #         inference_batch_size=args.inference_batch_size,
+        #         pretrained_model_name_or_path=args.pretrained_model_name_or_path,
+        #         seed=args.seed,
+        #         duration=args.slice_duration,
+        #         guidance_scale=args.guidance_scale,
+        #         num_inference_steps=args.num_inference_steps,
+        #         eta_audio=args.eta_audio,
+        #         epoch=(epoch + 1),
+        #         target_folder=args.target_folder
+        #         )
+        #     if accelerator.is_main_process:
+        #         wandb.log({
+        #             "eval/fad": fad,
+        #             "eval/clap_avg": clap_avg,
+        #             "eval/clap_std": clap_std,
+        #             "epoch": epoch + 1,
+        #             "step": global_step
+        #         })
 
 
 
