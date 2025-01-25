@@ -152,7 +152,7 @@ def main():
     os.makedirs(args.output_dir, exist_ok=True)
 
 
-    # eval로 인한 멀
+    # eval로 인한 
     ipg_handler = InitProcessGroupKwargs(timeout=timedelta(seconds=3600)) 
 
     # Accelerator

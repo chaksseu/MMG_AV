@@ -1,19 +1,19 @@
 #!/bin/bash
 
 # ========================= 기본값 설정 =========================
-VIDEO_CSV_PATH="/home/user/video_dataset.csv"       # 실제 CSV 파일 경로
-VIDEO_DIR="/home/user/preprocessed_video"           # 비디오 파일 폴더 경로
-OUTPUT_DIR="/home/user/video_LoRA_checkpoint"       # 체크포인트 저장 폴더 경로
-WANDB_PROJECT="video_teacher_lora_training"         # WandB 프로젝트 이름
+VIDEO_CSV_PATH="/home/user/video_dataset.csv"               # 실제 CSV 파일 경로
+VIDEO_DIR="/home/user/preprocessed_video"                   # 비디오 파일 폴더 경로
+OUTPUT_DIR="/home/user/video_LoRA_checkpoint"               # 체크포인트 저장 폴더 경로
+WANDB_PROJECT="video_teacher_lora_training"                 # WandB 프로젝트 이름
 TRAIN_BATCH_SIZE=1
 GRAD_ACC_STEPS=1
 LR=1e-5
 NUM_EPOCHS=16
-MIXED_PRECISION="no"                              # ["no", "fp16", "bf16"] 중 선택
+MIXED_PRECISION="no"                                        # ["no", "fp16", "bf16"] 중 선택
 NUM_WORKERS=4
-SAVE_CHECKPOINT=2                                   # 에폭마다 저장 (예: 2 에폭마다)
-VIDEOCRAFTER_CKPT="scripts/evaluation/model.ckpt"   # 미리 학습된 VideoCrafter 모델 ckpt 경로
-VIDEOCRAFTER_CONFIG="configs/inference_t2v_512_v2.0.yaml"  # VideoCrafter config 경로
+SAVE_CHECKPOINT=2                                           # 에폭마다 저장 (예: 2 에폭마다)
+VIDEOCRAFTER_CKPT="scripts/evaluation/model.ckpt"           # 미리 학습된 VideoCrafter 모델 ckpt 경로
+VIDEOCRAFTER_CONFIG="configs/inference_t2v_512_v2.0.yaml"   # VideoCrafter config 경로
 VIDEO_FPS=12.5
 TARGET_FRAMES=40
 
@@ -24,14 +24,17 @@ INFERENCE_SAVE_PATH="/home/user/video_lora_inference"
 GUIDANCE_SCALE=12.0
 NUM_INFERENCE_STEPS=25
 TARGET_FOLDER="/home/user/video_eval_gt"  # 평가 시 사용될 GT 폴더
-
 SEED=42
-SLICE_DURATION=3.2   # 예: 5초짜리 비디오로 가정 (inference에서 사용 예시)
 
 # (필요 시) VGG 관련 설정
 VGG_CSV_PATH=""                        # VGG eval 용 CSV 파일
 VGG_INFERENCE_SAVE_PATH=""             # VGG eval 시 inference 저장 폴더
 VGG_TARGET_FOLDER=""                   # VGG eval 시 GT 폴더 (비워두면 실행 안 됨)
+
+# ========================= 새로 추가된 인자 =========================
+HEIGHT=320
+WIDTH=512
+DDIM_ETA=0.0
 
 # ========================= 디렉토리 확인 및 생성 =========================
 mkdir -p "$OUTPUT_DIR"
@@ -82,9 +85,13 @@ echo "VideoCrafter Config: $VIDEOCRAFTER_CONFIG"
 echo "Video FPS: $VIDEO_FPS"
 echo "Target Frames: $TARGET_FRAMES"
 echo "Random Seed: $SEED"
-echo "Slice Duration (for inference): $SLICE_DURATION"
 echo ""
-echo "======================= Evaluation Configuration ======================="
+echo "======================= Additional Arguments =========================="
+echo "Height: $HEIGHT"
+echo "Width: $WIDTH"
+echo "DDIM Eta: $DDIM_ETA"
+echo ""
+echo "======================= Evaluation Configuration ======================"
 echo "Inference Batch Size: $INFERENCE_BATCH_SIZE"
 echo "Inference Save Path: $INFERENCE_SAVE_PATH"
 echo "Guidance Scale: $GUIDANCE_SCALE"
@@ -93,8 +100,8 @@ echo "Target Folder (GT): $TARGET_FOLDER"
 echo "========================================================================"
 
 # ========================= 실행 명령어 =========================
-# 실제로는 train_video.py 또는 main(args)를 담은 파이썬 파일 이름을 맞춰 주세요.
-accelerate launch train_video.py \
+# 아래에서 "train.py"는 실제 질문에 첨부된 Python 스크립트 파일 이름에 맞춰 사용합니다.
+accelerate launch train.py \
     --csv_path "$VIDEO_CSV_PATH" \
     --video_dir "$VIDEO_DIR" \
     --output_dir "$OUTPUT_DIR" \
@@ -116,11 +123,13 @@ accelerate launch train_video.py \
     --guidance_scale "$GUIDANCE_SCALE" \
     --num_inference_steps "$NUM_INFERENCE_STEPS" \
     --target_folder "$TARGET_FOLDER" \
+    --height "$HEIGHT" \
+    --width "$WIDTH" \
+    --ddim_eta "$DDIM_ETA" \
     --seed "$SEED" \
-    --slice_duration "$SLICE_DURATION" \
     --vgg_csv_path "$VGG_CSV_PATH" \
     --vgg_inference_save_path "$VGG_INFERENCE_SAVE_PATH" \
-    --vgg_target_folder "$VGG_TARGET_FOLDER" \
+    --vgg_target_folder "$VGG_TARGET_FOLDER"
 
 # ========================= 종료 메시지 =========================
 if [ $? -eq 0 ]; then

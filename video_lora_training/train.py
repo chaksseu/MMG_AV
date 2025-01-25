@@ -54,7 +54,6 @@ def parse_args():
 
     # vgg eval 관련 (필요시)
     parser.add_argument("--seed", type=int, default=42, help="Seed")
-    parser.add_argument("--slice_duration", type=float, default=5, help="Duration for inference")
     parser.add_argument("--vgg_csv_path", type=str, default=None, help="CSV for vgg eval")
     parser.add_argument("--vgg_inference_save_path", type=str, default=None, help="Inference save path for vgg eval")
     parser.add_argument("--vgg_target_folder", type=str, default=None, help="Target folder for vgg eval")
@@ -108,9 +107,18 @@ def evaluate_model(accelerator, unet_model, video_model, csv_path, inference_pat
 
 
 def main(args):
+    args = parse_args()
+    os.makedirs(args.output_dir, exist_ok=True)
+
+
+    # eval로 인한 
+    ipg_handler = InitProcessGroupKwargs(timeout=timedelta(seconds=3600)) 
+
+    # Accelerator
     accelerator = Accelerator(
-        mixed_precision=args.mixed_precision, 
-        gradient_accumulation_steps=args.gradient_accumulation_steps
+        mixed_precision=args.mixed_precision,
+        gradient_accumulation_steps=args.gradient_accumulation_steps,
+        kwargs_handlers=[ipg_handler]
     )
     device = accelerator.device
 
@@ -176,7 +184,6 @@ def main(args):
                     inference_path=args.vgg_inference_save_path,
                     inference_batch_size=args.inference_batch_size,
                     seed=args.seed,
-                    duration=args.slice_duration,
                     guidance_scale=args.guidance_scale,
                     num_inference_steps=args.num_inference_steps,
                     epoch=(epoch + 1),
@@ -203,7 +210,6 @@ def main(args):
                     inference_path=args.inference_save_path,
                     inference_batch_size=args.inference_batch_size,
                     seed=args.seed,
-                    duration=args.slice_duration,
                     guidance_scale=args.guidance_scale,
                     num_inference_steps=args.num_inference_steps,
                     epoch=(epoch + 1),
