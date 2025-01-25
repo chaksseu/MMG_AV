@@ -177,7 +177,7 @@ def main():
     )
 
     train_loader = DataLoader(train_dataset, batch_size=args.train_batch_size, shuffle=True,
-                              num_workers=args.num_workers, pin_memory=False)
+                              num_workers=args.num_workers, pin_memory=True)
 
     # UNet + LoRA
     unet_model = UNet2DConditionModel.from_pretrained(
