@@ -190,8 +190,8 @@ def main():
 
     # LoRA config
     lora_config = LoraConfig(
-        r=32,
-        lora_alpha=16,
+        r=128,
+        lora_alpha=64,
         init_lora_weights="gaussian",
         target_modules=["to_k", "to_q", "to_v", "to_out.0"],
     )
@@ -285,9 +285,9 @@ def main():
         loop = tqdm(train_loader, desc=f"Epoch [{epoch+1}/{args.num_epochs}]", disable=not accelerator.is_main_process)
 
 
-        # # For test
+        # For test
         
-        # if epoch == 0:
+        # if (epoch + 1) % args.eval_every == 0:
         #     accelerator.wait_for_everyone()
         #     fad, clap_avg, clap_std= evaluate_model(
         #         accelerator=accelerator,
@@ -297,8 +297,8 @@ def main():
         #         text_encoder_list=text_encoder_list,
         #         adapter_list=adapter_list,
         #         tokenizer_list=tokenizer_list,
-        #         csv_path=args.csv_path,
-        #         inference_path=args.inference_save_path,
+        #         csv_path="/home/rtrt5060/vggsound_sparse_curated_292.csv",
+        #         inference_path="/home/rtrt5060/audio_lora_vggsound_sparse_inference",
         #         inference_batch_size=args.inference_batch_size,
         #         pretrained_model_name_or_path=args.pretrained_model_name_or_path,
         #         seed=args.seed,
@@ -307,15 +307,13 @@ def main():
         #         num_inference_steps=args.num_inference_steps,
         #         eta_audio=args.eta_audio,
         #         epoch=(epoch + 1),
-        #         target_folder=args.target_folder
+        #         target_folder="/home/rtrt5060/vggsound_sparse_test_curated_final/audio"
         #         )
         #     if accelerator.is_main_process:
         #         wandb.log({
-        #             "eval/fad": fad,
-        #             "eval/clap_avg": clap_avg,
-        #             "eval/clap_std": clap_std,
-        #             "epoch": epoch + 1,
-        #             "step": global_step
+        #             "eval/vggsparse_fad": fad,
+        #             "eval/vggsparse_clap_avg": clap_avg,
+        #             "eval/vggsparse_clap_std": clap_std
         #         })
         
 
@@ -444,8 +442,35 @@ def main():
                 loop.set_postfix({"loss": loss.item()})
 
 
-        # Evaluate every n epochs
         if (epoch + 1) % args.eval_every == 0:
+            accelerator.wait_for_everyone()
+            fad, clap_avg, clap_std= evaluate_model(
+                accelerator=accelerator,
+                unet_model=unet_model,
+                vae=vae,
+                image_processor=image_processor,
+                text_encoder_list=text_encoder_list,
+                adapter_list=adapter_list,
+                tokenizer_list=tokenizer_list,
+                csv_path="/home/rtrt5060/vggsound_sparse_curated_292.csv",
+                inference_path="/home/rtrt5060/audio_lora_vggsound_sparse_inference",
+                inference_batch_size=args.inference_batch_size,
+                pretrained_model_name_or_path=args.pretrained_model_name_or_path,
+                seed=args.seed,
+                duration=args.slice_duration,
+                guidance_scale=args.guidance_scale,
+                num_inference_steps=args.num_inference_steps,
+                eta_audio=args.eta_audio,
+                epoch=(epoch + 1),
+                target_folder="/home/rtrt5060/vggsound_sparse_test_curated_final/audio"
+                )
+            if accelerator.is_main_process:
+                wandb.log({
+                    "eval/vggsparse_fad": fad,
+                    "eval/vggsparse_clap_avg": clap_avg,
+                    "eval/vggsparse_clap_std": clap_std
+                })
+
             accelerator.wait_for_everyone()
             fad, clap_avg, clap_std= evaluate_model(
                 accelerator=accelerator,
@@ -475,6 +500,8 @@ def main():
                     "epoch": epoch + 1,
                     "step": global_step
                 })
+
+
 
         # Save checkpoint
         if (epoch + 1) % args.save_checkpoint == 0 and accelerator.is_main_process:

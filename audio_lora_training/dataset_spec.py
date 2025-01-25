@@ -66,6 +66,7 @@ class AudioTextDataset(Dataset):
 
         # total_T가 expected_time_len보다 작으면 패딩, 더 크면 랜덤 슬라이싱
         total_T = spec.shape[1]
+
         if total_T < self.expected_time_len:
             # Zero-padding
             if self.pad_to_spec_len:
