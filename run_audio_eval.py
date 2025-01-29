@@ -123,7 +123,7 @@ def evaluate_audio_metrics(preds_folder, target_folder, metrics, clap_model, dev
     # Get the list of filenames and set up the progress bar
     filenames = [f for f in os.listdir(preds_folder) if f.endswith('.wav')]
     progress_bar = tqdm(filenames, desc='Processing')
-
+    clap_score = []
     for filename in progress_bar:
         if filename.endswith('.wav'):
             try:
@@ -132,7 +132,7 @@ def evaluate_audio_metrics(preds_folder, target_folder, metrics, clap_model, dev
                 if np.shape(preds_audio)[0] == 2:
                     preds_audio = preds_audio.mean(dim=0)
 
-                clap_score = calculate_clap(model_clap, preds_audio, filename, new_freq)
+                clap_score.append(calculate_clap(model_clap, preds_audio, filename, new_freq))
 
             except Exception as e:
                 print(f'Error processing {filename}: {e}')

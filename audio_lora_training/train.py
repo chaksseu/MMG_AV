@@ -13,7 +13,6 @@ from accelerate import Accelerator
 from accelerate import InitProcessGroupKwargs
 from datetime import timedelta
 
-#from dataset import AudioTextDataset
 from dataset_spec import AudioTextDataset
 
 
@@ -62,41 +61,41 @@ from run_audio_eval import evaluate_audio_metrics
 
 
 
-def evaluate_model(accelerator, unet_model, vae, image_processor, text_encoder_list, adapter_list, tokenizer_list, csv_path, inference_path, inference_batch_size, pretrained_model_name_or_path, seed, duration, guidance_scale, num_inference_steps, eta_audio, epoch, target_folder):
+def evaluate_model(accelerator, unet_model, vae, image_processor, text_encoder_list, adapter_list, tokenizer_list, csv_path, inference_path, inference_batch_size, pretrained_model_name_or_path, seed, duration, guidance_scale, num_inference_steps, eta_audio, eval_id, target_folder):
     """
     FAD, CLAP 등 계산을 위한 평가 함수.
     """
 
     unet_model.eval()
 
-    inference_path = f"{inference_path}/{epoch}"
+    inference_path = f"{inference_path}/{eval_id}"
     
     with torch.no_grad():
         # Inference
-        if epoch != 1:
-            run_inference(
-                accelerator=accelerator,
-                unet_model=unet_model,
-                vae=vae,
-                image_processor=image_processor,
-                text_encoder_list=text_encoder_list,
-                adapter_list=adapter_list,
-                tokenizer_list=tokenizer_list,
-                prompt_file=csv_path,
-                savedir=inference_path,
-                bs=inference_batch_size,
-                pretrained_model_name_or_path=pretrained_model_name_or_path,
-                seed=seed,
-                duration=duration,
-                guidance_scale=guidance_scale,
-                num_inference_steps=num_inference_steps,
-                eta_audio=eta_audio
-            )
+        #if epoch != 0:
+        run_inference(
+            accelerator=accelerator,
+            unet_model=unet_model,
+            vae=vae,
+            image_processor=image_processor,
+            text_encoder_list=text_encoder_list,
+            adapter_list=adapter_list,
+            tokenizer_list=tokenizer_list,
+            prompt_file=csv_path,
+            savedir=inference_path,
+            bs=inference_batch_size,
+            pretrained_model_name_or_path=pretrained_model_name_or_path,
+            seed=seed,
+            duration=duration,
+            guidance_scale=guidance_scale,
+            num_inference_steps=num_inference_steps,
+            eta_audio=eta_audio
+        )
 
         accelerator.wait_for_everyone()
 
         # TODO: real FAD, CLAP calculation
-        fad, clap_avg, clap_std = -1111, -1111, -1111
+        fad, clap_avg, clap_std = 0.0, 0.0, 0.0
         if accelerator.is_main_process:
             fad, clap_avg, clap_std = evaluate_audio_metrics(
                 preds_folder=inference_path,
@@ -135,6 +134,10 @@ def parse_args():
     parser.add_argument("--guidance_scale", type=float, default=1.0, help="inference cfg guidance scale")
     parser.add_argument("--num_inference_steps", type=int, default=50, help="num_inference_steps")
     parser.add_argument("--target_folder", type=str, default="target_folder", help="Path to the folder with GT audio files.")
+    parser.add_argument("--vgg_csv_path", type=str, default="/home/jupyter/MMG_TA_dataset_audiocaps_wavcaps/vggsound_sparse_curated_292.csv", help="Path to the folder with GT audio files.")
+    parser.add_argument("--vgg_target_folder", type=str, default="/home/jupyter/MMG_TA_dataset_audiocaps_wavcaps/vggsound_sparse_test_curated_final/audio", help="Path to the folder with GT audio files.")
+    parser.add_argument("--vgg_inference_path", type=str, default="/home/jupyter/audio_lora_vggsound_sparse_inference", help="inference 저장 위치")
+                
 
 
     # 기타 dataset 파라미터
@@ -300,103 +303,15 @@ def main():
         losses = []
         loop = tqdm(train_loader, desc=f"Epoch [{epoch+1}/{args.num_epochs}]", disable=not accelerator.is_main_process)
 
-
-        # For test
-        
-        if (epoch + 1) % args.eval_every == 0:
-            accelerator.wait_for_everyone()
-            vgg_fad, vgg_clap_avg, vgg_clap_std= evaluate_model(
-                accelerator=accelerator,
-                unet_model=unet_model,
-                vae=vae,
-                image_processor=image_processor,
-                text_encoder_list=text_encoder_list,
-                adapter_list=adapter_list,
-                tokenizer_list=tokenizer_list,
-                csv_path="/home/rtrt5060/vggsound_sparse_curated_292.csv",
-                inference_path="/home/rtrt5060/audio_lora_vggsound_sparse_inference",
-                inference_batch_size=args.inference_batch_size,
-                pretrained_model_name_or_path=args.pretrained_model_name_or_path,
-                seed=args.seed,
-                duration=args.slice_duration,
-                guidance_scale=args.guidance_scale,
-                num_inference_steps=args.num_inference_steps,
-                eta_audio=args.eta_audio,
-                epoch=(epoch + 1),
-                target_folder="/home/rtrt5060/vggsound_sparse_test_curated_final/audio"
-                )
-            accelerator.wait_for_everyone()
-            if accelerator.is_main_process:
-                wandb.log({
-                    "eval/vggsparse_fad": vgg_fad,
-                    "eval/vggsparse_clap_avg": vgg_clap_avg,
-                    "eval/vggsparse_clap_std": vgg_clap_std
-                })
-
-            accelerator.wait_for_everyone()
-            fad, clap_avg, clap_std= evaluate_model(
-                accelerator=accelerator,
-                unet_model=unet_model,
-                vae=vae,
-                image_processor=image_processor,
-                text_encoder_list=text_encoder_list,
-                adapter_list=adapter_list,
-                tokenizer_list=tokenizer_list,
-                csv_path=args.csv_path,
-                inference_path=args.inference_save_path,
-                inference_batch_size=args.inference_batch_size,
-                pretrained_model_name_or_path=args.pretrained_model_name_or_path,
-                seed=args.seed,
-                duration=args.slice_duration,
-                guidance_scale=args.guidance_scale,
-                num_inference_steps=args.num_inference_steps,
-                eta_audio=args.eta_audio,
-                epoch=(epoch + 1),
-                target_folder=args.target_folder
-                )
-            accelerator.wait_for_everyone()
-            if accelerator.is_main_process:
-                wandb.log({
-                    "eval/fad": fad,
-                    "eval/clap_avg": clap_avg,
-                    "eval/clap_std": clap_std,
-                    "epoch": epoch + 1,
-                    "step": global_step
-                })
-        
-
         for step, batch in enumerate(loop):
             audio_latent = batch["audio_latent"]
             caption = batch["caption"]
 
-                    
-            # ============================
-            # (4) VAE, Adapter 등 사용
-            # ============================
-            # 예시 코드 상, spec을 [0,1] 범위 이미지처럼 가정하기 위해 (spec+1)/2 변환
-            # 다만 실제로는 spec이 음수가 아닐 수도 있으니, 여기선 예시 그대로 두겠습니다.
-            # spec: shape [n_mels, T]
-            # 아래처럼 하면 (T, n_mels)별로 잘리는 점 주의 (원코드도 조금 애매합니다).
-            # 일단 원 코드 흐름에 맞춰 진행:
-            #print('####################')
-            #print("spec.shape", spec.shape)
             spec = audio_latent
             caption_text = caption
-            #spectrograms = [(row_ + 1) / 2 for row_ in spec]  # list of T개, 각각 shape [n_mels]
             spectrograms = (spec + 1) / 2 
-            #print(111111111111111111111111111)
-            #print("spec.dtype", spec.dtype)
-            # image_processor 사용 예시
-            # 실제 VaeImageProcessor가 어떻게 preprocess하는지는 diffusers 버전에 따라 다를 수 있습니다.
-            # 보통 PIL Image나 [B,H,W,C] 텐서를 받는 식이 많으므로,
-            # 아래 로직은 실제론 맞지 않을 수 있습니다. (개념적인 예시임)
-            #print('####################')
-            #print("spectrograms.shape", spectrograms.shape)
-            #print(222222222222222222222222222)
-            #print("spectrograms.dtype", spectrograms.dtype)
             image = image_processor.preprocess(spectrograms)  # 대략 [1, C, H, W] 형태 반환 가정
-            #print(333333333333333333333333333)
-            #print("image.dtype", image.dtype)
+
             # 텍스트/오디오 프롬프트 인코딩
             with accelerator.autocast():
                 audio_text_embed = encode_audio_prompt(
@@ -415,26 +330,15 @@ def main():
                 audio_latent = retrieve_latents(vae_output, generator=generator)
                 audio_latent = vae.config.scaling_factor * audio_latent
 
-            # 배치 차원 제거 (예: [1, ...] -> [...])
-            #audio_latent = audio_latent.squeeze(0)
-            #audio_text_embed = audio_text_embed.squeeze(0)
+
             text_emb = audio_text_embed
-
-
-
-
 
             bsz = audio_latent.size(0)
 
-            # 10% null conditioning
-            audio_null_text_emb = torch.zeros_like(text_emb)
-            mask = (torch.rand(bsz, 77, 768, device=device) < 0.1)
-
-
-            #print(f"mask shape: {mask.shape}")
-            #print(f"audio_null_text_emb shape: {audio_null_text_emb.shape}")
-            #print(f"text_emb shape: {text_emb.shape}")
-
+            # 10% null conditioning: 배치 내 각 샘플 중 10%를 무작위로 선택하여 조건 정보 제거
+            audio_null_text_emb = torch.zeros_like(audio_text_embed)  # [bsz, 77, 768]
+            mask = (torch.rand(bsz, 1, 1, device=device) < 0.1)    # [bsz, 1, 1]
+            text_emb = torch.where(mask, audio_null_text_emb, audio_text_embed)  # [bsz, 77, 768]
 
             text_emb = torch.where(mask, audio_null_text_emb, text_emb)
 
@@ -444,16 +348,6 @@ def main():
             # Add noise
             noise = torch.randn_like(audio_latent)
             noised_latent = noise_scheduler.add_noise(original_samples=audio_latent, noise=noise, timesteps=timesteps)
-
-
-
-            #print(44444444444444444444444444444)
-            #print("noised_latent.dtype", noised_latent.dtype)
-            #print("text_emb.dtype", text_emb.dtype)
-            #print("timesteps.dtype", timesteps.dtype)
-
-            #print("shape(latents, text_embeds, timesteps)", noised_latent.shape, text_emb.shape, timesteps.shape)
-
 
             # Forward pass
             model_output = unet_model(
@@ -486,77 +380,78 @@ def main():
                     })
                     losses = []
 
+                # -----  스텝 단위로 평가 -----
+                if global_step==1 or global_step % args.eval_every == 0:
+                    accelerator.wait_for_everyone()
+
+                    # VGG 데이터셋으로 평가
+                    vgg_fad, vgg_clap_avg, vgg_clap_std = evaluate_model(
+                        accelerator=accelerator,
+                        unet_model=unet_model,
+                        vae=vae,
+                        image_processor=image_processor,
+                        text_encoder_list=text_encoder_list,
+                        adapter_list=adapter_list,
+                        tokenizer_list=tokenizer_list,
+                        csv_path=args.vgg_csv_path,
+                        inference_path=args.vgg_inference_path,
+                        inference_batch_size=args.inference_batch_size,
+                        pretrained_model_name_or_path=args.pretrained_model_name_or_path,
+                        seed=args.seed,
+                        duration=args.slice_duration,
+                        guidance_scale=args.guidance_scale,
+                        num_inference_steps=args.num_inference_steps,
+                        eta_audio=args.eta_audio,
+                        eval_id=f"step_{global_step}",  # 스텝 단위 표시
+                        target_folder=args.vgg_target_folder
+                    )
+                    accelerator.wait_for_everyone()
+
+                    # Audiocaps/Wavcaps 등 기본 csv로 평가
+                    fad, clap_avg, clap_std = evaluate_model(
+                        accelerator=accelerator,
+                        unet_model=unet_model,
+                        vae=vae,
+                        image_processor=image_processor,
+                        text_encoder_list=text_encoder_list,
+                        adapter_list=adapter_list,
+                        tokenizer_list=tokenizer_list,
+                        csv_path=args.csv_path,
+                        inference_path=args.inference_save_path,
+                        inference_batch_size=args.inference_batch_size,
+                        pretrained_model_name_or_path=args.pretrained_model_name_or_path,
+                        seed=args.seed,
+                        duration=args.slice_duration,
+                        guidance_scale=args.guidance_scale,
+                        num_inference_steps=args.num_inference_steps,
+                        eta_audio=args.eta_audio,
+                        eval_id=f"step_{global_step}",  # 스텝 단위 표시
+                        target_folder=args.target_folder
+                    )
+                    accelerator.wait_for_everyone()
+
+                    # wandb 로깅
+                    if accelerator.is_main_process:
+                        wandb.log({
+                            "eval/vggsparse_fad": vgg_fad,
+                            "eval/vggsparse_clap_avg": vgg_clap_avg,
+                            "eval/vggsparse_clap_std": vgg_clap_std,
+                            "eval/fad": fad,
+                            "eval/clap_avg": clap_avg,
+                            "eval/clap_std": clap_std,
+                            "step": global_step
+                        })
+
+
+                    # Save checkpoint
+                if global_step > 0 and (global_step % args.eval_every == 0) and accelerator.is_main_process:
+                    ckpt_dir = os.path.join(args.output_dir, f"checkpoint-step-{global_step}")
+                    accelerator.save_state(ckpt_dir)
+                    print(f"[Epoch {global_step}] Checkpoint saved at: {ckpt_dir}")
+                # ----------------------------------------------------
+
             if accelerator.is_main_process:
                 loop.set_postfix({"loss": loss.item()})
-
-
-        # if (epoch + 1) % args.eval_every == 0:
-        #     accelerator.wait_for_everyone()
-        #     fad, clap_avg, clap_std= evaluate_model(
-        #         accelerator=accelerator,
-        #         unet_model=unet_model,
-        #         vae=vae,
-        #         image_processor=image_processor,
-        #         text_encoder_list=text_encoder_list,
-        #         adapter_list=adapter_list,
-        #         tokenizer_list=tokenizer_list,
-        #         csv_path="/home/rtrt5060/vggsound_sparse_curated_292.csv",
-        #         inference_path="/home/rtrt5060/audio_lora_vggsound_sparse_inference",
-        #         inference_batch_size=args.inference_batch_size,
-        #         pretrained_model_name_or_path=args.pretrained_model_name_or_path,
-        #         seed=args.seed,
-        #         duration=args.slice_duration,
-        #         guidance_scale=args.guidance_scale,
-        #         num_inference_steps=args.num_inference_steps,
-        #         eta_audio=args.eta_audio,
-        #         epoch=(epoch + 1),
-        #         target_folder="/home/rtrt5060/vggsound_sparse_test_curated_final/audio"
-        #         )
-        #     if accelerator.is_main_process:
-        #         wandb.log({
-        #             "eval/vggsparse_fad": fad,
-        #             "eval/vggsparse_clap_avg": clap_avg,
-        #             "eval/vggsparse_clap_std": clap_std
-        #         })
-
-        #     accelerator.wait_for_everyone()
-        #     fad, clap_avg, clap_std= evaluate_model(
-        #         accelerator=accelerator,
-        #         unet_model=unet_model,
-        #         vae=vae,
-        #         image_processor=image_processor,
-        #         text_encoder_list=text_encoder_list,
-        #         adapter_list=adapter_list,
-        #         tokenizer_list=tokenizer_list,
-        #         csv_path=args.csv_path,
-        #         inference_path=args.inference_save_path,
-        #         inference_batch_size=args.inference_batch_size,
-        #         pretrained_model_name_or_path=args.pretrained_model_name_or_path,
-        #         seed=args.seed,
-        #         duration=args.slice_duration,
-        #         guidance_scale=args.guidance_scale,
-        #         num_inference_steps=args.num_inference_steps,
-        #         eta_audio=args.eta_audio,
-        #         epoch=(epoch + 1),
-        #         target_folder=args.target_folder
-        #         )
-        #     if accelerator.is_main_process:
-        #         wandb.log({
-        #             "eval/fad": fad,
-        #             "eval/clap_avg": clap_avg,
-        #             "eval/clap_std": clap_std,
-        #             "epoch": epoch + 1,
-        #             "step": global_step
-        #         })
-
-
-
-        # Save checkpoint
-        if (epoch + 1) % args.save_checkpoint == 0 and accelerator.is_main_process:
-            # accelerator.save_state expects a directory, so we use a folder name
-            ckpt_dir = os.path.join(args.output_dir, f"checkpoint-epoch-{epoch+1}")
-            accelerator.save_state(ckpt_dir)
-            print(f"[Epoch {epoch+1}] Checkpoint saved at: {ckpt_dir}")
 
     if accelerator.is_main_process:
         wandb.finish()
