@@ -1,5 +1,8 @@
-import argparse
+import sys
 import os
+sys.path.append(os.path.join(os.path.dirname(__file__), '../'))
+
+import argparse
 import torch
 import torch.nn as nn
 import torch.nn.functional as F
@@ -14,6 +17,10 @@ from einops import rearrange
 from omegaconf import OmegaConf
 from utils.utils import instantiate_from_config
 from accelerate import Accelerator
+from accelerate.utils import InitProcessGroupKwargs
+from datetime import timedelta
+
+
 from tqdm import tqdm
 import wandb
 
@@ -32,7 +39,7 @@ def parse_args():
     parser.add_argument("--lr", type=float, default=1e-5, help="학습률")
     parser.add_argument("--num_epochs", type=int, default=10, help="에폭 수")
     parser.add_argument("--gradient_accumulation_steps", type=int, default=32, help="그래디언트 누적 스텝")
-    parser.add_argument("--mixed_precision", type=str, default="bf16", choices=["no", "fp16", "bf16"], help="혼합 정밀도 설정")
+    parser.add_argument("--mixed_precision", type=str, default="no", choices=["no", "fp16", "bf16"], help="혼합 정밀도 설정")
     parser.add_argument("--eval_every", type=int, default=2, help="N 에폭마다 평가")
     parser.add_argument("--num_workers", type=int, default=4, help="num_workers")
     parser.add_argument("--save_checkpoint", type=int, default=100, help="save_checkpoint")
@@ -90,9 +97,9 @@ def evaluate_model(accelerator, unet_model, video_model, csv_path, inference_pat
         accelerator.wait_for_everyone()
 
         # 실제 fvd, CLIP 등 계산
-        fvd, clip_avg, clip_std = -1111, -1111, -1111
+        fvd, clip_avg = -1111, -1111
         if accelerator.is_main_process:
-            fvd, clip_avg, clip_std = evaluate_video_metrics(
+            fvd, clip_avg = evaluate_video_metrics(
                 preds_folder=inference_path,
                 target_folder=target_folder,
                 metrics=['fvd','clip'],
@@ -103,7 +110,7 @@ def evaluate_model(accelerator, unet_model, video_model, csv_path, inference_pat
         unet_model.train()
         accelerator.wait_for_everyone()
 
-        return fvd, clip_avg, clip_std
+        return fvd, clip_avg
 
 
 def main(args):
@@ -121,7 +128,6 @@ def main(args):
         kwargs_handlers=[ipg_handler]
     )
     device = accelerator.device
-
     # wandb
     if accelerator.is_main_process:
         wandb.init(project=args.wandb_project, name="video_lora_training")
@@ -146,7 +152,7 @@ def main(args):
     video_model = instantiate_from_config(video_config.model)
     state_dict = torch.load(args.videocrafter_ckpt)['state_dict']
     video_model.load_state_dict(state_dict, strict=False)
-    video_model.eval()
+    video_model.to(device=device).eval()
     video_unet = video_model.model.diffusion_model.eval()
 
     # 특정 부분만 학습
@@ -160,8 +166,8 @@ def main(args):
     optimizer = torch.optim.AdamW(trainable_params, lr=args.lr)
 
     # prepare
-    video_model, video_unet, optimizer, train_loader = accelerator.prepare(
-        video_model, video_unet, optimizer, train_loader
+    video_unet, optimizer, train_loader = accelerator.prepare(
+        video_unet, optimizer, train_loader
     )
 
     global_step = 0
@@ -172,62 +178,59 @@ def main(args):
         loop = tqdm(train_loader, desc=f"Epoch [{epoch+1}/{args.num_epochs}]", disable=not accelerator.is_main_process)
 
 
-        # eval test
-        if (epoch + 1) % args.eval_every == 0:
-            accelerator.wait_for_everyone()
-            if args.vgg_csv_path is not None:
-                vgg_fvd, vgg_clip_avg, vgg_clip_std = evaluate_model(
-                    accelerator=accelerator,
-                    unet_model=video_unet,
-                    video_model=video_model,
-                    csv_path=args.vgg_csv_path,
-                    inference_path=args.vgg_inference_save_path,
-                    inference_batch_size=args.inference_batch_size,
-                    seed=args.seed,
-                    guidance_scale=args.guidance_scale,
-                    num_inference_steps=args.num_inference_steps,
-                    epoch=(epoch + 1),
-                    height=args.height,
-                    width=args.width,
-                    frames=args.target_frames,
-                    ddim_eta=args.ddim_eta,
-                    fps=args.video_fps,
-                    target_folder=args.vgg_target_folder
-                )
+        # # eval test
+        # if epoch % args.eval_every == 0:
+        #     accelerator.wait_for_everyone()
 
-                if accelerator.is_main_process:
-                    wandb.log({
-                        "eval/vgg_fvd": vgg_fvd,
-                        "eval/vgg_clip_avg": vgg_clip_avg,
-                        "eval/vgg_clip_std": vgg_clip_std
-                    })
+        #     if args.vgg_csv_path is not None:
+        #         vgg_fvd, vgg_clip_avg = evaluate_model(
+        #             accelerator=accelerator,
+        #             unet_model=video_unet,
+        #             video_model=video_model,
+        #             csv_path=args.vgg_csv_path,
+        #             inference_path=args.vgg_inference_save_path,
+        #             inference_batch_size=args.inference_batch_size,
+        #             seed=args.seed,
+        #             guidance_scale=args.guidance_scale,
+        #             num_inference_steps=args.num_inference_steps,
+        #             epoch=epoch,
+        #             height=args.height,
+        #             width=args.width,
+        #             frames=args.target_frames,
+        #             ddim_eta=args.ddim_eta,
+        #             fps=args.video_fps,
+        #             target_folder=args.vgg_target_folder
+        #         )
 
-            fvd, clip_avg, clip_std= evaluate_model(
-                    accelerator=accelerator,
-                    unet_model=video_unet,
-                    video_model=video_model,
-                    csv_path=args.csv_path,
-                    inference_path=args.inference_save_path,
-                    inference_batch_size=args.inference_batch_size,
-                    seed=args.seed,
-                    guidance_scale=args.guidance_scale,
-                    num_inference_steps=args.num_inference_steps,
-                    epoch=(epoch + 1),
-                    height=args.height,
-                    width=args.width,
-                    frames=args.target_frames,
-                    ddim_eta=args.ddim_eta,
-                    fps=args.video_fps,
-                    target_folder=args.target_folder
-                )
-            if accelerator.is_main_process:
-                wandb.log({
-                    "eval/fvd": fvd,
-                    "eval/clip_avg": clip_avg,
-                    "eval/clip_std": clip_std,
-                    "epoch": epoch + 1,
-                    "step": global_step
-                })
+        #         if accelerator.is_main_process:
+        #             wandb.log({
+        #                 "eval/vgg_fvd": vgg_fvd,
+        #                 "eval/vgg_clip_avg": vgg_clip_avg,
+        #             })
+
+        #     fvd, clip_avg = evaluate_model(
+        #             accelerator=accelerator,
+        #             unet_model=video_unet,
+        #             video_model=video_model,
+        #             csv_path=args.csv_path,
+        #             inference_path=args.inference_save_path,
+        #             inference_batch_size=args.inference_batch_size,
+        #             seed=args.seed,
+        #             guidance_scale=args.guidance_scale,
+        #             num_inference_steps=args.num_inference_steps,
+        #             epoch=epoch,
+        #             height=args.height,
+        #             width=args.width,
+        #             frames=args.target_frames,
+        #             ddim_eta=args.ddim_eta,
+        #             fps=args.video_fps,
+        #             target_folder=args.target_folder
+        #         )
+        #     if accelerator.is_main_process:
+        #         wandb.log({
+        #             "eval/fvd": fvd,
+        #             "eval/clip_avg": clip_avg,
+        #         })
 
         for step, batch in enumerate(loop):
             video_tensor = batch["video_tensor"]  # [B, T, 3, 256, 256]
@@ -235,8 +238,14 @@ def main(args):
 
             batch_size = video_tensor.shape[0]
 
-            # (예시) 채널이 3이 되도록 permute
-            video_tensor = video_tensor.permute(0, 2, 1, 3, 4)  # -> [B, 3, T, 256, 256]
+            # print('---------------------------------------------')
+            # print("video_tensor", video_tensor.shape)
+            # print("video_tensor", video_tensor.shape)
+ 
+            video_tensor = video_tensor.permute(0, 4, 1, 2, 3)
+            
+            # print("video_tensor", video_tensor.shape)
+            # print("video_tensor", video_tensor.shape)
 
             with torch.no_grad():
                 video_latent = video_model.encode_first_stage(video_tensor)

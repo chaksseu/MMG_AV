@@ -53,7 +53,6 @@ def load_prompts(prompt_file: str) -> List[str]:
 
 
 import os
-os.environ["CUDA_VISIBLE_DEVICES"] = "0"
 
 ############################################################
 # Utility Functions
@@ -180,31 +179,53 @@ def make_ddim_schedule(
 
 @torch.no_grad()
 def run_inference(
-    accelerator=accelerator,
-    unet_model=unet_model,
-    video_model=video_model,
-    prompt_file=csv_path,
-    savedir=inference_path,
-    bs=inference_batch_size,
-    seed=seed,
-    unconditional_guidance_scale=unconditional_guidance_scale,
-    num_inference_steps=num_inference_steps,
-    height=height,
-    width=width,
-    frames=frames,
-    ddim_eta=ddim_eta,
-    fps=fps
+    accelerator,
+    unet_model,
+    video_model,
+    prompt_file,
+    savedir,
+    bs,
+    seed,
+    unconditional_guidance_scale,
+    num_inference_steps,
+    height,
+    width,
+    frames,
+    ddim_eta,
+    fps
 ):
-    try:
+    try:        
+        assert os.path.exists(prompt_file), f"Prompt file not found: {prompt_file}"
+        all_prompts = load_prompts(prompt_file)
+
+
+        ###all_prompts = all_prompts[:100]
+        print("all_prompts length", len(all_prompts))
+
+        # 전체 프롬프트를 num_processes에 맞게 균등 분배
+        num_processes = accelerator.num_processes
+
+        prompt_subsets = split_prompts_evenly(all_prompts, num_processes)
+
+
+        # 현재 프로세스 인덱스에 해당하는 프롬프트 subset
+        if accelerator.process_index < len(prompt_subsets):
+            process_prompts = prompt_subsets[accelerator.process_index]
+        else:
+            process_prompts = []
+        prompt_sublist = process_prompts
+        
+
         # Set unique seed per process
         unique_seed = seed + accelerator.process_index
         seed_everything(unique_seed)
         device = accelerator.device
         generator = torch.Generator(device=device).manual_seed(unique_seed)
 
+
         if not prompt_sublist:
             accelerator.print(f"Process {accelerator.process_index}: No prompts to process.")
-            return
+            #return
 
         do_video_cfg = unconditional_guidance_scale > 1.0
 
@@ -216,12 +237,7 @@ def run_inference(
         # Create output dirs (main process only)
         if accelerator.is_main_process:
             os.makedirs(savedir, exist_ok=True)
-            audio_dir = os.path.join(savedir, "audio")
-            video_dir = os.path.join(savedir, "video")
-            combined_dir = os.path.join(savedir, "combined_video")
-            os.makedirs(audio_dir, exist_ok=True)
-            os.makedirs(video_dir, exist_ok=True)
-            os.makedirs(combined_dir, exist_ok=True)
+        video_dir = savedir
 
         accelerator.wait_for_everyone()
 
@@ -280,7 +296,7 @@ def run_inference(
             # Denoising loop
             for step_idx, video_step in enumerate(time_range):
                 index = total_steps - step_idx - 1
-                video_ts = torch.full((current_batch_size,), video_step, device=device, dtype=torch.long)
+                video_ts = torch.full((current_batch_size,), video_step, device=device, dtype=video_latents.dtype)
 
                 # CFG for audio/video
                 if do_video_cfg:

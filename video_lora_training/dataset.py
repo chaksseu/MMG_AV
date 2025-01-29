@@ -6,6 +6,7 @@ import torch
 import torch.nn.functional as F
 from torch.utils.data import Dataset
 from torchvision import io 
+
 # import sys
 # sys.path.append(os.path.join(os.path.dirname(__file__), '../'))
 
@@ -52,7 +53,7 @@ class VideoTextDataset(Dataset):
         #         continue
         
         # 손상되지 않은 데이터만 남기기
-        self.df = self.df.iloc[valid_indices].reset_index(drop=True)
+        # self.df = self.df.iloc[valid_indices].reset_index(drop=True)
 
 
 
@@ -69,7 +70,6 @@ class VideoTextDataset(Dataset):
         video_path = os.path.join(self.video_dir, f"{video_id}")
 
         video, _, info = io.read_video(video_path, pts_unit="sec")   # video shape: (T, H, W, C)
-       
 
         current_video_frames = video.shape[0]
 
@@ -99,11 +99,11 @@ class VideoTextDataset(Dataset):
         after_max = sliced_video.max().item()
         after_min = sliced_video.min().item()
 
-        # (5) 디버깅용 출력 (불필요하다면 주석 처리)
-        print(f"[DEBUG] Loaded video shape: {video.shape}")
-        print(f"[DEBUG] Sliced video shape: {sliced_video.shape}")
-        print("[DEBUG] before max:", before_max, "before min:", before_min)
-        print("[DEBUG] after max:", after_max, "after min:", after_min)
+        # # (5) 디버깅용 출력 (불필요하다면 주석 처리)
+        # print(f"[DEBUG] Loaded video shape: {video.shape}")
+        # print(f"[DEBUG] Sliced video shape: {sliced_video.shape}")
+        # print("[DEBUG] before max:", before_max, "before min:", before_min)
+        # print("[DEBUG] after max:", after_max, "after min:", after_min)
 
         return {
             "video_tensor": sliced_video,  # (target_frames, H, W, C)

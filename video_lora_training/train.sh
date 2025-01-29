@@ -1,10 +1,10 @@
 #!/bin/bash
 
 # ========================= 기본값 설정 =========================
-VIDEO_CSV_PATH="/home/user/video_dataset.csv"               # 실제 CSV 파일 경로
-VIDEO_DIR="/home/user/preprocessed_video"                   # 비디오 파일 폴더 경로
-OUTPUT_DIR="/home/user/video_LoRA_checkpoint"               # 체크포인트 저장 폴더 경로
-WANDB_PROJECT="video_teacher_lora_training"                 # WandB 프로젝트 이름
+VIDEO_CSV_PATH="/workspace/webvid_download/preprocessed_WebVid_10M_0125_2097.csv"               # 실제 CSV 파일 경로
+VIDEO_DIR="/workspace/webvid_download/preprocessed_WebVid_10M_train_videos_0125"                   # 비디오 파일 폴더 경로
+OUTPUT_DIR="/workspace/video_lora_training_checkpoints_test"               # 체크포인트 저장 폴더 경로
+WANDB_PROJECT="video_teacher_lora_training_0128"                 # WandB 프로젝트 이름
 TRAIN_BATCH_SIZE=1
 GRAD_ACC_STEPS=1
 LR=1e-5
@@ -16,25 +16,25 @@ VIDEOCRAFTER_CKPT="scripts/evaluation/model.ckpt"           # 미리 학습된 V
 VIDEOCRAFTER_CONFIG="configs/inference_t2v_512_v2.0.yaml"   # VideoCrafter config 경로
 VIDEO_FPS=12.5
 TARGET_FRAMES=40
+HEIGHT=320
+WIDTH=512
 
 # ========================= 평가 관련 설정 =========================
 EVAL_EVERY=1                # N 에폭마다 평가
 INFERENCE_BATCH_SIZE=1
-INFERENCE_SAVE_PATH="/home/user/video_lora_inference"
+INFERENCE_SAVE_PATH="/workspace/video_lora_inference_0128"
 GUIDANCE_SCALE=12.0
-NUM_INFERENCE_STEPS=25
-TARGET_FOLDER="/home/user/video_eval_gt"  # 평가 시 사용될 GT 폴더
+NUM_INFERENCE_STEPS=1
+TARGET_FOLDER="/workspace/webvid_download/preprocessed_WebVid_10M_gt_test_videos_0125"  # 평가 시 사용될 GT 폴더
 SEED=42
+DDIM_ETA=0.0
 
 # (필요 시) VGG 관련 설정
-VGG_CSV_PATH=""                        # VGG eval 용 CSV 파일
-VGG_INFERENCE_SAVE_PATH=""             # VGG eval 시 inference 저장 폴더
-VGG_TARGET_FOLDER=""                   # VGG eval 시 GT 폴더 (비워두면 실행 안 됨)
+VGG_CSV_PATH="/workspace/vggsound_sparse_curated_292.csv"                        # VGG eval 용 CSV 파일
+VGG_INFERENCE_SAVE_PATH="/workspace/video_lora_vgg_inference_0128"             # VGG eval 시 inference 저장 폴더
+VGG_TARGET_FOLDER="/workspace/vggsound_sparse_test_curated_final/video"                   # VGG eval 시 GT 폴더 (비워두면 실행 안 됨)
 
-# ========================= 새로 추가된 인자 =========================
-HEIGHT=320
-WIDTH=512
-DDIM_ETA=0.0
+
 
 # ========================= 디렉토리 확인 및 생성 =========================
 mkdir -p "$OUTPUT_DIR"
@@ -58,13 +58,13 @@ if [ ! -d "$TARGET_FOLDER" ]; then
     exit 1
 fi
 
-# (필요 시) VGG 관련 폴더 체크
-if [ -n "$VGG_CSV_PATH" ] && [ ! -f "$VGG_CSV_PATH" ]; then
-    echo "Warning: VGG CSV 파일을 찾을 수 없습니다: $VGG_CSV_PATH"
-fi
-if [ -n "$VGG_TARGET_FOLDER" ] && [ ! -d "$VGG_TARGET_FOLDER" ]; then
-    echo "Warning: VGG GT 폴더를 찾을 수 없습니다: $VGG_TARGET_FOLDER"
-fi
+# # (필요 시) VGG 관련 폴더 체크
+# if [ -n "$VGG_CSV_PATH" ] && [ ! -f "$VGG_CSV_PATH" ]; then
+#     echo "Warning: VGG CSV 파일을 찾을 수 없습니다: $VGG_CSV_PATH"
+# fi
+# if [ -n "$VGG_TARGET_FOLDER" ] && [ ! -d "$VGG_TARGET_FOLDER" ]; then
+#     echo "Warning: VGG GT 폴더를 찾을 수 없습니다: $VGG_TARGET_FOLDER"
+# fi
 
 # ========================= 로깅(파라미터 확인) =========================
 echo "======================= Training Configuration ======================="
@@ -101,7 +101,7 @@ echo "========================================================================"
 
 # ========================= 실행 명령어 =========================
 # 아래에서 "train.py"는 실제 질문에 첨부된 Python 스크립트 파일 이름에 맞춰 사용합니다.
-accelerate launch train.py \
+accelerate launch video_lora_training/train.py \
     --csv_path "$VIDEO_CSV_PATH" \
     --video_dir "$VIDEO_DIR" \
     --output_dir "$OUTPUT_DIR" \

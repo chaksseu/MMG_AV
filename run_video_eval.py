@@ -156,7 +156,7 @@ def evaluate_video_metrics(preds_folder, target_folder, metrics, device, num_fra
 
     if 'clip' in metrics:
         clip_videos, caps = load_videos_with_caps(preds_folder, num_frames)
-        clip_score = calculate_clip(clip_videos, caps, calculate_per_frame, calculate_final, args.clip_model, device)
+        clip_score = calculate_clip(clip_videos, caps, calculate_per_frame, calculate_final, 'openai/clip-vit-base-patch16', device)
 
     return fvd_score["fvd"], clip_score["clip"]['final']
 
