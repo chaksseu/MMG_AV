@@ -5,8 +5,8 @@ from functools import partial
 from tqdm import tqdm
 
 # 설정 변수
-SOURCE_DIR = 'WebVid_10M_train_videos'        # 원본 mp4 파일이 있는 폴더 경로
-DEST_DIR = 'preprocessed_WebVid_10M_train_videos_0125'     # 전처리된 파일을 저장할 폴더 경로
+SOURCE_DIR = '/home/jupyter/WebVid_10M_train_videos'        # 원본 mp4 파일이 있는 폴더 경로
+DEST_DIR = '/home/jupyter/preprocessed_WebVid_10M_train_videos_0130'     # 전처리된 파일을 저장할 폴더 경로
 MIN_DURATION = 4                           # 최소 길이 (초)
 MAX_DURATION = 30                          # 최대 길이 (초)
 RESIZE_WIDTH = 512
@@ -69,7 +69,7 @@ def main():
     print(f"총 {total_files}개의 mp4 파일을 처리합니다.")
 
     # 멀티프로세싱 설정
-    pool_size = cpu_count() // 2
+    pool_size = cpu_count()
     print(f"멀티프로세싱을 사용하여 {pool_size}개의 프로세스로 처리합니다.")
 
     # 프로세스할 파일의 전체 경로와 대상 경로 준비
