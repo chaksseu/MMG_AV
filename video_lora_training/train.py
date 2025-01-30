@@ -155,6 +155,10 @@ def main(args):
     video_model.to(device=device).eval()
     video_unet = video_model.model.diffusion_model.eval()
 
+
+    
+
+
     # 특정 부분만 학습
     for name, param in video_unet.named_parameters():
         if 'lora_block' in name:
@@ -256,19 +260,22 @@ def main(args):
             mask = (torch.rand(batch_size, 1, 1, device=video_text_embed.device) < 0.1)
             video_text_embed = torch.where(mask, video_null_text_embed, video_text_embed)
 
-            timesteps = torch.randint(0, 1000, (batch_size,), device=device).long()
+            timesteps = torch.randint(0, 1000, (batch_size,), device=device)
 
             noise_video = torch.randn_like(video_latent)
             noised_video_latent = video_model.q_sample(
                 x_start=video_latent, t=timesteps, noise=noise_video
             )
 
+
+            fps_tensor = torch.full((batch_size,), args.video_fps, device=device)
+
             # UNet forward
             video_original_output = video_unet(
                 noised_video_latent,
                 timesteps,
                 context=video_text_embed,
-                fps=args.video_fps  # 필요하다면 float로
+                fps=fps_tensor  # 필요하다면 float로
             )
 
             loss = F.mse_loss(video_original_output, noise_video)
@@ -293,6 +300,63 @@ def main(args):
 
             if accelerator.is_main_process:
                 loop.set_postfix({"loss": loss.item()})
+
+
+            # -----  스텝 단위로 평가 -----
+            if global_step==1 or global_step % args.eval_every == 0:
+                accelerator.wait_for_everyone()
+
+                if args.vgg_csv_path is not None:
+                    vgg_fvd, vgg_clip_avg = evaluate_model(
+                        accelerator=accelerator,
+                        unet_model=video_unet,
+                        video_model=video_model,
+                        csv_path=args.vgg_csv_path,
+                        inference_path=args.vgg_inference_save_path,
+                        inference_batch_size=args.inference_batch_size,
+                        seed=args.seed,
+                        guidance_scale=args.guidance_scale,
+                        num_inference_steps=args.num_inference_steps,
+                        epoch=epoch,
+                        height=args.height,
+                        width=args.width,
+                        frames=args.target_frames,
+                        ddim_eta=args.ddim_eta,
+                        fps=args.video_fps,
+                        target_folder=args.vgg_target_folder
+                    )
+
+                    if accelerator.is_main_process:
+                        wandb.log({
+                            "eval/vgg_fvd": vgg_fvd,
+                            "eval/vgg_clip_avg": vgg_clip_avg,
+                        })
+
+                fvd, clip_avg = evaluate_model(
+                        accelerator=accelerator,
+                        unet_model=video_unet,
+                        video_model=video_model,
+                        csv_path=args.csv_path,
+                        inference_path=args.inference_save_path,
+                        inference_batch_size=args.inference_batch_size,
+                        seed=args.seed,
+                        guidance_scale=args.guidance_scale,
+                        num_inference_steps=args.num_inference_steps,
+                        epoch=epoch,
+                        height=args.height,
+                        width=args.width,
+                        frames=args.target_frames,
+                        ddim_eta=args.ddim_eta,
+                        fps=args.video_fps,
+                        target_folder=args.target_folder
+                    )
+                if accelerator.is_main_process:
+                    wandb.log({
+                        "eval/fvd": fvd,
+                        "eval/clip_avg": clip_avg,
+                    })
+
+
 
         # Checkpoint 저장
         if (epoch + 1) % args.save_checkpoint == 0 and accelerator.is_main_process:

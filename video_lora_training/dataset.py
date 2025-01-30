@@ -4,11 +4,10 @@ import random
 import pandas as pd
 import torch
 import torch.nn.functional as F
-from torch.utils.data import Dataset
+from torch.utils.data import Dataset, DataLoader
 from torchvision import io 
-
-# import sys
-# sys.path.append(os.path.join(os.path.dirname(__file__), '../'))
+import logging
+from functools import wraps
 
 
 class VideoTextDataset(Dataset):
@@ -111,14 +110,24 @@ class VideoTextDataset(Dataset):
         }
 
 
+
+
 def main():
     """
-    간단히 Dataset 동작을 확인하기 위한 main 함수 예시
+    간단히 Dataset 동작을 확인하고, 에러가 발생한 비디오 파일의 이름을 로깅하기 위한 main 함수 예시
     """
 
+    # 로그 설정
+    logging.basicConfig(
+        filename='error_log.log',  # 로그 파일 이름
+        level=logging.ERROR,       # 로그 레벨 설정
+        format='%(asctime)s - %(levelname)s - %(message)s',
+        datefmt='%Y-%m-%d %H:%M:%S'
+    )
+
     # 예시용 CSV 경로와 비디오 폴더 경로 (사용 환경에 맞춰 수정)
-    csv_path = "/workspace/webvid_download/preprocessed_WebVid_10M_0125_2097.csv"  # 예: id,caption,split
-    video_dir = "/workspace/webvid_download/preprocessed_WebVid_10M_train_videos_0125"      # "001.mp4" 등이 들어있는 폴더
+    csv_path = "/home/rtrt5060/preprocessed_WebVid_10M_0130_75.csv"               # 실제 CSV 파일 경로
+    video_dir = '/home/rtrt5060/preprocessed_WebVid_10M_train_videos_0130'   
     split = "train"
 
     # Dataset 생성
@@ -129,38 +138,68 @@ def main():
         target_frames=40
     )
 
-    print(f"Dataset length: {len(dataset)}")
+    # 기존 __getitem__ 메서드를 저장
+    original_getitem = dataset.__getitem__
 
-    # 0번 샘플 확인
-    if len(dataset) > 0:
-        sample = dataset[0]
-        video_tensor = sample["video_tensor"]
-        caption = sample["caption"]
+    @wraps(original_getitem)
+    def safe_getitem(idx):
+        try:
+            return original_getitem(idx)
+        except Exception as e:
+            # 에러가 발생한 경우 해당 비디오 ID를 로깅
+            video_id = dataset.df.iloc[idx]["id"]
+            video_path = os.path.join(dataset.video_dir, f"{video_id}.mp4")
+            logging.error(f"Failed to load video: {video_path}. Error: {e}")
+            return None  # 에러가 발생한 경우 None 반환
 
-        print(f"Video tensor shape: {video_tensor.shape}")
-        print(f"Caption: {caption}")
+    # __getitem__ 메서드를 래핑된 함수로 교체
+    dataset.__getitem__ = safe_getitem
 
-        sample = dataset[1]
-        video_tensor = sample["video_tensor"]
-        caption = sample["caption"]
+    # 커스텀 콜레이트 함수 정의
+    def custom_collate_fn(batch):
+        """
+        배치 내에서 None 값을 제거하는 커스텀 콜레이트 함수
+        """
+        # None 값을 제거
+        batch = [item for item in batch if item is not None]
+        if not batch:
+            return {}
+        # 일반적인 콜레이트 동작 수행
+        return torch.utils.data.dataloader.default_collate(batch)
 
-        print(f"Video tensor shape: {video_tensor.shape}")
-        print(f"Caption: {caption}")
+    # DataLoader 생성
+    dataloader = DataLoader(
+        dataset,
+        batch_size=128,           # 적절한 배치 사이즈로 설정
+        shuffle=True,
+        num_workers=0,           # 에러 핸들링을 용이하게 하기 위해 0으로 설정
+        drop_last=False,
+        collate_fn=custom_collate_fn  # 커스텀 콜레이트 함수 사용
+    )
 
-        sample = dataset[2]
-        video_tensor = sample["video_tensor"]
-        caption = sample["caption"]
+    # 유효한 샘플 수 카운트
+    valid_samples = 0
+    total_attempted = len(dataset)
 
-        print(f"Video tensor shape: {video_tensor.shape}")
-        print(f"Caption: {caption}")
+    for batch in dataloader:
+        if not batch:
+            # 빈 배치인 경우 (모든 샘플이 None인 경우)
+            continue
+        batch_size = len(batch['caption'])
+        print("video tensor shape", batch['video_tensor'].shape)
+        valid_samples += batch_size
+        # 여기서 실제 모델에 데이터를 입력하거나 다른 처리를 할 수 있습니다.
+        # 예:
+        # videos = batch['video_tensor']
+        # captions = batch['caption']
+        # ... 모델 처리 ...
 
-        sample = dataset[3]
-        video_tensor = sample["video_tensor"]
-        caption = sample["caption"]
+    failed_samples = total_attempted - valid_samples
 
-        print(f"Video tensor shape: {video_tensor.shape}")
-        print(f"Caption: {caption}")
-
+    print(f"Total samples attempted: {total_attempted}")
+    print(f"Successfully loaded samples: {valid_samples}")
+    print(f"Failed samples: {failed_samples}")
+    print("에러 로그는 'error_log.log' 파일을 확인하세요.")
 
 if __name__ == "__main__":
     main()

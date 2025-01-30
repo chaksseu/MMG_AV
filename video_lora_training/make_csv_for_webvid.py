@@ -1,9 +1,10 @@
 import os
 import pandas as pd
+import re
 
-# mp4 파일들이 위치한 폴더 경로를 설정하세요
-folder_path = 'preprocessed_WebVid_10M_train_videos_0125'  # 예: 'C:/videos'
-output_csv = 'preprocessed_WebVid_10M_0125_2097.csv'  # 원하는 출력 파일 이름으로 변경 가능
+# mp4 파일들이 위치한 폴더 경로 설정
+folder_path = '/home/rtrt5060/preprocessed_WebVid_10M_train_videos_0130'
+output_csv = '/home/rtrt5060/preprocessed_WebVid_10M_0130_75.csv'
 
 # 폴더 내 모든 mp4 파일 목록 가져오기
 file_list = [f for f in os.listdir(folder_path) if f.endswith('.mp4')]
@@ -11,16 +12,17 @@ file_list = [f for f in os.listdir(folder_path) if f.endswith('.mp4')]
 # id와 caption을 저장할 리스트 초기화
 ids = []
 captions = []
-num_test = 100
-
+num_test = 16
 
 for filename in file_list:
     ids.append(filename)
-    # 'name_' 뒤와 '.mp4' 앞 사이의 문자열을 caption으로 추출
-    try:
-        caption = filename.split('_name_')[1].rsplit('.mp4', 1)[0]
-    except IndexError:
-        caption = ''
+    
+    # 정규 표현식을 사용하여 앞 숫자 부분을 제거
+    caption = re.sub(r'^\d+_', '', filename).rsplit('.mp4', 1)[0]
+    
+    # 언더스코어를 공백으로 변환
+    caption = caption.replace('_', ' ')
+    
     captions.append(caption)
 
 # 데이터프레임 생성
@@ -29,12 +31,12 @@ df = pd.DataFrame({
     'caption': captions
 })
 
-# 데이터프레임을 랜덤하게 섞기 (재현 가능성을 위해 random_state 설정)
+# 데이터프레임을 랜덤하게 섞기
 df = df.sample(frac=1, random_state=42).reset_index(drop=True)
 
-# split 열 추가: 상위 5000개는 'test', 나머지는 'train'
+# split 열 추가: 상위 num_test 개는 'test', 나머지는 'train'
 df['split'] = ['test' if i < num_test else 'train' for i in range(len(df))]
 
 # CSV 파일로 저장
-df.to_csv(output_csv, index=False, encoding='utf-8-sig')  # 한글 깨짐 방지를 위해 encoding 설정
+df.to_csv(output_csv, index=False, encoding='utf-8-sig')
 print(f"CSV 파일이 '{output_csv}'로 저장되었습니다.")

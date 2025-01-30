@@ -1,10 +1,10 @@
 #!/bin/bash
 
 # ========================= 기본값 설정 =========================
-VIDEO_CSV_PATH="/workspace/webvid_download/preprocessed_WebVid_10M_0125_2097.csv"               # 실제 CSV 파일 경로
-VIDEO_DIR="/workspace/webvid_download/preprocessed_WebVid_10M_train_videos_0125"                   # 비디오 파일 폴더 경로
-OUTPUT_DIR="/workspace/video_lora_training_checkpoints_test"               # 체크포인트 저장 폴더 경로
-WANDB_PROJECT="video_teacher_lora_training_0128"                 # WandB 프로젝트 이름
+VIDEO_CSV_PATH="/home/rtrt5060/preprocessed_WebVid_10M_0130_75.csv"               # 실제 CSV 파일 경로
+VIDEO_DIR='/home/rtrt5060/preprocessed_WebVid_10M_train_videos_0130'                   # 비디오 파일 폴더 경로
+OUTPUT_DIR="/home/rtrt5060/video_lora_training_checkpoints_test"               # 체크포인트 저장 폴더 경로
+WANDB_PROJECT="video_teacher_lora_training_test_0130"                 # WandB 프로젝트 이름
 TRAIN_BATCH_SIZE=1
 GRAD_ACC_STEPS=1
 LR=1e-5
@@ -20,19 +20,19 @@ HEIGHT=320
 WIDTH=512
 
 # ========================= 평가 관련 설정 =========================
-EVAL_EVERY=1                # N 에폭마다 평가
+EVAL_EVERY=1                # N step마다 평가
 INFERENCE_BATCH_SIZE=1
-INFERENCE_SAVE_PATH="/workspace/video_lora_inference_0128"
+INFERENCE_SAVE_PATH="/home/rtrt5060/video_lora_inference_0128"
 GUIDANCE_SCALE=12.0
 NUM_INFERENCE_STEPS=1
-TARGET_FOLDER="/workspace/webvid_download/preprocessed_WebVid_10M_gt_test_videos_0125"  # 평가 시 사용될 GT 폴더
+TARGET_FOLDER="/home/rtrt5060/preprocessed_WebVid_10M_gt_test_videos_0130"  # 평가 시 사용될 GT 폴더
 SEED=42
 DDIM_ETA=0.0
 
 # (필요 시) VGG 관련 설정
-VGG_CSV_PATH="/workspace/vggsound_sparse_curated_292.csv"                        # VGG eval 용 CSV 파일
-VGG_INFERENCE_SAVE_PATH="/workspace/video_lora_vgg_inference_0128"             # VGG eval 시 inference 저장 폴더
-VGG_TARGET_FOLDER="/workspace/vggsound_sparse_test_curated_final/video"                   # VGG eval 시 GT 폴더 (비워두면 실행 안 됨)
+VGG_CSV_PATH="/home/rtrt5060/vggsound_sparse_curated_292.csv"                        # VGG eval 용 CSV 파일
+VGG_INFERENCE_SAVE_PATH="/home/rtrt5060/video_lora_vgg_inference_0128"             # VGG eval 시 inference 저장 폴더
+VGG_TARGET_FOLDER="/home/rtrt5060/vggsound_sparse_test_curated_final/video"                   # VGG eval 시 GT 폴더 (비워두면 실행 안 됨)
 
 
 
