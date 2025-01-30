@@ -166,8 +166,18 @@ def main(args):
         else:
             param.requires_grad = False
 
-    trainable_params = [p for p in video_unet.parameters() if p.requires_grad]
-    optimizer = torch.optim.AdamW(trainable_params, lr=args.lr)
+    # 전체 파라미터 개수 계산
+    total_params = sum(p.numel() for p in video_unet.parameters())
+    # 학습 가능한 파라미터 개수 계산
+    trainable_params = sum(p.numel() for p in video_unet.parameters() if p.requires_grad)
+
+    # 파라미터 개수 출력
+    print(f"전체 파라미터 개수: {total_params}")
+    print(f"학습 가능한 파라미터 개수: {trainable_params}")
+
+    # 학습 가능한 파라미터 리스트 생성
+    trainable_params_list = [p for p in video_unet.parameters() if p.requires_grad]
+    optimizer = torch.optim.AdamW(trainable_params_list, lr=args.lr)
 
     # prepare
     video_unet, optimizer, train_loader = accelerator.prepare(

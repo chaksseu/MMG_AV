@@ -9,7 +9,7 @@ TRAIN_BATCH_SIZE=1
 GRAD_ACC_STEPS=1
 LR=1e-5
 NUM_EPOCHS=16
-MIXED_PRECISION="no"                                        # ["no", "fp16", "bf16"] 중 선택
+MIXED_PRECISION="bf16"                                        # ["no", "fp16", "bf16"] 중 선택
 NUM_WORKERS=4
 SAVE_CHECKPOINT=2                                           # 에폭마다 저장 (예: 2 에폭마다)
 VIDEOCRAFTER_CKPT="scripts/evaluation/model.ckpt"           # 미리 학습된 VideoCrafter 모델 ckpt 경로
@@ -22,7 +22,7 @@ WIDTH=512
 # ========================= 평가 관련 설정 =========================
 EVAL_EVERY=1                # N step마다 평가
 INFERENCE_BATCH_SIZE=1
-INFERENCE_SAVE_PATH="/home/rtrt5060/video_lora_inference_0128"
+INFERENCE_SAVE_PATH="/home/rtrt5060/video_lora_inference_0130"
 GUIDANCE_SCALE=12.0
 NUM_INFERENCE_STEPS=1
 TARGET_FOLDER="/home/rtrt5060/preprocessed_WebVid_10M_gt_test_videos_0130"  # 평가 시 사용될 GT 폴더
