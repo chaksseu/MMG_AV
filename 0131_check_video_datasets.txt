@@ -1,0 +1,144 @@
+Processing Batches:   0%|          | 0/14905 [00:00<?, ?batch/s]Processing Batches:   0%|          | 1/14905 [00:11<46:28:58, 11.23s/batch]Processing Batches:   0%|          | 2/14905 [00:18<37:41:18,  9.10s/batch]Processing Batches:   0%|          | 3/14905 [00:29<41:06:15,  9.93s/batch]Processing Batches:   0%|          | 4/14905 [00:38<38:25:03,  9.28s/batch]Processing Batches:   0%|          | 5/14905 [00:45<35:47:32,  8.65s/batch]Processing Batches:   0%|          | 6/14905 [00:53<35:12:30,  8.51s/batch]Processing Batches:   0%|          | 7/14905 [01:01<34:04:57,  8.24s/batch]Processing Batches:   0%|          | 8/14905 [01:10<35:08:51,  8.49s/batch]Processing Batches:   0%|          | 9/14905 [01:17<33:14:08,  8.03s/batch]Processing Batches:   0%|          | 10/14905 [01:26<33:57:40,  8.21s/batch]Processing Batches:   0%|          | 11/14905 [01:33<32:55:59,  7.96s/batch]Processing Batches:   0%|          | 12/14905 [01:40<32:09:07,  7.77s/batch]Processing Batches:   0%|          | 13/14905 [01:49<32:39:29,  7.89s/batch]Processing Batches:   0%|          | 14/14905 [01:56<32:27:24,  7.85s/batch]Processing Batches:   0%|          | 15/14905 [02:04<32:47:07,  7.93s/batch]Processing Batches:   0%|          | 16/14905 [02:12<32:49:07,  7.94s/batch]Processing Batches:   0%|          | 17/14905 [02:20<32:59:55,  7.98s/batch]Processing Batches:   0%|          | 18/14905 [02:29<33:47:37,  8.17s/batch]Processing Batches:   0%|          | 19/14905 [02:36<32:18:53,  7.81s/batch]Processing Batches:   0%|          | 20/14905 [02:43<31:47:09,  7.69s/batch]Processing Batches:   0%|          | 21/14905 [02:52<32:39:03,  7.90s/batch]Processing Batches:   0%|          | 22/14905 [02:59<31:45:06,  7.68s/batch]Processing Batches:   0%|          | 23/14905 [03:07<32:15:57,  7.81s/batch]Processing Batches:   0%|          | 24/14905 [03:15<32:14:44,  7.80s/batch]Processing Batches:   0%|          | 25/14905 [03:23<32:40:42,  7.91s/batch]Processing Batches:   0%|          | 26/14905 [03:29<30:33:58,  7.40s/batch]Processing Batches:   0%|          | 27/14905 [03:36<29:40:02,  7.18s/batch]Processing Batches:   0%|          | 28/14905 [03:45<31:46:33,  7.69s/batch]Processing Batches:   0%|          | 29/14905 [03:54<34:00:00,  8.23s/batch]Processing Batches:   0%|          | 30/14905 [04:01<32:06:09,  7.77s/batch]Processing Batches:   0%|          | 31/14905 [04:09<32:06:14,  7.77s/batch]Processing Batches:   0%|          | 32/14905 [04:17<32:53:27,  7.96s/batch]Processing Batches:   0%|          | 33/14905 [04:24<31:34:22,  7.64s/batch]Processing Batches:   0%|          | 34/14905 [04:33<32:45:04,  7.93s/batch]Processing Batches:   0%|          | 35/14905 [04:41<33:00:02,  7.99s/batch]Processing Batches:   0%|          | 36/14905 [04:48<31:48:59,  7.70s/batch]Processing Batches:   0%|          | 37/14905 [04:55<30:58:44,  7.50s/batch]Processing Batches:   0%|          | 38/14905 [05:04<32:51:49,  7.96s/batch]Processing Batches:   0%|          | 39/14905 [05:13<33:57:22,  8.22s/batch]Processing Batches:   0%|          | 40/14905 [05:21<33:30:27,  8.11s/batch]Processing Batches:   0%|          | 41/14905 [05:29<33:34:22,  8.13s/batch]Processing Batches:   0%|          | 42/14905 [05:35<31:14:40,  7.57s/batch]Processing Batches:   0%|          | 43/14905 [05:43<31:25:23,  7.61s/batch]Processing Batches:   0%|          | 44/14905 [05:51<32:39:04,  7.91s/batch]Processing Batches:   0%|          | 45/14905 [05:59<32:42:44,  7.92s/batch]Processing Batches:   0%|          | 46/14905 [06:07<32:44:14,  7.93s/batch]Processing Batches:   0%|          | 47/14905 [06:14<31:14:39,  7.57s/batch]Processing Batches:   0%|          | 48/14905 [06:21<31:08:50,  7.55s/batch]Processing Batches:   0%|          | 49/14905 [06:30<31:56:20,  7.74s/batch]Processing Batches:   0%|          | 50/14905 [06:38<33:01:38,  8.00s/batch]Processing Batches:   0%|          | 51/14905 [06:47<34:28:37,  8.36s/batch]Processing Batches:   0%|          | 52/14905 [06:56<34:44:38,  8.42s/batch]Processing Batches:   0%|          | 53/14905 [07:05<34:51:02,  8.45s/batch]Processing Batches:   0%|          | 54/14905 [07:12<34:02:29,  8.25s/batch]Processing Batches:   0%|          | 55/14905 [07:20<33:43:41,  8.18s/batch]Processing Batches:   0%|          | 56/14905 [07:29<34:54:22,  8.46s/batch]Processing Batches:   0%|          | 57/14905 [07:36<32:52:17,  7.97s/batch]Processing Batches:   0%|          | 58/14905 [07:44<32:57:16,  7.99s/batch]Processing Batches:   0%|          | 59/14905 [07:52<31:59:38,  7.76s/batch]Processing Batches:   0%|          | 60/14905 [08:00<32:39:12,  7.92s/batch]Processing Batches:   0%|          | 61/14905 [08:08<32:37:14,  7.91s/batch]Processing Batches:   0%|          | 62/14905 [08:15<32:07:40,  7.79s/batch]Processing Batches:   0%|          | 63/14905 [08:23<32:03:41,  7.78s/batch]Processing Batches:   0%|          | 64/14905 [08:30<31:27:52,  7.63s/batch]Processing Batches:   0%|          | 65/14905 [08:38<31:05:10,  7.54s/batch]Processing Batches:   0%|          | 66/14905 [08:46<32:39:26,  7.92s/batch]Processing Batches:   0%|          | 67/14905 [08:55<32:53:57,  7.98s/batch]Processing Batches:   0%|          | 68/14905 [09:02<31:47:13,  7.71s/batch]Processing Batches:   0%|          | 69/14905 [09:09<30:57:29,  7.51s/batch]Processing Batches:   0%|          | 70/14905 [09:17<32:23:14,  7.86s/batch]Processing Batches:   0%|          | 71/14905 [09:25<32:36:59,  7.92s/batch]Processing Batches:   0%|          | 72/14905 [09:33<32:01:21,  7.77s/batch]Processing Batches:   0%|          | 73/14905 [09:40<31:39:51,  7.69s/batch]Processing Batches:   0%|          | 74/14905 [09:48<31:44:41,  7.71s/batch]Processing Batches:   1%|          | 75/14905 [09:56<32:18:45,  7.84s/batch]Processing Batches:   1%|          | 76/14905 [10:06<34:21:45,  8.34s/batch]Processing Batches:   1%|          | 77/14905 [10:13<32:34:08,  7.91s/batch]Processing Batches:   1%|          | 78/14905 [10:20<32:28:36,  7.89s/batch]Processing Batches:   1%|          | 79/14905 [10:29<32:52:00,  7.98s/batch]Processing Batches:   1%|          | 80/14905 [10:35<30:55:05,  7.51s/batch]Processing Batches:   1%|          | 81/14905 [10:43<31:18:35,  7.60s/batch]Processing Batches:   1%|          | 82/14905 [10:51<32:04:00,  7.79s/batch]Processing Batches:   1%|          | 83/14905 [10:58<31:19:55,  7.61s/batch]Processing Batches:   1%|          | 84/14905 [11:06<32:03:53,  7.79s/batch]Processing Batches:   1%|          | 85/14905 [11:15<32:49:53,  7.98s/batch]Processing Batches:   1%|          | 86/14905 [11:24<34:43:30,  8.44s/batch]Processing Batches:   1%|          | 87/14905 [11:33<34:20:35,  8.34s/batch]Processing Batches:   1%|          | 88/14905 [11:40<33:43:59,  8.20s/batch]Processing Batches:   1%|          | 89/14905 [11:49<34:16:16,  8.33s/batch]Processing Batches:   1%|          | 90/14905 [11:57<33:55:31,  8.24s/batch]Processing Batches:   1%|          | 91/14905 [12:06<34:34:46,  8.40s/batch]Processing Batches:   1%|          | 92/14905 [12:14<34:26:33,  8.37s/batch]Processing Batches:   1%|          | 93/14905 [12:22<33:14:05,  8.08s/batch]Processing Batches:   1%|          | 94/14905 [12:31<34:37:00,  8.41s/batch]Processing Batches:   1%|          | 95/14905 [12:39<34:28:09,  8.38s/batch]Processing Batches:   1%|          | 96/14905 [12:47<34:17:31,  8.34s/batch]Processing Batches:   1%|          | 97/14905 [12:54<32:06:50,  7.81s/batch]Processing Batches:   1%|          | 98/14905 [13:01<31:26:03,  7.64s/batch]Processing Batches:   1%|          | 99/14905 [13:09<32:14:57,  7.84s/batch]Processing Batches:   1%|          | 100/14905 [13:18<32:47:50,  7.98s/batch]Processing Batches:   1%|          | 101/14905 [13:25<31:52:08,  7.75s/batch]Processing Batches:   1%|          | 102/14905 [13:32<30:33:16,  7.43s/batch]Processing Batches:   1%|          | 103/14905 [13:40<31:34:47,  7.68s/batch]Processing Batches:   1%|          | 104/14905 [13:48<31:52:17,  7.75s/batch]Processing Batches:   1%|          | 105/14905 [13:55<30:56:26,  7.53s/batch]Processing Batches:   1%|          | 106/14905 [14:03<31:20:28,  7.62s/batch]Processing Batches:   1%|          | 107/14905 [14:11<32:22:43,  7.88s/batch]Processing Batches:   1%|          | 108/14905 [14:18<30:39:20,  7.46s/batch]Processing Batches:   1%|          | 109/14905 [14:25<30:24:28,  7.40s/batch]Processing Batches:   1%|          | 110/14905 [14:32<30:10:58,  7.34s/batch]Processing Batches:   1%|          | 111/14905 [14:39<29:48:05,  7.25s/batch]Processing Batches:   1%|          | 112/14905 [14:47<30:50:16,  7.50s/batch]Processing Batches:   1%|          | 112/14905 [14:52<32:45:45,  7.97s/batch]
+video tensor shape torch.Size([32, 40, 320, 512, 3])
+video tensor shape torch.Size([32, 40, 320, 512, 3])
+video tensor shape torch.Size([32, 40, 320, 512, 3])
+video tensor shape torch.Size([32, 40, 320, 512, 3])
+video tensor shape torch.Size([32, 40, 320, 512, 3])
+video tensor shape torch.Size([32, 40, 320, 512, 3])
+video tensor shape torch.Size([32, 40, 320, 512, 3])
+video tensor shape torch.Size([32, 40, 320, 512, 3])
+video tensor shape torch.Size([32, 40, 320, 512, 3])
+video tensor shape torch.Size([32, 40, 320, 512, 3])
+video tensor shape torch.Size([32, 40, 320, 512, 3])
+video tensor shape torch.Size([32, 40, 320, 512, 3])
+video tensor shape torch.Size([32, 40, 320, 512, 3])
+video tensor shape torch.Size([32, 40, 320, 512, 3])
+video tensor shape torch.Size([32, 40, 320, 512, 3])
+video tensor shape torch.Size([32, 40, 320, 512, 3])
+video tensor shape torch.Size([32, 40, 320, 512, 3])
+video tensor shape torch.Size([32, 40, 320, 512, 3])
+video tensor shape torch.Size([32, 40, 320, 512, 3])
+video tensor shape torch.Size([32, 40, 320, 512, 3])
+video tensor shape torch.Size([32, 40, 320, 512, 3])
+video tensor shape torch.Size([32, 40, 320, 512, 3])
+video tensor shape torch.Size([32, 40, 320, 512, 3])
+video tensor shape torch.Size([32, 40, 320, 512, 3])
+video tensor shape torch.Size([32, 40, 320, 512, 3])
+video tensor shape torch.Size([32, 40, 320, 512, 3])
+video tensor shape torch.Size([32, 40, 320, 512, 3])
+video tensor shape torch.Size([32, 40, 320, 512, 3])
+video tensor shape torch.Size([32, 40, 320, 512, 3])
+video tensor shape torch.Size([32, 40, 320, 512, 3])
+video tensor shape torch.Size([32, 40, 320, 512, 3])
+video tensor shape torch.Size([32, 40, 320, 512, 3])
+video tensor shape torch.Size([32, 40, 320, 512, 3])
+video tensor shape torch.Size([32, 40, 320, 512, 3])
+video tensor shape torch.Size([32, 40, 320, 512, 3])
+video tensor shape torch.Size([32, 40, 320, 512, 3])
+video tensor shape torch.Size([32, 40, 320, 512, 3])
+video tensor shape torch.Size([32, 40, 320, 512, 3])
+video tensor shape torch.Size([32, 40, 320, 512, 3])
+video tensor shape torch.Size([32, 40, 320, 512, 3])
+video tensor shape torch.Size([32, 40, 320, 512, 3])
+video tensor shape torch.Size([32, 40, 320, 512, 3])
+video tensor shape torch.Size([32, 40, 320, 512, 3])
+video tensor shape torch.Size([32, 40, 320, 512, 3])
+video tensor shape torch.Size([32, 40, 320, 512, 3])
+video tensor shape torch.Size([32, 40, 320, 512, 3])
+video tensor shape torch.Size([32, 40, 320, 512, 3])
+video tensor shape torch.Size([32, 40, 320, 512, 3])
+video tensor shape torch.Size([32, 40, 320, 512, 3])
+video tensor shape torch.Size([32, 40, 320, 512, 3])
+video tensor shape torch.Size([32, 40, 320, 512, 3])
+video tensor shape torch.Size([32, 40, 320, 512, 3])
+video tensor shape torch.Size([32, 40, 320, 512, 3])
+video tensor shape torch.Size([32, 40, 320, 512, 3])
+video tensor shape torch.Size([32, 40, 320, 512, 3])
+video tensor shape torch.Size([32, 40, 320, 512, 3])
+video tensor shape torch.Size([32, 40, 320, 512, 3])
+video tensor shape torch.Size([32, 40, 320, 512, 3])
+video tensor shape torch.Size([32, 40, 320, 512, 3])
+video tensor shape torch.Size([32, 40, 320, 512, 3])
+video tensor shape torch.Size([32, 40, 320, 512, 3])
+video tensor shape torch.Size([32, 40, 320, 512, 3])
+video tensor shape torch.Size([32, 40, 320, 512, 3])
+video tensor shape torch.Size([32, 40, 320, 512, 3])
+video tensor shape torch.Size([32, 40, 320, 512, 3])
+video tensor shape torch.Size([32, 40, 320, 512, 3])
+video tensor shape torch.Size([32, 40, 320, 512, 3])
+video tensor shape torch.Size([32, 40, 320, 512, 3])
+video tensor shape torch.Size([32, 40, 320, 512, 3])
+video tensor shape torch.Size([32, 40, 320, 512, 3])
+video tensor shape torch.Size([32, 40, 320, 512, 3])
+video tensor shape torch.Size([32, 40, 320, 512, 3])
+video tensor shape torch.Size([32, 40, 320, 512, 3])
+video tensor shape torch.Size([32, 40, 320, 512, 3])
+video tensor shape torch.Size([32, 40, 320, 512, 3])
+video tensor shape torch.Size([32, 40, 320, 512, 3])
+video tensor shape torch.Size([32, 40, 320, 512, 3])
+video tensor shape torch.Size([32, 40, 320, 512, 3])
+video tensor shape torch.Size([32, 40, 320, 512, 3])
+video tensor shape torch.Size([32, 40, 320, 512, 3])
+video tensor shape torch.Size([32, 40, 320, 512, 3])
+video tensor shape torch.Size([32, 40, 320, 512, 3])
+video tensor shape torch.Size([32, 40, 320, 512, 3])
+video tensor shape torch.Size([32, 40, 320, 512, 3])
+video tensor shape torch.Size([32, 40, 320, 512, 3])
+video tensor shape torch.Size([32, 40, 320, 512, 3])
+video tensor shape torch.Size([32, 40, 320, 512, 3])
+video tensor shape torch.Size([32, 40, 320, 512, 3])
+video tensor shape torch.Size([32, 40, 320, 512, 3])
+video tensor shape torch.Size([32, 40, 320, 512, 3])
+video tensor shape torch.Size([32, 40, 320, 512, 3])
+video tensor shape torch.Size([32, 40, 320, 512, 3])
+video tensor shape torch.Size([32, 40, 320, 512, 3])
+video tensor shape torch.Size([32, 40, 320, 512, 3])
+video tensor shape torch.Size([32, 40, 320, 512, 3])
+video tensor shape torch.Size([32, 40, 320, 512, 3])
+video tensor shape torch.Size([32, 40, 320, 512, 3])
+video tensor shape torch.Size([32, 40, 320, 512, 3])
+video tensor shape torch.Size([32, 40, 320, 512, 3])
+video tensor shape torch.Size([32, 40, 320, 512, 3])
+video tensor shape torch.Size([32, 40, 320, 512, 3])
+video tensor shape torch.Size([32, 40, 320, 512, 3])
+video tensor shape torch.Size([32, 40, 320, 512, 3])
+video tensor shape torch.Size([32, 40, 320, 512, 3])
+video tensor shape torch.Size([32, 40, 320, 512, 3])
+video tensor shape torch.Size([32, 40, 320, 512, 3])
+video tensor shape torch.Size([32, 40, 320, 512, 3])
+video tensor shape torch.Size([32, 40, 320, 512, 3])
+video tensor shape torch.Size([32, 40, 320, 512, 3])
+video tensor shape torch.Size([32, 40, 320, 512, 3])
+video tensor shape torch.Size([32, 40, 320, 512, 3])
+video tensor shape torch.Size([32, 40, 320, 512, 3])
+Traceback (most recent call last):
+  File "/opt/conda/envs/mmg/lib/python3.10/site-packages/torchvision/io/video.py", line 307, in read_video
+    with av.open(filename, metadata_errors="ignore") as container:
+  File "av/container/core.pyx", line 374, in av.container.core.open
+  File "av/container/core.pyx", line 239, in av.container.core.Container.__cinit__
+  File "av/container/core.pyx", line 259, in av.container.core.Container.err_check
+  File "av/error.pyx", line 428, in av.error.err_check
+av.error.InvalidDataError: [Errno 1094995529] Invalid data found when processing input: '/home/jupyter/preprocessed_WebVid_10M_train_videos_0130/1025198498_Pregnant_woman_strokes_her_big_belly_with_hand_by_a_window.mp4'; last error log: [mov,mp4,m4a,3gp,3g2,mj2] moov atom not found
+
+During handling of the above exception, another exception occurred:
+
+Traceback (most recent call last):
+  File "/home/jupyter/MMG_01/video_lora_training/dataset.py", line 200, in <module>
+    main()
+  File "/home/jupyter/MMG_01/video_lora_training/dataset.py", line 185, in main
+    for batch in tqdm(dataloader, desc="Processing Batches", unit="batch"):
+  File "/opt/conda/envs/mmg/lib/python3.10/site-packages/tqdm/std.py", line 1181, in __iter__
+    for obj in iterable:
+  File "/opt/conda/envs/mmg/lib/python3.10/site-packages/torch/utils/data/dataloader.py", line 701, in __next__
+    data = self._next_data()
+  File "/opt/conda/envs/mmg/lib/python3.10/site-packages/torch/utils/data/dataloader.py", line 757, in _next_data
+    data = self._dataset_fetcher.fetch(index)  # may raise StopIteration
+  File "/opt/conda/envs/mmg/lib/python3.10/site-packages/torch/utils/data/_utils/fetch.py", line 52, in fetch
+    data = [self.dataset[idx] for idx in possibly_batched_index]
+  File "/opt/conda/envs/mmg/lib/python3.10/site-packages/torch/utils/data/_utils/fetch.py", line 52, in <listcomp>
+    data = [self.dataset[idx] for idx in possibly_batched_index]
+  File "/home/jupyter/MMG_01/video_lora_training/dataset.py", line 71, in __getitem__
+    video, _, info = io.read_video(video_path, pts_unit="sec")   # video shape: (T, H, W, C)
+  File "/opt/conda/envs/mmg/lib/python3.10/site-packages/torchvision/io/video.py", line 335, in read_video
+    except av.AVError:
+AttributeError: module 'av' has no attribute 'AVError'. Did you mean: 'OSError'?

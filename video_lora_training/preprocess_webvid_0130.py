@@ -58,6 +58,11 @@ def resize_video(input_path, output_path, width=256, height=256, target_fps=30):
 
 def process_video(source_path, dest_path):
     """비디오 전처리 함수: 트림 후 리사이즈"""
+    
+    # 이미 대상 파일이 존재하면 건너뛰기
+    if os.path.exists(dest_path):
+        return True
+
     duration = get_video_duration(source_path)
     if duration is None:
         return False
@@ -132,4 +137,4 @@ def main():
     print(f"처리 완료: {success_count}/{total_files} 파일 성공")
 
 if __name__ == '__main__':
-        main()
+    main()

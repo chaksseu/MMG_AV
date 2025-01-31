@@ -3,8 +3,8 @@ import pandas as pd
 import re
 
 # mp4 파일들이 위치한 폴더 경로 설정
-folder_path = '/home/rtrt5060/preprocessed_WebVid_10M_train_videos_0130'
-output_csv = '/home/rtrt5060/preprocessed_WebVid_10M_0130_75.csv'
+folder_path = '/home/jupyter/preprocessed_WebVid_10M_train_videos_0130'
+output_csv = '/home/jupyter/preprocessed_WebVid_10M_videos_0130.csv'
 
 # 폴더 내 모든 mp4 파일 목록 가져오기
 file_list = [f for f in os.listdir(folder_path) if f.endswith('.mp4')]
@@ -12,7 +12,7 @@ file_list = [f for f in os.listdir(folder_path) if f.endswith('.mp4')]
 # id와 caption을 저장할 리스트 초기화
 ids = []
 captions = []
-num_test = 16
+num_test = 5000
 
 for filename in file_list:
     ids.append(filename)
