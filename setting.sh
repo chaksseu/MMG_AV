@@ -13,9 +13,10 @@ conda activate mmg
 #conda install pytorch torchvision torchaudio pytorch-cuda=12.1 -c pytorch -c nvidia -y
 #pip install -U pip
 #pip install -r requirements.txt
+#pip install -U torchvision
 #chown -R 1001:1001 /workspace
 #conda install -c conda-forge mpi4py -y
 #conda install cuda-cudart cuda-version=12 -y
-###conda install -c conda-forge moviepy -y
+#conda install -c conda-forge moviepy -y
 chown -R 1001:1001 /workspace
 export HF_HOME=/workspace/huggingface_cache
