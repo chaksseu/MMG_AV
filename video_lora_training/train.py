@@ -191,110 +191,55 @@ def main(args):
         losses = []
         loop = tqdm(train_loader, desc=f"Epoch [{epoch+1}/{args.num_epochs}]", disable=not accelerator.is_main_process)
 
-
-        # # eval test
-        # if epoch % args.eval_every == 0:
-        #     accelerator.wait_for_everyone()
-
-        #     if args.vgg_csv_path is not None:
-        #         vgg_fvd, vgg_clip_avg = evaluate_model(
-        #             accelerator=accelerator,
-        #             unet_model=video_unet,
-        #             video_model=video_model,
-        #             csv_path=args.vgg_csv_path,
-        #             inference_path=args.vgg_inference_save_path,
-        #             inference_batch_size=args.inference_batch_size,
-        #             seed=args.seed,
-        #             guidance_scale=args.guidance_scale,
-        #             num_inference_steps=args.num_inference_steps,
-        #             epoch=epoch,
-        #             height=args.height,
-        #             width=args.width,
-        #             frames=args.target_frames,
-        #             ddim_eta=args.ddim_eta,
-        #             fps=args.video_fps,
-        #             target_folder=args.vgg_target_folder
-        #         )
-
-        #         if accelerator.is_main_process:
-        #             wandb.log({
-        #                 "eval/vgg_fvd": vgg_fvd,
-        #                 "eval/vgg_clip_avg": vgg_clip_avg,
-        #             })
-
-        #     fvd, clip_avg = evaluate_model(
-        #             accelerator=accelerator,
-        #             unet_model=video_unet,
-        #             video_model=video_model,
-        #             csv_path=args.csv_path,
-        #             inference_path=args.inference_save_path,
-        #             inference_batch_size=args.inference_batch_size,
-        #             seed=args.seed,
-        #             guidance_scale=args.guidance_scale,
-        #             num_inference_steps=args.num_inference_steps,
-        #             epoch=epoch,
-        #             height=args.height,
-        #             width=args.width,
-        #             frames=args.target_frames,
-        #             ddim_eta=args.ddim_eta,
-        #             fps=args.video_fps,
-        #             target_folder=args.target_folder
-        #         )
-        #     if accelerator.is_main_process:
-        #         wandb.log({
-        #             "eval/fvd": fvd,
-        #             "eval/clip_avg": clip_avg,
-        #         })
-
         for step, batch in enumerate(loop):
-            video_tensor = batch["video_tensor"]  # [B, T, 3, 256, 256]
-            caption = batch["caption"]
+            with accelerator.accumulate(video_unet):
+                video_tensor = batch["video_tensor"]  # [B, T, 3, 256, 256]
+                caption = batch["caption"]
 
-            batch_size = video_tensor.shape[0]
+                batch_size = video_tensor.shape[0]
 
-            # print('---------------------------------------------')
-            # print("video_tensor", video_tensor.shape)
-            # print("video_tensor", video_tensor.shape)
- 
-            video_tensor = video_tensor.permute(0, 4, 1, 2, 3)
-            
-            # print("video_tensor", video_tensor.shape)
-            # print("video_tensor", video_tensor.shape)
+                # print('---------------------------------------------')
+                # print("video_tensor", video_tensor.shape)
+                # print("video_tensor", video_tensor.shape)
+    
+                video_tensor = video_tensor.permute(0, 4, 1, 2, 3)
+                
+                # print("video_tensor", video_tensor.shape)
+                # print("video_tensor", video_tensor.shape)
 
-            with torch.no_grad():
-                video_latent = video_model.encode_first_stage(video_tensor)
-                video_text_embed = video_model.get_learned_conditioning(caption)
+                with torch.no_grad():
+                    video_latent = video_model.encode_first_stage(video_tensor)
+                    video_text_embed = video_model.get_learned_conditioning(caption)
 
-            # Text dropout (optional)
-            video_null_text_embed = torch.zeros_like(video_text_embed[:, :1, :])
-            mask = (torch.rand(batch_size, 1, 1, device=video_text_embed.device) < 0.1)
-            video_text_embed = torch.where(mask, video_null_text_embed, video_text_embed)
+                # Text dropout (optional)
+                video_null_text_embed = torch.zeros_like(video_text_embed[:, :1, :])
+                mask = (torch.rand(batch_size, 1, 1, device=video_text_embed.device) < 0.1)
+                video_text_embed = torch.where(mask, video_null_text_embed, video_text_embed)
 
-            timesteps = torch.randint(0, 1000, (batch_size,), device=device)
+                timesteps = torch.randint(0, 1000, (batch_size,), device=device)
 
-            noise_video = torch.randn_like(video_latent)
-            noised_video_latent = video_model.q_sample(
-                x_start=video_latent, t=timesteps, noise=noise_video
-            )
+                noise_video = torch.randn_like(video_latent)
+                noised_video_latent = video_model.q_sample(
+                    x_start=video_latent, t=timesteps, noise=noise_video
+                )
 
 
-            fps_tensor = torch.full((batch_size,), args.video_fps, device=device)
+                fps_tensor = torch.full((batch_size,), args.video_fps, device=device)
 
-            # UNet forward
-            video_original_output = video_unet(
-                noised_video_latent,
-                timesteps,
-                context=video_text_embed,
-                fps=fps_tensor  # 필요하다면 float로
-            )
+                # UNet forward
+                video_original_output = video_unet(
+                    noised_video_latent,
+                    timesteps,
+                    context=video_text_embed,
+                    fps=fps_tensor  # 필요하다면 float로
+                )
 
-            loss = F.mse_loss(video_original_output, noise_video)
-            losses.append(loss.item())
+                loss = F.mse_loss(video_original_output, noise_video)
+                losses.append(loss.item())
 
-            accelerator.backward(loss)
-            accelerator.clip_grad_norm_(video_unet.parameters(), max_norm=1.0)
+                accelerator.backward(loss)
+                accelerator.clip_grad_norm_(video_unet.parameters(), max_norm=1.0)
 
-            if (step + 1) % args.gradient_accumulation_steps == 0 or (step + 1) == len(train_loader):
                 optimizer.step()
                 optimizer.zero_grad()
                 global_step += 1
@@ -308,71 +253,69 @@ def main(args):
                     })
                     losses = []
 
-            if accelerator.is_main_process:
-                loop.set_postfix({"loss": loss.item()})
 
+                # -----  스텝 단위로 평가 -----
+                if global_step==1 or global_step % args.eval_every == 0:
+                    accelerator.wait_for_everyone()
 
-            # -----  스텝 단위로 평가 -----
-            if global_step==1 or global_step % args.eval_every == 0:
-                accelerator.wait_for_everyone()
+                    if args.vgg_csv_path is not None:
+                        vgg_fvd, vgg_clip_avg = evaluate_model(
+                            accelerator=accelerator,
+                            unet_model=video_unet,
+                            video_model=video_model,
+                            csv_path=args.vgg_csv_path,
+                            inference_path=args.vgg_inference_save_path,
+                            inference_batch_size=args.inference_batch_size,
+                            seed=args.seed,
+                            guidance_scale=args.guidance_scale,
+                            num_inference_steps=args.num_inference_steps,
+                            epoch=epoch,
+                            height=args.height,
+                            width=args.width,
+                            frames=args.target_frames,
+                            ddim_eta=args.ddim_eta,
+                            fps=args.video_fps,
+                            target_folder=args.vgg_target_folder
+                        )
 
-                if args.vgg_csv_path is not None:
-                    vgg_fvd, vgg_clip_avg = evaluate_model(
-                        accelerator=accelerator,
-                        unet_model=video_unet,
-                        video_model=video_model,
-                        csv_path=args.vgg_csv_path,
-                        inference_path=args.vgg_inference_save_path,
-                        inference_batch_size=args.inference_batch_size,
-                        seed=args.seed,
-                        guidance_scale=args.guidance_scale,
-                        num_inference_steps=args.num_inference_steps,
-                        epoch=epoch,
-                        height=args.height,
-                        width=args.width,
-                        frames=args.target_frames,
-                        ddim_eta=args.ddim_eta,
-                        fps=args.video_fps,
-                        target_folder=args.vgg_target_folder
-                    )
+                        if accelerator.is_main_process:
+                            wandb.log({
+                                "eval/vgg_fvd": vgg_fvd,
+                                "eval/vgg_clip_avg": vgg_clip_avg,
+                            })
 
+                    fvd, clip_avg = evaluate_model(
+                            accelerator=accelerator,
+                            unet_model=video_unet,
+                            video_model=video_model,
+                            csv_path=args.csv_path,
+                            inference_path=args.inference_save_path,
+                            inference_batch_size=args.inference_batch_size,
+                            seed=args.seed,
+                            guidance_scale=args.guidance_scale,
+                            num_inference_steps=args.num_inference_steps,
+                            epoch=epoch,
+                            height=args.height,
+                            width=args.width,
+                            frames=args.target_frames,
+                            ddim_eta=args.ddim_eta,
+                            fps=args.video_fps,
+                            target_folder=args.target_folder
+                        )
                     if accelerator.is_main_process:
                         wandb.log({
-                            "eval/vgg_fvd": vgg_fvd,
-                            "eval/vgg_clip_avg": vgg_clip_avg,
+                            "eval/fvd": fvd,
+                            "eval/clip_avg": clip_avg,
                         })
 
-                fvd, clip_avg = evaluate_model(
-                        accelerator=accelerator,
-                        unet_model=video_unet,
-                        video_model=video_model,
-                        csv_path=args.csv_path,
-                        inference_path=args.inference_save_path,
-                        inference_batch_size=args.inference_batch_size,
-                        seed=args.seed,
-                        guidance_scale=args.guidance_scale,
-                        num_inference_steps=args.num_inference_steps,
-                        epoch=epoch,
-                        height=args.height,
-                        width=args.width,
-                        frames=args.target_frames,
-                        ddim_eta=args.ddim_eta,
-                        fps=args.video_fps,
-                        target_folder=args.target_folder
-                    )
+                # Checkpoint 저장
+                if global_step > 0 and (global_step % args.eval_every == 0) and accelerator.is_main_process:
+                    ckpt_dir = os.path.join(args.output_dir, f"checkpoint-step-{global_step}")
+                    accelerator.save_state(ckpt_dir)
+                    print(f"[Epoch {global_step}] Checkpoint saved at: {ckpt_dir}")
+
                 if accelerator.is_main_process:
-                    wandb.log({
-                        "eval/fvd": fvd,
-                        "eval/clip_avg": clip_avg,
-                    })
-
-
-
-        # Checkpoint 저장
-        if (epoch + 1) % args.save_checkpoint == 0 and accelerator.is_main_process:
-            ckpt_dir = os.path.join(args.output_dir, f"checkpoint-epoch-{epoch+1}")
-            accelerator.save_state(ckpt_dir)
-            print(f"[Epoch {epoch+1}] Checkpoint saved at: {ckpt_dir}")
+                    loop.set_postfix({"loss": loss.item()})
 
     if accelerator.is_main_process:
         wandb.finish()

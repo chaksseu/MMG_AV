@@ -66,6 +66,8 @@ class VideoTextDataset(Dataset):
 
             video_path = os.path.join(self.video_dir, f"{video_id}")
             video, _, info = io.read_video(video_path, pts_unit="sec")
+            #print("video.shape", video.shape)
+
 
             current_video_frames = video.shape[0]
             if current_video_frames < self.target_frames:
@@ -81,9 +83,25 @@ class VideoTextDataset(Dataset):
             sliced_video = sliced_video.float()
             sliced_video = sliced_video / 127.5 - 1.0
             
-            if sliced_video.shape[0] != 40:
+
+            target_height, target_width = 320, 512
+
+            if sliced_video.shape[1] != target_height or sliced_video.shape[2] != target_width:
                 print("video_id:", video_id)
                 print("caption:", caption_text)
+                print("sliced_video.shape before padding:", sliced_video.shape)
+                
+                batch, height, width, channels = sliced_video.shape
+
+                pad_h = max(0, target_height - height)
+                pad_w = max(0, target_width - width)
+
+                # Apply padding: (left, right, top, bottom)
+                sliced_video = F.pad(sliced_video, (0, 0, 0, pad_w, 0, pad_h), mode="constant", value=0)
+
+                print("sliced_video.shape after padding:", sliced_video.shape)
+
+
 
             return {
                 "video_tensor": sliced_video,  # (target_frames, H, W, C)
@@ -118,16 +136,17 @@ def main():
     # DataLoader 생성
     dataloader = DataLoader(
         dataset,
-        batch_size=32,           # 적절한 배치 사이즈로 설정
+        batch_size=16,           # 적절한 배치 사이즈로 설정
         shuffle=False,
-        num_workers=32,   
+        num_workers=16,   
         drop_last=False,
     )
 
 
     # tqdm 추가하여 진행률 표시
     for batch in tqdm(dataloader, desc="Processing Batches", unit="batch"):
-        print("video tensor shape", batch["video_tensor"].shape)
+        pass
+        #print("video tensor shape", batch["video_tensor"].shape)
 
 if __name__ == "__main__":
     main()

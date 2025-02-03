@@ -1,7 +1,6 @@
 import os
 import argparse
 import torch
-import torch.nn.functional as F
 from torch.utils.data import DataLoader
 from tqdm import tqdm
 import wandb
@@ -155,7 +154,7 @@ def main():
     os.makedirs(args.output_dir, exist_ok=True)
 
 
-    # eval로 인한 
+    # eval로 인한 종료 지연 코드
     ipg_handler = InitProcessGroupKwargs(timeout=timedelta(seconds=3600)) 
 
     # Accelerator
@@ -230,8 +229,6 @@ def main():
     )
 
 
-
-
     seed = args.seed
     # 랜덤 시드 설정
     generator = torch.Generator(device=device).manual_seed(seed)
@@ -304,71 +301,69 @@ def main():
         loop = tqdm(train_loader, desc=f"Epoch [{epoch+1}/{args.num_epochs}]", disable=not accelerator.is_main_process)
 
         for step, batch in enumerate(loop):
-            audio_latent = batch["audio_latent"]
-            caption = batch["caption"]
-
-            spec = audio_latent
-            caption_text = caption
-            spectrograms = (spec + 1) / 2 
-            image = image_processor.preprocess(spectrograms)  # 대략 [1, C, H, W] 형태 반환 가정
-
-            # 텍스트/오디오 프롬프트 인코딩
-            with accelerator.autocast():
-                audio_text_embed = encode_audio_prompt(
-                    text_encoder_list=text_encoder_list,
-                    tokenizer_list=tokenizer_list,
-                    adapter_list=adapter_list,
-                    tokenizer_model_max_length=77,
-                    dtype=dtype,
-                    prompt=caption_text,
-                    device=accelerator.device
-                )
-
-            # VAE 인코딩 -> latents
-            with accelerator.autocast():
-                vae_output = vae.encode(image)
-                audio_latent = retrieve_latents(vae_output, generator=generator)
-                audio_latent = vae.config.scaling_factor * audio_latent
-
-
-            text_emb = audio_text_embed
-
-            bsz = audio_latent.size(0)
-
-            # 10% null conditioning: 배치 내 각 샘플 중 10%를 무작위로 선택하여 조건 정보 제거
-            audio_null_text_emb = torch.zeros_like(audio_text_embed)  # [bsz, 77, 768]
-            mask = (torch.rand(bsz, 1, 1, device=device) < 0.1)    # [bsz, 1, 1]
-            text_emb = torch.where(mask, audio_null_text_emb, audio_text_embed)  # [bsz, 77, 768]
-
-            text_emb = torch.where(mask, audio_null_text_emb, text_emb)
-
-            # Sample random timestep
-            timesteps = torch.randint(0, noise_scheduler.num_train_timesteps, (bsz,), device=device).long()
-
-            # Add noise
-            noise = torch.randn_like(audio_latent)
-            noised_latent = noise_scheduler.add_noise(original_samples=audio_latent, noise=noise, timesteps=timesteps)
-
-            # Forward pass
-            model_output = unet_model(
-                noised_latent,
-                timesteps,
-                encoder_hidden_states=text_emb,
-                return_dict=False,
-            )[0]  # The first element is the predicted noise
-
-            # MSE loss
-            loss = F.mse_loss(model_output, noise)
-            losses.append(loss.item())
-
-            # Backprop
-            accelerator.backward(loss)
-            # Clip grad norm on unet_model parameters
-            accelerator.clip_grad_norm_(unet_model.parameters(), max_norm=1.0)
-
-            if (step + 1) % args.gradient_accumulation_steps == 0 or (step + 1) == len(train_loader):
-                optimizer.step()
+            with accelerator.accumulate(unet_model):
                 optimizer.zero_grad()
+                
+                spec = batch["spec"] # it is a spectrogram
+                caption = batch["caption"]
+
+                caption_text = caption
+                spectrograms = (spec + 1) / 2 
+                image = image_processor.preprocess(spectrograms)  # 대략 [1, C, H, W] 형태 반환 가정
+
+                # 텍스트/오디오 프롬프트 인코딩
+                with accelerator.autocast():
+                    audio_text_embed = encode_audio_prompt(
+                        text_encoder_list=text_encoder_list,
+                        tokenizer_list=tokenizer_list,
+                        adapter_list=adapter_list,
+                        tokenizer_model_max_length=77,
+                        dtype=dtype,
+                        prompt=caption_text,
+                        device=accelerator.device
+                    )
+
+                # VAE 인코딩 -> latents
+                with accelerator.autocast():
+                    vae_output = vae.encode(image)
+                    audio_latent = retrieve_latents(vae_output, generator=generator)
+                    audio_latent = vae.config.scaling_factor * audio_latent
+
+
+
+                bsz = audio_latent.size(0)
+
+                # 10% null conditioning: 배치 내 각 샘플 중 10%를 무작위로 선택하여 조건 정보 제거
+                audio_null_text_emb = torch.zeros_like(audio_text_embed)  # [bsz, 77, 768]
+                mask = (torch.rand(bsz, 1, 1, device=device) < 0.1)    # [bsz, 1, 1]
+                text_emb = torch.where(mask, audio_null_text_emb, audio_text_embed)  # [bsz, 77, 768]
+
+                # Sample random timestep
+                timesteps = torch.randint(0, noise_scheduler.num_train_timesteps, (bsz,), device=device).long()
+
+                # Add noise
+                noise = torch.randn_like(audio_latent)
+                noised_latent = noise_scheduler.add_noise(original_samples=audio_latent, noise=noise, timesteps=timesteps)
+
+                # Forward pass
+                model_output = unet_model(
+                    noised_latent,
+                    timesteps,
+                    encoder_hidden_states=text_emb,
+                    return_dict=False,
+                )[0]  # The first element is the predicted noise
+
+                # MSE loss
+                loss = F.mse_loss(model_output, noise)
+                losses.append(loss.item())
+
+                # Backprop
+                accelerator.backward(loss)
+                # Clip grad norm on unet_model parameters
+                accelerator.clip_grad_norm_(unet_model.parameters(), max_norm=1.0)
+
+                # if (step + 1) % args.gradient_accumulation_steps == 0 or (step + 1) == len(train_loader):
+                optimizer.step()
                 global_step += 1
 
                 if accelerator.is_main_process:
@@ -450,8 +445,8 @@ def main():
                     print(f"[Epoch {global_step}] Checkpoint saved at: {ckpt_dir}")
                 # ----------------------------------------------------
 
-            if accelerator.is_main_process:
-                loop.set_postfix({"loss": loss.item()})
+                if accelerator.is_main_process:
+                    loop.set_postfix({"loss": loss.item()})
 
     if accelerator.is_main_process:
         wandb.finish()

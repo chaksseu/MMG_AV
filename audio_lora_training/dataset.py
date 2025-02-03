@@ -144,7 +144,7 @@ class AudioTextDataset(Dataset):
 
         
         return {
-            "audio_latent": spec,   # [latent_dim...] 등
+            "spec": spec,   # [latent_dim...] 등
             #"text_emb": audio_text_embed,   # [hidden_dim]
             "caption": caption_text
         }
