@@ -22,11 +22,8 @@ from mmg_inference.auffusion_pipe_functions_copy_0123 import (
 import os
 import json
 import random
-import pandas as pd
 import torch
 import torch.nn.functional as F
-from torch.utils.data import Dataset
-import torchaudio
 
 from huggingface_hub import snapshot_download
 from diffusers import AutoencoderKL
@@ -35,17 +32,8 @@ from transformers import AutoTokenizer
 
 
 
-import sys
-sys.path.append(os.path.join(os.path.dirname(__file__), '../'))
-
-
-
-
-from preprocess.converter_copy_0123 import (
-    get_mel_spectrogram_from_audio,
-    normalize_spectrogram,
-)
-from preprocess.utils import pad_spec
+# import sys
+# sys.path.append(os.path.join(os.path.dirname(__file__), '../'))
 
 from mmg_inference.auffusion_pipe_functions_copy_0123 import (
     encode_audio_prompt,
@@ -71,7 +59,7 @@ def evaluate_model(accelerator, unet_model, vae, image_processor, text_encoder_l
     
     with torch.no_grad():
         # Inference
-        #if epoch != 0:
+        # if eval_id != 'step_1':
         run_inference(
             accelerator=accelerator,
             unet_model=unet_model,
@@ -307,9 +295,24 @@ def main():
                 spec = batch["spec"] # it is a spectrogram
                 caption = batch["caption"]
 
+
+                # # spec의 min, max, mean 출력
+                # spec_min, spec_max, spec_mean = spec.min(), spec.max(), spec.mean()
+                # print(f"Spec - Min: {spec_min:.6f}, Max: {spec_max:.6f}, Mean: {spec_mean:.6f}")
+
+
                 caption_text = caption
-                spectrograms = (spec + 1) / 2 
-                image = image_processor.preprocess(spectrograms)  # 대략 [1, C, H, W] 형태 반환 가정
+                #spectrograms = (spec + 1) / 2 
+
+                # spectrogram의 min, max, mean 출력
+                #spectrograms_min, spectrograms_max, spectrograms_mean = spectrograms.min(), spectrograms.max(), spectrograms.mean()
+                #print(f"Spectrogram - Min: {spectrograms_min:.6f}, Max: {spectrograms_max:.6f}, Mean: {spectrograms_mean:.6f}")
+
+                image = image_processor.preprocess(spec)  # 대략 [1, C, H, W] 형태 반환 가정
+
+                # # image의 min, max, mean 출력
+                # image_min, image_max, image_mean = image.min(), image.max(), image.mean()
+                # print(f"Image - Min: {image_min:.6f}, Max: {image_max:.6f}, Mean: {image_mean:.6f}")
 
                 # 텍스트/오디오 프롬프트 인코딩
                 with accelerator.autocast():
@@ -376,7 +379,7 @@ def main():
                     losses = []
 
                 # -----  스텝 단위로 평가 -----
-                if global_step==1 or global_step % args.eval_every == 0:
+                if global_step==1 or global_step % args.eval_every == 0: # global_step==1 or
                     accelerator.wait_for_everyone()
 
                     # VGG 데이터셋으로 평가

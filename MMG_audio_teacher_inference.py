@@ -1,11 +1,7 @@
-import argparse
-import datetime
 import json
 import os
-import time
 import numpy as np
 import torch
-import torch.nn.functional as F
 from typing import Optional, List, Union, Tuple
 from scipy.io.wavfile import write
 from pytorch_lightning import seed_everything
@@ -14,16 +10,13 @@ from diffusers import AutoencoderKL, UNet2DConditionModel, DDIMScheduler
 from diffusers.image_processor import VaeImageProcessor
 from diffusers.utils.torch_utils import randn_tensor
 from huggingface_hub import snapshot_download
-from safetensors.torch import load_file
 from tqdm import tqdm
 import re
 import traceback
-import contextlib
-import sys
+
 import csv
 
 from accelerate import Accelerator
-from peft import LoraConfig
 
 from mmg_inference.auffusion_pipe_functions_copy_0123 import (
     encode_audio_prompt, prepare_extra_step_kwargs, ConditionAdapter, import_model_class_from_model_name_or_path, Generator
@@ -387,20 +380,7 @@ def main():
     # Accelerate 초기화
     accelerator = Accelerator(mixed_precision="bf16")
     
-    # Inference 실행
-    run_inference(
-        accelerator=accelerator,
-        unet_model=unet_model,
-        prompt_file=csv_path,
-        savedir=inference_path,
-        bs=inference_batch_size,
-        pretrained_model_name_or_path="auffusion/auffusion-full",
-        seed=1234,
-        duration=3.2,
-        guidance_scale=7.5,
-        num_inference_steps=50,
-        eta_audio=0.0
-        )
+
 
 
 if __name__ == '__main__':

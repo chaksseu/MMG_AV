@@ -3,14 +3,11 @@ import random
 import pandas as pd
 import torch
 from torch.utils.data import Dataset
-import torch.nn.functional as F
 import sys
 sys.path.append(os.path.join(os.path.dirname(__file__), '../'))
 
 # pad_spec 등 유틸
 from preprocess.utils import pad_spec
-
-
 
 from preprocess.converter_copy_0123 import (
     normalize_spectrogram,
@@ -79,7 +76,7 @@ class AudioTextDataset(Dataset):
 
         spec = torch.load(spec_path)  # e.g. shape [n_mels, total_T]
 
-        spec = normalize_spectrogram(spec)  # shape: [n_mels, T]
+        spec = normalize_spectrogram(spec)  # shape: [n_mels, T] [0-1 정규화]
 
         # total_T가 expected_time_len보다 작으면 패딩, 더 크면 랜덤 슬라이싱
         total_T = spec.shape[1]
@@ -95,6 +92,6 @@ class AudioTextDataset(Dataset):
             spec = spec[:, start:start + self.expected_time_len]
 
         return {
-            "audio_latent": spec,     # 실제론 latent가 아니라 mel spec
+            "spec": spec,
             "caption": caption_text
         }

@@ -38,21 +38,13 @@ Third-Party Snippets/Credits:
 import argparse
 import os
 import numpy as np
-import datetime
 import torch
 import torchaudio
 from tqdm import tqdm
-from torch.utils.data import DataLoader
-from torchmetrics.audio import (ScaleInvariantSignalDistortionRatio, ScaleInvariantSignalNoiseRatio,
-                                SignalDistortionRatio, SignalNoiseRatio)
-from utils.load_mel import WaveDataset
 import laion_clap
 from audio_metrics.clap_score import calculate_clap
 from audio_metrics.fad import FrechetAudioDistance
-from audio_metrics.fid import calculate_fid
-from audio_metrics.isc import calculate_isc
-from audio_metrics.kl import calculate_kl
-from feature_extractors.panns import Cnn14
+
 
 
 def check_folders(preds_folder, target_folder):
@@ -64,44 +56,11 @@ def check_folders(preds_folder, target_folder):
     return True
 
 def evaluate_audio_metrics(preds_folder, target_folder, metrics, clap_model, device="cpu"):
-    
-    if target_folder is None or not check_folders(preds_folder, target_folder):
-        text = 'Running only reference-free metrics'
-        same_name = False
-    else:
-        text = 'Running all metrics specified'
-        same_name = True
 
     # Frechet Audio Distance 사용 여부
     if 'FAD' in metrics:
-        sampling_rate = 16000
-
         frechet = FrechetAudioDistance(device=device)
         torch.manual_seed(0)
-        num_workers = 0
-
-        outputloader = DataLoader(
-            WaveDataset(
-                preds_folder,
-                sampling_rate, 
-                limit_num=None,
-            ),
-            batch_size=1,
-            sampler=None,
-            num_workers=num_workers,
-        )
-
-        resultloader = DataLoader(
-            WaveDataset(
-                target_folder,
-                sampling_rate, 
-                limit_num=None,
-            ),
-            batch_size=1,
-            sampler=None,
-            num_workers=num_workers,
-        )
-
 
         # FAD 계산
         if 'FAD' in metrics:

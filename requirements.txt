@@ -1,3 +1,6 @@
+torch==2.5.1
+torchaudio
+torchvideo
 decord
 einops
 imageio
@@ -11,11 +14,12 @@ PyYAML
 setuptools
 tqdm
 transformers
+moviepy
 av
 xformers
 gradio
 timm
-open-clip-torch==2.24.0
+open_clip_torch==2.22.0
 kornia
 accelerate
 diffusers
@@ -33,8 +37,6 @@ imageio[ffmpeg]
 ninja
 wandb
 peft
-laion-clap
+laion-clap==1.1.6
 ffmpeg_quality_metrics
 pytorchvideo
-laion_clap
-ffmpeg_quality_metrics
