@@ -1,3 +1,4 @@
+# sudo /opt/deeplearning/install-driver.sh
 sudo chmod -R 777 /home/
 sudo apt-get update
 sudo apt-get upgrade -y

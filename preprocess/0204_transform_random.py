@@ -7,8 +7,8 @@ from pydub import AudioSegment
 ###############################################################################
 # 0. 사용자 지정 경로 & 파라미터
 ###############################################################################
-ORIGINAL_FOLDER = "/workspace/dataset/vggsound_sparse_test_curated"  # 원본 MP4가 있는 폴더
-OUTPUT_FOLDER = "/workspace/dataset/0115_vggsound_sparse_test_random_128s_16f"  # 최종 결과물이 저장될 폴더
+ORIGINAL_FOLDER = "/home/jupyter/preprocessed_WebVid_10M_gt_test_videos_5k_0204"    # 원본 MP4가 있는 폴더
+OUTPUT_FOLDER   = "/home/jupyter/preprocessed_WebVid_10M_gt_test_videos_5k_random_crop_0204"  # 최종 결과물이 저장될 폴더
 
 TRIM_LENGTH = 3.2           # 잘라낼 길이(초)
 TARGET_FRAME_COUNT = 40     # 최종 영상의 총 프레임 수 (40장)
@@ -16,24 +16,19 @@ RESIZE_WIDTH = 512
 RESIZE_HEIGHT = 320
 
 # 오디오 / 영상 / 합쳐진 영상 저장 폴더 (최종 결과)
-AUDIO_FOLDER = os.path.join(OUTPUT_FOLDER, "audio")
-VIDEO_FOLDER = os.path.join(OUTPUT_FOLDER, "video")
+AUDIO_FOLDER    = os.path.join(OUTPUT_FOLDER, "audio")
+VIDEO_FOLDER    = os.path.join(OUTPUT_FOLDER, "video")
 COMBINED_FOLDER = os.path.join(OUTPUT_FOLDER, "combined_video")
 
 ###############################################################################
 # 1. 헬퍼 함수들
 ###############################################################################
-
 def delete_files_in_folder(folder_path):
     """
     최상위 폴더의 파일만 삭제하고 하위 폴더 및 하위 폴더의 파일은 유지하는 함수.
-
-    :param folder_path: 파일을 삭제할 최상위 폴더 경로
     """
-    # 최상위 폴더의 파일 목록 확인
     for item in os.listdir(folder_path):
         item_path = os.path.join(folder_path, item)
-        # 파일인 경우 삭제 (폴더는 건너뜀)
         if os.path.isfile(item_path):
             try:
                 os.remove(item_path)
@@ -63,37 +58,36 @@ def get_video_duration(video_path):
 
 def trim_video(input_path, output_path, start_second, duration):
     """
-    ffmpeg로 특정 구간(start_second ~ start_second+duration)을 잘라냄.
+    ffmpeg로 특정 구간(start_second ~ start_second+duration)을 재인코딩하여 정확히 잘라냄.
     """
+    # 키프레임 단위가 아닌 프레임 단위로 정확히 자르기 위해 -c:v copy 대신 libx264 사용
     trim_cmd = [
         "ffmpeg",
         "-y",
         "-ss", f"{start_second}",
         "-i", input_path,
         "-t", f"{duration:.3f}",
-        "-c:v", "copy",
+        "-c:v", "libx264",
+        "-preset", "fast",
         "-c:a", "copy",
         output_path
     ]
     subprocess.run(trim_cmd, stdout=subprocess.PIPE, stderr=subprocess.PIPE, text=True)
 
-def set_frame_count_to_target(input_path, output_path, target_frame_count):
+def set_frame_count_to_target(input_path, output_path, target_frame_count, trim_length):
     """
-    동영상을 target_frame_count (예: 40프레임)가 되도록 fps를 재설정 후 저장합니다.
-    새 fps = target_frame_count / 영상길이
+    동영상을 'trim_length' 초 기준으로 정확히 target_frame_count 프레임(즉 target_frame_count/trim_length FPS)으로 재인코딩.
     """
-    duration = get_video_duration(input_path)
-    if not duration or duration <= 0:
-        print(f"[경고] 영상 길이를 구할 수 없어서 FPS 조정 불가: {input_path}")
-        return False
+    # (예: 3.2초 / 40프레임 => 12.5 FPS)
+    new_fps = target_frame_count / trim_length
 
-    new_fps = target_frame_count / duration
+    # -frames:v 40 옵션으로 정확히 40프레임까지만 출력하도록 설정
     convert_cmd = [
         "ffmpeg",
         "-y",
         "-i", input_path,
         "-vf", f"fps={new_fps:.6f}",
-        "-frames:v", str(target_frame_count),  # 정확히 40프레임으로 제한
+        "-frames:v", str(target_frame_count),  # 정확히 40프레임
         "-c:v", "libx264",
         "-preset", "fast",
         "-c:a", "copy",
@@ -205,10 +199,12 @@ def main():
             trim_start = random.uniform(0, total_duration - TRIM_LENGTH)
             trim_end = trim_start + TRIM_LENGTH
         else:
-            trim_start = 0
-            trim_end = total_duration
+            # 영상 길이가 3.2초보다 짧다면 스킵하거나, 그냥 전체를 사용해도 됨
+            # 여기서는 스킵 처리
+            print(f"[경고] 영상 길이({total_duration:.2f}s)가 {TRIM_LENGTH}s보다 짧습니다 -> 스킵: {video_name}")
+            continue
 
-        actual_length = trim_end - trim_start
+        actual_length = trim_end - trim_start  # 이 값은 3.2초와 거의 동일할 것
 
         # 저장할 파일 이름(확장자 제외)
         base_name, _ = os.path.splitext(video_name)
@@ -217,20 +213,20 @@ def main():
         trimmed_path  = os.path.join(OUTPUT_FOLDER, f"{base_name}_trimmed.mp4")
         frame40_path  = os.path.join(OUTPUT_FOLDER, f"{base_name}_40frames.mp4")
         audio_path    = os.path.join(AUDIO_FOLDER,  f"{base_name}.wav")
-        resized_path  = os.path.join(VIDEO_FOLDER,   f"{base_name}.mp4")  
+        resized_path  = os.path.join(VIDEO_FOLDER,  f"{base_name}.mp4")  
         combined_path = os.path.join(COMBINED_FOLDER, f"{base_name}_combined.mp4")
 
         ###################################################################
-        # (1) 3.2초 구간 잘라내기
+        # (1) 3.2초 구간 잘라내기 (재인코딩)
         ###################################################################
         print(f"\n[1] Trimming {video_name}: {trim_start:.2f} ~ {trim_end:.2f}")
         trim_video(input_path, trimmed_path, trim_start, actual_length)
 
         ###################################################################
-        # (2) 40프레임 만들기
+        # (2) 40프레임 만들기 (12.5 FPS로 재인코딩)
         ###################################################################
-        print(f"[2] Setting total frames to {TARGET_FRAME_COUNT} -> {frame40_path}")
-        success = set_frame_count_to_target(trimmed_path, frame40_path, TARGET_FRAME_COUNT)
+        print(f"[2] Setting total frames to {TARGET_FRAME_COUNT} (3.2s => 12.5fps) -> {frame40_path}")
+        success = set_frame_count_to_target(trimmed_path, frame40_path, TARGET_FRAME_COUNT, TRIM_LENGTH)
         if not success:
             print(f"[에러] 40프레임 변환 실패 -> 스킵: {trimmed_path}")
             continue
@@ -242,7 +238,7 @@ def main():
         extract_audio(frame40_path, audio_path)
 
         ###################################################################
-        # (4) 256x256 리사이즈
+        # (4) 512x320 리사이즈 (OpenCV)
         ###################################################################
         print(f"[4] Resizing to {RESIZE_WIDTH}x{RESIZE_HEIGHT} -> {resized_path}")
         resize_video(frame40_path, resized_path, RESIZE_WIDTH, RESIZE_HEIGHT)
@@ -256,10 +252,9 @@ def main():
         print(f"=== 완료: {video_name} ===\n")
 
     ###################################################################
-    # (6) 전처리 중간 파일들 삭제
+    # (6) 전처리 중간 파일들 삭제 (trimmed, _40frames 등)
     ###################################################################
     delete_files_in_folder(OUTPUT_FOLDER)
-
 
     print("\n모든 작업이 완료되었습니다.")
 

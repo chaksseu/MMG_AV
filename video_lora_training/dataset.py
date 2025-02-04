@@ -109,7 +109,9 @@ class VideoTextDataset(Dataset):
                 "video_id": video_id  # 디버깅을 위한 추가 정보
             }
         except Exception as e:
-            print(f"[ERROR] 문제 발생 - idx: {idx}, video_id: {row.get('id', 'unknown')}, caption: {row.get('caption', 'unknown')}")
+            error_type = type(e).__name__  # 예외 타입 가져오기
+            error_message = str(e)  # 예외 메시지 가져오기
+            print(f"[ERROR] {error_type}: {error_message} - idx: {idx}, video_id: {row.get('id', 'unknown')}, caption: {row.get('caption', 'unknown')}")
             raise e
 
 
@@ -122,8 +124,8 @@ def main():
 
     # 예시용 CSV 경로와 비디오 폴더 경로 (사용 환경에 맞춰 수정)
     csv_path = "/home/jupyter/preprocessed_WebVid_10M_videos_0130.csv"               # 실제 CSV 파일 경로
-    video_dir = '/home/jupyter/preprocessed_WebVid_10M_train_videos_0130'  
-    split = "train"
+    video_dir = "/home/jupyter/preprocessed_WebVid_10M_gt_test_videos_5k_random_crop_0204"  
+    split = "test"
 
     # Dataset 생성
     dataset = VideoTextDataset(

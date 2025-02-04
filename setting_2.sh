@@ -12,8 +12,8 @@
 
 #pip install -U pip
 pip install -r requirements.txt
-conda install -c conda-forge mpi4py -y
+# conda install -c conda-forge mpi4py -y
 # conda install cuda-cudart cuda-version=12 -y
-conda install -c conda-forge moviepy -y
+# conda install -c conda-forge moviepy -y
 # wandb login
 # accelerate config
