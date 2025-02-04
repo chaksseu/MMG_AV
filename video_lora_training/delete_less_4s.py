@@ -34,7 +34,7 @@ def process_videos(folder_path):
     """멀티스레딩을 사용하여 폴더 내의 mp4 파일을 병렬 처리하고, tqdm으로 진행 상황 표시"""
     video_files = [os.path.join(folder_path, f) for f in os.listdir(folder_path) if f.endswith(".mp4")]
 
-    with concurrent.futures.ThreadPoolExecutor(max_workers=24) as executor:
+    with concurrent.futures.ThreadPoolExecutor(max_workers=16) as executor:
         # executor.map 을 tqdm으로 감싸 진행 상황을 시각화
         results = list(tqdm(executor.map(check_and_delete_video, video_files),
                             total=len(video_files),

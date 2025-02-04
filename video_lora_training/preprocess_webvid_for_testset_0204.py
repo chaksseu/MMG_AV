@@ -1,6 +1,5 @@
 import os
 import subprocess
-import cv2
 from multiprocessing import Pool, cpu_count
 from tqdm import tqdm
 import random  # 랜덤 스타트 지점을 위한 import
