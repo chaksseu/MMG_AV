@@ -1,7 +1,7 @@
 #!/bin/bash
 
 # ========================= 기본값 설정 =========================
-VIDEO_CSV_PATH="/home/jupyter/preprocessed_WebVid_10M_videos_0130.csv"               # 실제 CSV 파일 경로
+VIDEO_CSV_PATH="/home/jupyter/preprocessed_WebVid_10M_videos_0204.csv"               # 실제 CSV 파일 경로
 VIDEO_DIR='/home/jupyter/preprocessed_WebVid_10M_train_videos_0130'                   # 비디오 파일 폴더 경로
 OUTPUT_DIR="/home/jupyter/video_lora_training_checkpoints_0204"               # 체크포인트 저장 폴더 경로
 WANDB_PROJECT="video_teacher_lora_training_0204"                 # WandB 프로젝트 이름
@@ -25,7 +25,7 @@ INFERENCE_BATCH_SIZE=1
 INFERENCE_SAVE_PATH="/home/jupyter/video_lora_inference_0204"
 GUIDANCE_SCALE=12.0
 NUM_INFERENCE_STEPS=1
-TARGET_FOLDER="/home/jupyter/preprocessed_WebVid_10M_gt_test_videos_5k_0204"  # 평가 시 사용될 GT 폴더
+TARGET_FOLDER="/home/jupyter/preprocessed_WebVid_10M_gt_test_videos_5k_random_crop_0204"  # 평가 시 사용될 GT 폴더
 SEED=42
 DDIM_ETA=0.0
 
