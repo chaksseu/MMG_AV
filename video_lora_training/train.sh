@@ -1,12 +1,12 @@
 #!/bin/bash
 
 # ========================= 기본값 설정 =========================
-VIDEO_CSV_PATH="/home/jupyter/preprocessed_WebVid_10M_videos_0204.csv"               # 실제 CSV 파일 경로
+VIDEO_CSV_PATH="/home/jupyter/preprocessed_WebVid_10M_videos_0205.csv"               # 실제 CSV 파일 경로
 VIDEO_DIR='/home/jupyter/preprocessed_WebVid_10M_train_videos_0130'                   # 비디오 파일 폴더 경로
-OUTPUT_DIR="/home/jupyter/video_lora_training_checkpoints_0204"               # 체크포인트 저장 폴더 경로
-WANDB_PROJECT="video_teacher_lora_training_0204"                 # WandB 프로젝트 이름
+OUTPUT_DIR="/home/jupyter/video_lora_training_checkpoints_0205"               # 체크포인트 저장 폴더 경로
+WANDB_PROJECT="video_teacher_lora_training_0205"                 # WandB 프로젝트 이름
 TRAIN_BATCH_SIZE=1
-GRAD_ACC_STEPS=1
+GRAD_ACC_STEPS=128
 LR=1e-5
 NUM_EPOCHS=16
 MIXED_PRECISION="bf16"                                        # ["no", "fp16", "bf16"] 중 선택
@@ -20,18 +20,18 @@ HEIGHT=320
 WIDTH=512
 
 # ========================= 평가 관련 설정 =========================
-EVAL_EVERY=1                # N step마다 평가
-INFERENCE_BATCH_SIZE=1
-INFERENCE_SAVE_PATH="/home/jupyter/video_lora_inference_0204"
+EVAL_EVERY=4096                # N step마다 평가
+INFERENCE_BATCH_SIZE=2
+INFERENCE_SAVE_PATH="/home/jupyter/video_lora_inference_0205"
 GUIDANCE_SCALE=12.0
-NUM_INFERENCE_STEPS=1
-TARGET_FOLDER="/home/jupyter/preprocessed_WebVid_10M_gt_test_videos_5k_random_crop_0204"  # 평가 시 사용될 GT 폴더
+NUM_INFERENCE_STEPS=25
+TARGET_FOLDER="/home/jupyter/preprocessed_WebVid_10M_gt_test_videos_500_random_crop_0205_2"  # 평가 시 사용될 GT 폴더
 SEED=42
 DDIM_ETA=0.0
 
 # (필요 시) VGG 관련 설정
 VGG_CSV_PATH="/home/jupyter/vggsound_sparse_curated_292.csv"                        # VGG eval 용 CSV 파일
-VGG_INFERENCE_SAVE_PATH="/home/jupyter/video_lora_vgg_inference_0204"             # VGG eval 시 inference 저장 폴더
+VGG_INFERENCE_SAVE_PATH="/home/jupyter/video_lora_vgg_inference_0205"             # VGG eval 시 inference 저장 폴더
 VGG_TARGET_FOLDER="/home/jupyter/vggsound_sparse_test_curated_final/video"                   # VGG eval 시 GT 폴더 (비워두면 실행 안 됨)
 
 

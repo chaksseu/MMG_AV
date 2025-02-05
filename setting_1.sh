@@ -1,13 +1,15 @@
-# sudo /opt/deeplearning/install-driver.sh
+sudo /opt/deeplearning/install-driver.sh
 sudo chmod -R 777 /home/
 sudo apt-get update
 sudo apt-get upgrade -y
 sudo apt-get install ffmpeg wget git zip unzip gcc libopenmpi-dev libmpich-dev curl tar libjpeg-dev libpng-dev libgl1-mesa-glx libglib2.0-0 libsndfile1 ninja-build -y
 sudo apt-get update
 sudo apt-get upgrade -y
-conda create -n mmg python=3.10 -y
-conda init
-conda activate mmg
+pip install -r requirements.txt
+
+# conda create -n mmg python=3.10 -y
+# conda init
+# conda activate mmg
 # conda install pytorch torchvision torchaudio pytorch-cuda=12.1 -c pytorch -c nvidia -y
 # pip install -U pip
 # pip install -r requirements.txt

@@ -70,29 +70,29 @@ def parse_args():
 
 def evaluate_model(accelerator, unet_model, video_model, csv_path, inference_path,
                    inference_batch_size, seed, guidance_scale, height, width, frames,
-                   ddim_eta, fps, num_inference_steps, epoch, target_folder):
+                   ddim_eta, fps, num_inference_steps, step, target_folder):
                    
     unet_model.eval()
-    inference_path = f"{inference_path}/{epoch}"
+    inference_path = f"{inference_path}/step_{step}"
     
     with torch.no_grad():
-        if epoch != 1:
-            run_inference(
-                accelerator=accelerator,
-                unet_model=unet_model,
-                video_model=video_model,
-                prompt_file=csv_path,
-                savedir=inference_path,
-                bs=inference_batch_size,
-                seed=seed,
-                unconditional_guidance_scale=guidance_scale,
-                num_inference_steps=num_inference_steps,
-                height=height,
-                width=width,
-                frames=frames,
-                ddim_eta=ddim_eta,
-                fps=fps
-            )
+        # if step != 0:
+        run_inference(
+            accelerator=accelerator,
+            unet_model=unet_model,
+            video_model=video_model,
+            prompt_file=csv_path,
+            savedir=inference_path,
+            bs=inference_batch_size,
+            seed=seed,
+            unconditional_guidance_scale=guidance_scale,
+            num_inference_steps=num_inference_steps,
+            height=height,
+            width=width,
+            frames=frames,
+            ddim_eta=ddim_eta,
+            fps=fps
+        )
 
         accelerator.wait_for_everyone()
 
@@ -191,6 +191,59 @@ def main(args):
         losses = []
         loop = tqdm(train_loader, desc=f"Epoch [{epoch+1}/{args.num_epochs}]", disable=not accelerator.is_main_process)
 
+        accelerator.wait_for_everyone()
+
+        if args.vgg_csv_path is not None:
+            vgg_fvd, vgg_clip_avg = evaluate_model(
+                accelerator=accelerator,
+                unet_model=video_unet,
+                video_model=video_model,
+                csv_path=args.vgg_csv_path,
+                inference_path=args.vgg_inference_save_path,
+                inference_batch_size=args.inference_batch_size,
+                seed=args.seed,
+                guidance_scale=args.guidance_scale,
+                num_inference_steps=args.num_inference_steps,
+                step=global_step,
+                height=args.height,
+                width=args.width,
+                frames=args.target_frames,
+                ddim_eta=args.ddim_eta,
+                fps=args.video_fps,
+                target_folder=args.vgg_target_folder
+            )
+
+            if accelerator.is_main_process:
+                wandb.log({
+                    "eval/vgg_fvd": vgg_fvd,
+                    "eval/vgg_clip_avg": vgg_clip_avg,
+                })
+
+        fvd, clip_avg = evaluate_model(
+                accelerator=accelerator,
+                unet_model=video_unet,
+                video_model=video_model,
+                csv_path=args.csv_path,
+                inference_path=args.inference_save_path,
+                inference_batch_size=args.inference_batch_size,
+                seed=args.seed,
+                guidance_scale=args.guidance_scale,
+                num_inference_steps=args.num_inference_steps,
+                step=global_step,
+                height=args.height,
+                width=args.width,
+                frames=args.target_frames,
+                ddim_eta=args.ddim_eta,
+                fps=args.video_fps,
+                target_folder=args.target_folder
+            )
+        if accelerator.is_main_process:
+            wandb.log({
+                "eval/fvd": fvd,
+                "eval/clip_avg": clip_avg,
+            })
+
+
         for step, batch in enumerate(loop):
             with accelerator.accumulate(video_unet):
                 video_tensor = batch["video_tensor"]  # [B, T, 3, 256, 256]
@@ -255,7 +308,7 @@ def main(args):
 
 
                 # -----  스텝 단위로 평가 -----
-                if global_step==1 or global_step % args.eval_every == 0:
+                if global_step % args.eval_every == 0: #global_step==1 or 
                     accelerator.wait_for_everyone()
 
                     if args.vgg_csv_path is not None:
@@ -269,7 +322,7 @@ def main(args):
                             seed=args.seed,
                             guidance_scale=args.guidance_scale,
                             num_inference_steps=args.num_inference_steps,
-                            epoch=epoch,
+                            step=global_step,
                             height=args.height,
                             width=args.width,
                             frames=args.target_frames,
@@ -294,7 +347,7 @@ def main(args):
                             seed=args.seed,
                             guidance_scale=args.guidance_scale,
                             num_inference_steps=args.num_inference_steps,
-                            epoch=epoch,
+                            step=global_step,
                             height=args.height,
                             width=args.width,
                             frames=args.target_frames,

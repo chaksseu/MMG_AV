@@ -1,0 +1,104 @@
+======================= Training Configuration =======================
+CSV Path: /home/jupyter/preprocessed_WebVid_10M_videos_0204.csv
+Video Directory: /home/jupyter/preprocessed_WebVid_10M_train_videos_0130
+Output Directory: /home/jupyter/video_lora_training_checkpoints_0205
+WandB Project: video_teacher_lora_training_0205
+Train Batch Size: 1
+Learning Rate: 1e-5
+Number of Epochs: 16
+Gradient Accumulation Steps: 128
+Evaluate Every (epochs): 2048
+Mixed Precision: bf16
+Number of Workers: 4
+Save Checkpoint Every (epochs): 2
+VideoCrafter CKPT: scripts/evaluation/model.ckpt
+VideoCrafter Config: configs/inference_t2v_512_v2.0.yaml
+Video FPS: 12.5
+Target Frames: 40
+Random Seed: 42
+
+======================= Additional Arguments ==========================
+Height: 320
+Width: 512
+DDIM Eta: 0.0
+
+======================= Evaluation Configuration ======================
+Inference Batch Size: 1
+Inference Save Path: /home/jupyter/video_lora_inference_0205
+Guidance Scale: 12.0
+Number of Inference Steps: 25
+Target Folder (GT): /home/jupyter/preprocessed_WebVid_10M_gt_test_videos_5k_random_crop_0204
+========================================================================
+wandb: Currently logged in as: rtrt505 to https://api.wandb.ai. Use `wandb login --relogin` to force relogin
+wandb: Using wandb-core as the SDK backend.  Please refer to https://wandb.me/wandb-core for more information.
+wandb: Tracking run with wandb version 0.19.6
+wandb: Run data is saved locally in /home/jupyter/MMG_01/wandb/run-20250205_112300-v0kulhqs
+wandb: Run `wandb offline` to turn off syncing.
+wandb: Syncing run video_lora_training
+wandb: ⭐️ View project at https://wandb.ai/rtrt505/video_teacher_lora_training_0205
+wandb: 🚀 View run at https://wandb.ai/rtrt505/video_teacher_lora_training_0205/runs/v0kulhqs
+AE working on z of shape (1, 4, 64, 64) = 16384 dimensions.
+AE working on z of shape (1, 4, 64, 64) = 16384 dimensions.
+AE working on z of shape (1, 4, 64, 64) = 16384 dimensions.
+AE working on z of shape (1, 4, 64, 64) = 16384 dimensions.
+WARNING:py.warnings:/opt/conda/lib/python3.10/site-packages/timm/models/layers/__init__.py:48: FutureWarning: Importing from timm.models.layers is deprecated, please import via timm.layers
+  warnings.warn(f"Importing from {__name__} is deprecated, please import via timm.layers", FutureWarning)
+
+WARNING:py.warnings:/opt/conda/lib/python3.10/site-packages/timm/models/layers/__init__.py:48: FutureWarning: Importing from timm.models.layers is deprecated, please import via timm.layers
+  warnings.warn(f"Importing from {__name__} is deprecated, please import via timm.layers", FutureWarning)
+
+WARNING:py.warnings:/opt/conda/lib/python3.10/site-packages/timm/models/layers/__init__.py:48: FutureWarning: Importing from timm.models.layers is deprecated, please import via timm.layers
+  warnings.warn(f"Importing from {__name__} is deprecated, please import via timm.layers", FutureWarning)
+
+INFO:root:Loaded ViT-H-14 model config.
+INFO:root:Loaded ViT-H-14 model config.
+INFO:root:Loaded ViT-H-14 model config.
+WARNING:py.warnings:/opt/conda/lib/python3.10/site-packages/timm/models/layers/__init__.py:48: FutureWarning: Importing from timm.models.layers is deprecated, please import via timm.layers
+  warnings.warn(f"Importing from {__name__} is deprecated, please import via timm.layers", FutureWarning)
+
+INFO:root:Loaded ViT-H-14 model config.
+WARNING:py.warnings:/home/jupyter/MMG_01/video_lora_training/train.py:152: FutureWarning: You are using `torch.load` with `weights_only=False` (the current default value), which uses the default pickle module implicitly. It is possible to construct malicious pickle data which will execute arbitrary code during unpickling (See https://github.com/pytorch/pytorch/blob/main/SECURITY.md#untrusted-models for more details). In a future release, the default value for `weights_only` will be flipped to `True`. This limits the functions that could be executed during unpickling. Arbitrary objects will no longer be allowed to be loaded via this mode unless they are explicitly allowlisted by the user via `torch.serialization.add_safe_globals`. We recommend you start setting `weights_only=True` for any use case where you don't have full control of the loaded file. Please open an issue on GitHub for any issues related to this experimental feature.
+  state_dict = torch.load(args.videocrafter_ckpt)['state_dict']
+
+WARNING:py.warnings:/home/jupyter/MMG_01/video_lora_training/train.py:152: FutureWarning: You are using `torch.load` with `weights_only=False` (the current default value), which uses the default pickle module implicitly. It is possible to construct malicious pickle data which will execute arbitrary code during unpickling (See https://github.com/pytorch/pytorch/blob/main/SECURITY.md#untrusted-models for more details). In a future release, the default value for `weights_only` will be flipped to `True`. This limits the functions that could be executed during unpickling. Arbitrary objects will no longer be allowed to be loaded via this mode unless they are explicitly allowlisted by the user via `torch.serialization.add_safe_globals`. We recommend you start setting `weights_only=True` for any use case where you don't have full control of the loaded file. Please open an issue on GitHub for any issues related to this experimental feature.
+  state_dict = torch.load(args.videocrafter_ckpt)['state_dict']
+
+WARNING:py.warnings:/home/jupyter/MMG_01/video_lora_training/train.py:152: FutureWarning: You are using `torch.load` with `weights_only=False` (the current default value), which uses the default pickle module implicitly. It is possible to construct malicious pickle data which will execute arbitrary code during unpickling (See https://github.com/pytorch/pytorch/blob/main/SECURITY.md#untrusted-models for more details). In a future release, the default value for `weights_only` will be flipped to `True`. This limits the functions that could be executed during unpickling. Arbitrary objects will no longer be allowed to be loaded via this mode unless they are explicitly allowlisted by the user via `torch.serialization.add_safe_globals`. We recommend you start setting `weights_only=True` for any use case where you don't have full control of the loaded file. Please open an issue on GitHub for any issues related to this experimental feature.
+  state_dict = torch.load(args.videocrafter_ckpt)['state_dict']
+
+WARNING:py.warnings:/home/jupyter/MMG_01/video_lora_training/train.py:152: FutureWarning: You are using `torch.load` with `weights_only=False` (the current default value), which uses the default pickle module implicitly. It is possible to construct malicious pickle data which will execute arbitrary code during unpickling (See https://github.com/pytorch/pytorch/blob/main/SECURITY.md#untrusted-models for more details). In a future release, the default value for `weights_only` will be flipped to `True`. This limits the functions that could be executed during unpickling. Arbitrary objects will no longer be allowed to be loaded via this mode unless they are explicitly allowlisted by the user via `torch.serialization.add_safe_globals`. We recommend you start setting `weights_only=True` for any use case where you don't have full control of the loaded file. Please open an issue on GitHub for any issues related to this experimental feature.
+  state_dict = torch.load(args.videocrafter_ckpt)['state_dict']
+
+전체 파라미터 개수: 1466450500
+학습 가능한 파라미터 개수: 53166080
+전체 파라미터 개수: 1466450500
+학습 가능한 파라미터 개수: 53166080
+전체 파라미터 개수: 1466450500
+학습 가능한 파라미터 개수: 53166080
+전체 파라미터 개수: 1466450500
+학습 가능한 파라미터 개수: 53166080
+Epoch [1/16]:   0%|          | 0/115299 [00:00<?, ?it/s]all_prompts length all_prompts length292
+all_prompts length 292
+[rank: 3] Seed set to 45
+[rank: 2] Seed set to 44
+all_prompts length  292
+292[rank: 1] Seed set to 43
+
+[rank: 0] Seed set to 42
+
+Generating:   0%|          | 0/73 [00:00<?, ?it/s][A
+Generating:   1%|▏         | 1/73 [00:29<35:44, 29.79s/it][A
+Generating:   3%|▎         | 2/73 [00:59<34:55, 29.52s/it][A
+Generating:   4%|▍         | 3/73 [01:28<34:21, 29.44s/it][A
+Generating:   5%|▌         | 4/73 [01:57<33:48, 29.40s/it][A
+Generating:   7%|▋         | 5/73 [02:27<33:17, 29.37s/it][Avideo_lora_training/train.sh: line 132: 161285 Killed                  accelerate launch video_lora_training/train.py --csv_path "$VIDEO_CSV_PATH" --video_dir "$VIDEO_DIR" --output_dir "$OUTPUT_DIR" --wandb_project "$WANDB_PROJECT" --train_batch_size "$TRAIN_BATCH_SIZE" --lr "$LR" --num_epochs "$NUM_EPOCHS" --gradient_accumulation_steps "$GRAD_ACC_STEPS" --eval_every "$EVAL_EVERY" --mixed_precision "$MIXED_PRECISION" --num_workers "$NUM_WORKERS" --save_checkpoint "$SAVE_CHECKPOINT" --videocrafter_ckpt "$VIDEOCRAFTER_CKPT" --videocrafter_config "$VIDEOCRAFTER_CONFIG" --video_fps "$VIDEO_FPS" --target_frames "$TARGET_FRAMES" --inference_batch_size "$INFERENCE_BATCH_SIZE" --inference_save_path "$INFERENCE_SAVE_PATH" --guidance_scale "$GUIDANCE_SCALE" --num_inference_steps "$NUM_INFERENCE_STEPS" --target_folder "$TARGET_FOLDER" --height "$HEIGHT" --width "$WIDTH" --ddim_eta "$DDIM_ETA" --seed "$SEED" --vgg_csv_path "$VGG_CSV_PATH" --vgg_inference_save_path "$VGG_INFERENCE_SAVE_PATH" --vgg_target_folder "$VGG_TARGET_FOLDER"
+Training failed. Please check the logs for more details.
+
+Generating:   8%|▊         | 6/73 [02:56<32:47, 29.36s/it][A/opt/conda/lib/python3.10/multiprocessing/resource_tracker.py:224: UserWarning: resource_tracker: There appear to be 1 leaked semaphore objects to clean up at shutdown
+  warnings.warn('resource_tracker: There appear to be %d '
+/opt/conda/lib/python3.10/multiprocessing/resource_tracker.py:224: UserWarning: resource_tracker: There appear to be 1 leaked semaphore objects to clean up at shutdown
+  warnings.warn('resource_tracker: There appear to be %d '
+/opt/conda/lib/python3.10/multiprocessing/resource_tracker.py:224: UserWarning: resource_tracker: There appear to be 1 leaked semaphore objects to clean up at shutdown
+  warnings.warn('resource_tracker: There appear to be %d '
+/opt/conda/lib/python3.10/multiprocessing/resource_tracker.py:224: UserWarning: resource_tracker: There appear to be 1 leaked semaphore objects to clean up at shutdown
+  warnings.warn('resource_tracker: There appear to be %d '
