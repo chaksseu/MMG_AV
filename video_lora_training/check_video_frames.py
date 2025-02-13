@@ -37,5 +37,5 @@ def log_frame_counts(folder_path, log_file="frame_log.txt", low_frame_log="low_f
     print(f"프레임 개수 40 미만 파일 로깅 완료: {low_frame_log}")
 
 # 사용 예시
-folder_path = "/home/jupyter/preprocessed_WebVid_10M_gt_test_videos_500_random_crop_0205_2"  # 여기에 폴더 경로 입력
+folder_path = "/home/jupyter/preprocessed_WebVid_10M_gt_test_videos_1k_random_crop_0210"  # 여기에 폴더 경로 입력
 log_frame_counts(folder_path)

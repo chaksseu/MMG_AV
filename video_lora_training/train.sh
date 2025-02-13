@@ -1,37 +1,39 @@
 #!/bin/bash
 
 # ========================= 기본값 설정 =========================
-VIDEO_CSV_PATH="/home/jupyter/preprocessed_WebVid_10M_videos_0205.csv"               # 실제 CSV 파일 경로
-VIDEO_DIR='/home/jupyter/preprocessed_WebVid_10M_train_videos_0130'                   # 비디오 파일 폴더 경로
-OUTPUT_DIR="/home/jupyter/video_lora_training_checkpoints_0205"               # 체크포인트 저장 폴더 경로
-WANDB_PROJECT="video_teacher_lora_training_0205"                 # WandB 프로젝트 이름
-TRAIN_BATCH_SIZE=1
-GRAD_ACC_STEPS=128
+VIDEO_CSV_PATH="/home/jupyter/preprocessed_WebVid_10M_videos_0208_test_1k.csv"               # 실제 CSV 파일 경로
+VIDEO_DIR="/home/jupyter/preprocessed_WebVid_10M_train_videos_0130"                   # 비디오 파일 폴더 경로
+OUTPUT_DIR="/home/jupyter/video_lora_training_checkpoints_0213"               # 체크포인트 저장 폴더 경로
+WANDB_PROJECT="video_teacher_lora_training_0213"                 # WandB 프로젝트 이름
+TRAIN_BATCH_SIZE=1 # 1
+GRAD_ACC_STEPS=128 # 128
 LR=1e-5
 NUM_EPOCHS=16
 MIXED_PRECISION="bf16"                                        # ["no", "fp16", "bf16"] 중 선택
 NUM_WORKERS=4
-SAVE_CHECKPOINT=2                                           # 에폭마다 저장 (예: 2 에폭마다)
 VIDEOCRAFTER_CKPT="scripts/evaluation/model.ckpt"           # 미리 학습된 VideoCrafter 모델 ckpt 경로
 VIDEOCRAFTER_CONFIG="configs/inference_t2v_512_v2.0.yaml"   # VideoCrafter config 경로
 VIDEO_FPS=12.5
 TARGET_FRAMES=40
 HEIGHT=320
 WIDTH=512
+VIDEO_LOSS_WEIGHT=4.0
+
+# RESUME_CHECKPOINT="/home/jupyter/video_lora_training_checkpoints_0211/checkpoint-step-12288"
 
 # ========================= 평가 관련 설정 =========================
-EVAL_EVERY=4096                # N step마다 평가
+EVAL_EVERY=8192                # N step마다 평가
 INFERENCE_BATCH_SIZE=2
-INFERENCE_SAVE_PATH="/home/jupyter/video_lora_inference_0205"
+INFERENCE_SAVE_PATH="/home/jupyter/video_lora_inference_0213"
 GUIDANCE_SCALE=12.0
 NUM_INFERENCE_STEPS=25
-TARGET_FOLDER="/home/jupyter/preprocessed_WebVid_10M_gt_test_videos_500_random_crop_0205_2"  # 평가 시 사용될 GT 폴더
+TARGET_FOLDER="/home/jupyter/preprocessed_WebVid_10M_gt_test_videos_1k_random_crop_0210"  # 평가 시 사용될 GT 폴더
 SEED=42
 DDIM_ETA=0.0
 
 # (필요 시) VGG 관련 설정
 VGG_CSV_PATH="/home/jupyter/vggsound_sparse_curated_292.csv"                        # VGG eval 용 CSV 파일
-VGG_INFERENCE_SAVE_PATH="/home/jupyter/video_lora_vgg_inference_0205"             # VGG eval 시 inference 저장 폴더
+VGG_INFERENCE_SAVE_PATH="/home/jupyter/video_lora_vgg_inference_0213"             # VGG eval 시 inference 저장 폴더
 VGG_TARGET_FOLDER="/home/jupyter/vggsound_sparse_test_curated_final/video"                   # VGG eval 시 GT 폴더 (비워두면 실행 안 됨)
 
 
@@ -76,15 +78,16 @@ echo "Train Batch Size: $TRAIN_BATCH_SIZE"
 echo "Learning Rate: $LR"
 echo "Number of Epochs: $NUM_EPOCHS"
 echo "Gradient Accumulation Steps: $GRAD_ACC_STEPS"
-echo "Evaluate Every (epochs): $EVAL_EVERY"
+echo "Evaluate Every (steps): $EVAL_EVERY"
 echo "Mixed Precision: $MIXED_PRECISION"
 echo "Number of Workers: $NUM_WORKERS"
-echo "Save Checkpoint Every (epochs): $SAVE_CHECKPOINT"
 echo "VideoCrafter CKPT: $VIDEOCRAFTER_CKPT"
 echo "VideoCrafter Config: $VIDEOCRAFTER_CONFIG"
 echo "Video FPS: $VIDEO_FPS"
 echo "Target Frames: $TARGET_FRAMES"
 echo "Random Seed: $SEED"
+echo "VIDEO_LOSS_WEIGHT: $VIDEO_LOSS_WEIGHT"
+# echo "RESUME_CHECKPOINT: $RESUME_CHECKPOINT"
 echo ""
 echo "======================= Additional Arguments =========================="
 echo "Height: $HEIGHT"
@@ -113,7 +116,6 @@ accelerate launch video_lora_training/train.py \
     --eval_every "$EVAL_EVERY" \
     --mixed_precision "$MIXED_PRECISION" \
     --num_workers "$NUM_WORKERS" \
-    --save_checkpoint "$SAVE_CHECKPOINT" \
     --videocrafter_ckpt "$VIDEOCRAFTER_CKPT" \
     --videocrafter_config "$VIDEOCRAFTER_CONFIG" \
     --video_fps "$VIDEO_FPS" \
@@ -129,7 +131,9 @@ accelerate launch video_lora_training/train.py \
     --seed "$SEED" \
     --vgg_csv_path "$VGG_CSV_PATH" \
     --vgg_inference_save_path "$VGG_INFERENCE_SAVE_PATH" \
-    --vgg_target_folder "$VGG_TARGET_FOLDER"
+    --vgg_target_folder "$VGG_TARGET_FOLDER" \
+    --video_loss_weight "$VIDEO_LOSS_WEIGHT"
+    # --resume_checkpoint "$RESUME_CHECKPOINT"
 
 # ========================= 종료 메시지 =========================
 if [ $? -eq 0 ]; then

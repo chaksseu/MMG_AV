@@ -31,8 +31,6 @@ scikit-learn
 scipy==1.11.1
 soundfile
 tokenizers
-#moviepy
-#mpi4py
 imageio[ffmpeg]
 ninja
 wandb
@@ -40,3 +38,5 @@ peft
 laion-clap==1.1.6
 ffmpeg_quality_metrics
 pytorchvideo
+av
+mpi4py

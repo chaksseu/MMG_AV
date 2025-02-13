@@ -30,7 +30,16 @@ def process_audio(audio_id, args):
         # 이미 생성된 경우 스킵
         return
 
-    audio_path = os.path.join(args.audio_dir, f"{audio_id}.flac")
+    # audio_path = os.path.join(args.audio_dir, f"{audio_id}.flac")
+
+
+    audio_path_flac = os.path.join(args.audio_dir, f"{audio_id}.flac")
+    audio_path_mp3 = os.path.join(args.audio_dir, f"{audio_id}.wav")
+
+    # flac이 있으면 사용, 없으면 mp3 사용
+    audio_path = audio_path_flac if os.path.exists(audio_path_flac) else audio_path_mp3
+
+
     if not os.path.isfile(audio_path):
         # 혹은 .wav, .mp3 등 확장자 다양하다면 csv에서 확장자도 읽어야 함
         print(f"[Warning] Audio file not found: {audio_path}")
@@ -63,7 +72,7 @@ def process_audio(audio_id, args):
 
 def main():
     parser = argparse.ArgumentParser()
-    parser.add_argument("--csv_path", type=str, default="/home/jupyter/MMG_TA_dataset_audiocaps_wavcaps/MMG_TA_dataset_preprocessed_test_10k.csv", help="CSV 파일 경로")
+    parser.add_argument("--csv_path", type=str, default='/home/jupyter/MMG_final_audio_merged_file_test10k.csv', help="CSV 파일 경로")
     parser.add_argument("--audio_dir", type=str, default="/home/jupyter/MMG_TA_dataset_audiocaps_wavcaps/preprocessed_audio", help="오디오(flac) 파일 폴더 경로")
     parser.add_argument("--spectrogram_dir", type=str, default="/home/jupyter/MMG_TA_dataset_audiocaps_wavcaps/preprocessed_spec", help="미리 생성된 Mel Spectrogram(*.pt) 저장 폴더 경로") # /home/rtrt5060/preprocessed_spec, /home/jupyter/MMG_TA_dataset_audiocaps_wavcaps/preprocessed_spec
     parser.add_argument("--sample_rate", type=int, default=16000, help="오디오 리샘플링 레이트")
@@ -94,7 +103,7 @@ def main():
     process_func = partial(process_audio, args=args)
 
     # 멀티프로세싱 풀 생성
-    with multiprocessing.Pool(processes=args.num_workers) as pool:
+    with multiprocessing.Pool(processes=4) as pool:
         # tqdm을 사용하여 진행 상황 표시
         list(tqdm(pool.imap_unordered(process_func, unique_audio_ids), total=len(unique_audio_ids), desc="Precomputing spectrograms"))
 

@@ -123,8 +123,8 @@ def main():
     """
 
     # 예시용 CSV 경로와 비디오 폴더 경로 (사용 환경에 맞춰 수정)
-    csv_path = "/home/jupyter/preprocessed_WebVid_10M_videos_0130.csv"               # 실제 CSV 파일 경로
-    video_dir = "/home/jupyter/preprocessed_WebVid_10M_gt_test_videos_5k_random_crop_0204"  
+    csv_path = "/home/jupyter/preprocessed_WebVid_10M_videos_0208_test_1k.csv"               # 실제 CSV 파일 경로
+    video_dir = "/home/jupyter/preprocessed_WebVid_10M_train_videos_0130"  
     split = "test"
 
     # Dataset 생성
@@ -138,17 +138,16 @@ def main():
     # DataLoader 생성
     dataloader = DataLoader(
         dataset,
-        batch_size=16,           # 적절한 배치 사이즈로 설정
+        batch_size=32,           # 적절한 배치 사이즈로 설정
         shuffle=False,
-        num_workers=16,   
+        num_workers=8,   
         drop_last=False,
     )
 
 
     # tqdm 추가하여 진행률 표시
     for batch in tqdm(dataloader, desc="Processing Batches", unit="batch"):
-        pass
-        #print("video tensor shape", batch["video_tensor"].shape)
-
+        print("video tensor shape", batch["video_tensor"].shape)
+        
 if __name__ == "__main__":
     main()

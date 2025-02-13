@@ -111,7 +111,8 @@ def parse_args():
     parser.add_argument("--mixed_precision", type=str, default="bf16", choices=["no", "fp16", "bf16"], help="혼합 정밀도 설정")
     parser.add_argument("--pretrained_model_name_or_path", type=str, default="auffusion/auffusion-full", help="Path to pretrained model or model identifier from huggingface.co/models.")
     parser.add_argument("--num_workers", type=int, default=4, help="num_workers")
-    parser.add_argument("--save_checkpoint", type=int, default=100, help="save_checkpoint")
+    parser.add_argument("--resume_checkpoint", type=str, default=None, help="이전 체크포인트 경로 (resume 시 사용, 없으면 새로 학습)")
+
 
     # evaluation 관련
     parser.add_argument("--eval_every", type=int, default=2, help="N 에폭마다 평가")
@@ -188,9 +189,9 @@ def main():
 
     # LoRA config
     lora_config = LoraConfig(
-        r=128,
-        lora_alpha=64,
-        init_lora_weights="gaussian",
+        r=16,
+        lora_alpha=16,
+        init_lora_weights=True,
         target_modules=["to_k", "to_q", "to_v", "to_out.0"],
     )
     unet_model.add_adapter(lora_config)
@@ -281,14 +282,87 @@ def main():
     )
 
 
+    # ====== 체크포인트에서 resume하는 부분 추가 ======
+    start_epoch = 0
     global_step = 0
+    resume_batch_idx = 0
+    if args.resume_checkpoint is not None:
+        # accelerator가 저장했던 전체 상태를 로드합니다.
+        accelerator.load_state(args.resume_checkpoint)
+        training_state_path = os.path.join(args.resume_checkpoint, "training_state.json")
+        if os.path.exists(training_state_path):
+            with open(training_state_path, "r") as f:
+                training_state = json.load(f)
+            global_step = training_state.get("global_step", 0)
+            # 마지막 저장된 에폭 이후부터 재개하도록 (+1)
+            start_epoch = training_state.get("epoch", 0) + 1
+            resume_batch_idx = training_state.get("batch_idx", -1) + 1
+            print(f"체크포인트로부터 학습 재개: 에폭 {start_epoch}부터, 글로벌 스텝 {global_step}")
+        else:
+            print("체크포인트 내 training_state.json 파일을 찾을 수 없어, 새롭게 시작합니다.")
+    # =================================================
+
     unet_model.train()
 
-    for epoch in range(args.num_epochs):
+    for epoch in range(start_epoch, args.num_epochs):
         losses = []
         loop = tqdm(train_loader, desc=f"Epoch [{epoch+1}/{args.num_epochs}]", disable=not accelerator.is_main_process)
 
-        for step, batch in enumerate(loop):
+
+        # 초기 평가
+        if global_step==0:
+            accelerator.wait_for_everyone()
+            vgg_fad, vgg_clap_avg, vgg_clap_std = evaluate_model(
+                accelerator=accelerator,
+                unet_model=unet_model,
+                vae=vae,
+                image_processor=image_processor,
+                text_encoder_list=text_encoder_list,
+                adapter_list=adapter_list,
+                tokenizer_list=tokenizer_list,
+                csv_path=args.vgg_csv_path,
+                inference_path=args.vgg_inference_path,
+                inference_batch_size=args.inference_batch_size,
+                pretrained_model_name_or_path=args.pretrained_model_name_or_path,
+                seed=args.seed,
+                duration=args.slice_duration,
+                guidance_scale=args.guidance_scale,
+                num_inference_steps=args.num_inference_steps,
+                eta_audio=args.eta_audio,
+                eval_id=f"step_{global_step}",  # 스텝 단위 표시
+                target_folder=args.vgg_target_folder
+            )
+            accelerator.wait_for_everyone()
+
+            # Audiocaps/Wavcaps 등 기본 csv로 평가
+            fad, clap_avg, clap_std = evaluate_model(
+                accelerator=accelerator,
+                unet_model=unet_model,
+                vae=vae,
+                image_processor=image_processor,
+                text_encoder_list=text_encoder_list,
+                adapter_list=adapter_list,
+                tokenizer_list=tokenizer_list,
+                csv_path=args.csv_path,
+                inference_path=args.inference_save_path,
+                inference_batch_size=args.inference_batch_size,
+                pretrained_model_name_or_path=args.pretrained_model_name_or_path,
+                seed=args.seed,
+                duration=args.slice_duration,
+                guidance_scale=args.guidance_scale,
+                num_inference_steps=args.num_inference_steps,
+                eta_audio=args.eta_audio,
+                eval_id=f"step_{global_step}",  # 스텝 단위 표시
+                target_folder=args.target_folder
+            )
+            accelerator.wait_for_everyone()
+
+
+
+        for batch_idx, batch in enumerate(loop):
+            if epoch == start_epoch and batch_idx < resume_batch_idx:
+                continue
+           
             with accelerator.accumulate(unet_model):
                 optimizer.zero_grad()
                 
@@ -379,7 +453,7 @@ def main():
                     losses = []
 
                 # -----  스텝 단위로 평가 -----
-                if global_step==1 or global_step % args.eval_every == 0: # global_step==1 or
+                if global_step % args.eval_every == 0: # global_step==1 or
                     accelerator.wait_for_everyone()
 
                     # VGG 데이터셋으로 평가
@@ -441,11 +515,16 @@ def main():
                         })
 
 
-                    # Save checkpoint
+                # Save checkpoint
+                # 체크포인트 저장 (평가 주기마다)
                 if global_step > 0 and (global_step % args.eval_every == 0) and accelerator.is_main_process:
                     ckpt_dir = os.path.join(args.output_dir, f"checkpoint-step-{global_step}")
                     accelerator.save_state(ckpt_dir)
-                    print(f"[Epoch {global_step}] Checkpoint saved at: {ckpt_dir}")
+                    # 현재 학습 상태(에폭, 글로벌 스텝, 배치 인덱스)를 JSON 파일로 저장
+                    training_state = {"global_step": global_step, "epoch": epoch, "batch_idx": batch_idx}
+                    with open(os.path.join(ckpt_dir, "training_state.json"), "w") as f:
+                        json.dump(training_state, f)
+                    print(f"[Epoch {epoch}] Checkpoint saved at: {ckpt_dir}")
                 # ----------------------------------------------------
 
                 if accelerator.is_main_process:

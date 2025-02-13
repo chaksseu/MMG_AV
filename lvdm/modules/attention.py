@@ -604,8 +604,8 @@ class LoRALinear(nn.Module):
     def __init__(self, 
                  in_features, 
                  out_features, 
-                 r=128, 
-                 lora_alpha=64):
+                 r=256, 
+                 lora_alpha=256):
         super().__init__()
         self.in_features = in_features
         self.out_features = out_features

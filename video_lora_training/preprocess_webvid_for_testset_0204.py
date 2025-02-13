@@ -5,8 +5,8 @@ from tqdm import tqdm
 import random  # 랜덤 스타트 지점을 위한 import
 
 # --- 설정 변수 ---
-SOURCE_DIR = "/home/jupyter/preprocessed_WebVid_10M_gt_test_videos_500_0205"    # 원본 MP4가 있는 폴더
-DEST_DIR   = "/home/jupyter/preprocessed_WebVid_10M_gt_test_videos_500_random_crop_0205_2"  # 최종 결과물이 저장될 폴더
+SOURCE_DIR = "/home/jupyter/preprocessed_WebVid_10M_gt_test_videos_1k_0210"    # 원본 MP4가 있는 폴더
+DEST_DIR   = "/home/jupyter/preprocessed_WebVid_10M_gt_test_videos_1k_random_crop_0210"  # 최종 결과물이 저장될 폴더
 
 TARGET_FPS = 12.5         # FPS를 12.5로 설정 (고정)
 TRIM_DURATION = 3.2       # 잘라낼 길이(초) -> 3.2초

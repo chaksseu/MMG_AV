@@ -30,5 +30,5 @@ def log_video_fps(directory):
                     logging.error(f"파일 처리 중 오류 발생: {file_path}, 오류: {e}")
 
 # 실행 예제
-target_folder = "/home/jupyter/preprocessed_WebVid_10M_gt_test_videos_500_0205"  # 확인할 폴더 경로 지정
+target_folder = "/home/jupyter/preprocessed_WebVid_10M_gt_test_videos_1k_random_crop_0210"  # 확인할 폴더 경로 지정
 log_video_fps(target_folder)

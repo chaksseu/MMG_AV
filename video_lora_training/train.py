@@ -26,6 +26,8 @@ import wandb
 
 from dataset import VideoTextDataset
 
+import json
+
 from MMG_video_teacher_inference import run_inference
 from run_video_eval import evaluate_video_metrics
 
@@ -42,7 +44,6 @@ def parse_args():
     parser.add_argument("--mixed_precision", type=str, default="no", choices=["no", "fp16", "bf16"], help="혼합 정밀도 설정")
     parser.add_argument("--eval_every", type=int, default=2, help="N 에폭마다 평가")
     parser.add_argument("--num_workers", type=int, default=4, help="num_workers")
-    parser.add_argument("--save_checkpoint", type=int, default=100, help="save_checkpoint")
     parser.add_argument("--videocrafter_ckpt", type=str, default='scripts/evaluation/model.ckpt', help="Path to pretrained model.")
     parser.add_argument("--videocrafter_config", type=str, default='configs/inference_t2v_512_v2.0.yaml', help="Path to model config.")
     parser.add_argument("--video_fps", type=float, default=12.5, help="video_fps")
@@ -55,6 +56,8 @@ def parse_args():
     parser.add_argument("--height", type=int, default=320, help="height")
     parser.add_argument("--width", type=int, default=512, help="width")
     parser.add_argument("--ddim_eta", type=float, default=0.0, help="ddim_eta")
+    parser.add_argument("--resume_checkpoint", type=str, default=None, help="resume_checkpoint")
+    parser.add_argument("--video_loss_weight", type=float, default=4.0, help="video_loss_weight")
 
 
 
@@ -185,6 +188,31 @@ def main(args):
     )
 
     global_step = 0
+
+
+
+    # ====== 체크포인트에서 resume하는 부분 추가 ======
+    start_epoch = 0
+    global_step = 0
+    resume_step = 0
+    if args.resume_checkpoint is not None:
+        # accelerator가 저장했던 전체 상태를 로드합니다.
+        accelerator.load_state(args.resume_checkpoint)
+        training_state_path = os.path.join(args.resume_checkpoint, "training_state.json")
+        if os.path.exists(training_state_path):
+            with open(training_state_path, "r") as f:
+                training_state = json.load(f)
+            global_step = training_state.get("global_step", 0)
+            # 마지막 저장된 에폭 이후부터 재개하도록 (+1)
+            start_epoch = training_state.get("epoch", 0)
+            resume_step = training_state.get("step", -1) + 1
+            print(f"체크포인트로부터 학습 재개: 에폭 {start_epoch}부터, 글로벌 스텝 {global_step}")
+        else:
+            print("체크포인트 내 training_state.json 파일을 찾을 수 없어, 새롭게 시작합니다.")
+    # =================================================
+
+
+
     video_unet.train()
 
     for epoch in range(args.num_epochs):
@@ -193,7 +221,7 @@ def main(args):
 
         accelerator.wait_for_everyone()
 
-        if args.vgg_csv_path is not None:
+        if global_step==0 and args.vgg_csv_path is not None:
             vgg_fvd, vgg_clip_avg = evaluate_model(
                 accelerator=accelerator,
                 unet_model=video_unet,
@@ -217,6 +245,8 @@ def main(args):
                 wandb.log({
                     "eval/vgg_fvd": vgg_fvd,
                     "eval/vgg_clip_avg": vgg_clip_avg,
+                    "step": global_step
+
                 })
 
         fvd, clip_avg = evaluate_model(
@@ -241,10 +271,14 @@ def main(args):
             wandb.log({
                 "eval/fvd": fvd,
                 "eval/clip_avg": clip_avg,
+                "step": global_step
             })
 
 
         for step, batch in enumerate(loop):
+            if epoch == start_epoch and step < resume_step:
+                continue
+
             with accelerator.accumulate(video_unet):
                 video_tensor = batch["video_tensor"]  # [B, T, 3, 256, 256]
                 caption = batch["caption"]
@@ -263,9 +297,15 @@ def main(args):
                 with torch.no_grad():
                     video_latent = video_model.encode_first_stage(video_tensor)
                     video_text_embed = video_model.get_learned_conditioning(caption)
+                    # for CFG
+                    prompts = batch_size * [""]
+                    video_null_text_embed = video_model.get_learned_conditioning(prompts)
 
                 # Text dropout (optional)
-                video_null_text_embed = torch.zeros_like(video_text_embed[:, :1, :])
+                # 여기 확인 필요 제로패딩인지 "" 임베딩인지 -> empty seq임. 수정 필요
+                # video_null_text_embed = torch.zeros_like(video_text_embed[:, :1, :])
+
+
                 mask = (torch.rand(batch_size, 1, 1, device=video_text_embed.device) < 0.1)
                 video_text_embed = torch.where(mask, video_null_text_embed, video_text_embed)
 
@@ -288,6 +328,7 @@ def main(args):
                 )
 
                 loss = F.mse_loss(video_original_output, noise_video)
+                loss *= video_loss_weight 
                 losses.append(loss.item())
 
                 accelerator.backward(loss)
@@ -302,13 +343,14 @@ def main(args):
                     wandb.log({
                         "train/loss": avg_loss,
                         "epoch": epoch + 1,
+                        "step": global_step,
                         "step": global_step
                     })
                     losses = []
 
 
                 # -----  스텝 단위로 평가 -----
-                if global_step % args.eval_every == 0: #global_step==1 or 
+                if global_step % args.eval_every == 0:
                     accelerator.wait_for_everyone()
 
                     if args.vgg_csv_path is not None:
@@ -335,6 +377,7 @@ def main(args):
                             wandb.log({
                                 "eval/vgg_fvd": vgg_fvd,
                                 "eval/vgg_clip_avg": vgg_clip_avg,
+                                "step": global_step
                             })
 
                     fvd, clip_avg = evaluate_model(
@@ -359,12 +402,19 @@ def main(args):
                         wandb.log({
                             "eval/fvd": fvd,
                             "eval/clip_avg": clip_avg,
+                            "step": global_step
                         })
 
                 # Checkpoint 저장
                 if global_step > 0 and (global_step % args.eval_every == 0) and accelerator.is_main_process:
                     ckpt_dir = os.path.join(args.output_dir, f"checkpoint-step-{global_step}")
                     accelerator.save_state(ckpt_dir)
+                    
+                    # 현재 학습 상태(에폭, 글로벌 스텝, 배치 인덱스)를 JSON 파일로 저장
+                    training_state = {"global_step": global_step, "epoch": epoch, "step": step}
+                    with open(os.path.join(ckpt_dir, "training_state.json"), "w") as f:
+                        json.dump(training_state, f)
+                    
                     print(f"[Epoch {global_step}] Checkpoint saved at: {ckpt_dir}")
 
                 if accelerator.is_main_process:

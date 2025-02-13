@@ -1,31 +1,31 @@
 #!/bin/bash
 
 # 기본값 설정
-csv_path="/home/jupyter/MMG_TA_dataset_audiocaps_wavcaps/MMG_TA_dataset_preprocessed_test_10k.csv"  # 실제 CSV 파일 경로
+csv_path="/home/jupyter/MMG_final_audio_merged_file_test10k.csv"  # 실제 CSV 파일 경로
 audio_dir="/home/jupyter/MMG_TA_dataset_audiocaps_wavcaps/preprocessed_spec"  # spec path
-OUTPUT_DIR="/home/jupyter/audio_teacher_LoRA_checkpoint_0203" # checkpoint 저장 폴더 경로
-WANDB_PROJECT="audio_teacher_lora_training_gcp_0203"
+OUTPUT_DIR="/home/jupyter/audio_teacher_LoRA_checkpoint_0210" # checkpoint 저장 폴더 경로
+WANDB_PROJECT="audio_teacher_lora_training_gcp_0210"
 TRAIN_BATCH_SIZE=32
 GRAD_ACC_STEPS=4
-LR=1e-5
+LR=1e-6 ## 1e-6
 NUM_EPOCHS=64
 MIXED_PRECISION="no"
 PRETRAINED_MODEL="auffusion/auffusion-full"
-NUM_WORKERS=8
-SAVE_CHECKPOINT=1
+NUM_WORKERS=4
+RESUME_CHECKPOINT="/home/jupyter/audio_teacher_LoRA_checkpoint_0204_5/checkpoint-step-800"
 
 # Evaluation 관련
-EVAL_EVERY=100  # N step 100
+EVAL_EVERY=1600  # N step
 INFERENCE_BATCH_SIZE=32
-INFERENCE_SAVE_PATH="/home/jupyter/audio_lora_inference_0203" # inference 저장 경로
+INFERENCE_SAVE_PATH="/home/jupyter/audio_lora_inference_0210" # inference 저장 경로
 ETA_AUDIO=0.0
 GUIDANCE_SCALE=7.5
 NUM_INFERENCE_STEPS=25
-TARGET_FOLDER="/home/jupyter/MMG_TA_dataset_audiocaps_wavcaps/audio_lora_processed_gt_3_2s_10k" # 비교한 gt test 데이터
+TARGET_FOLDER="/home/jupyter/MMG_final_test_gt_10k_3_2" # 비교한 gt test 데이터
 
 VGG_CSV_PATH="/home/jupyter/MMG_TA_dataset_audiocaps_wavcaps/vggsound_sparse_curated_292.csv"
 VGG_TARGET_FOLDER="/home/jupyter/MMG_TA_dataset_audiocaps_wavcaps/vggsound_sparse_test_curated_final/audio"
-VGG_INFERENCE_PATH="/home/jupyter/audio_lora_vggsound_sparse_inference_0203"
+VGG_INFERENCE_PATH="/home/jupyter/audio_lora_vggsound_sparse_inference_0210"
 
 #TARGET_FOLDER="/home/jupyter/MMG_01/"
 # 기타 dataset 파라미터
@@ -73,7 +73,6 @@ echo "Evaluate Every (epochs): $EVAL_EVERY"
 echo "Mixed Precision: $MIXED_PRECISION"
 echo "Pretrained Model: $PRETRAINED_MODEL"
 echo "Number of Workers: $NUM_WORKERS"
-echo "Save Checkpoint Every: $SAVE_CHECKPOINT steps"
 echo "Sample Rate: $SAMPLE_RATE"
 echo "Slice Duration: $SLICE_DURATION seconds"
 echo "Hop Size: $HOP_SIZE"
@@ -107,7 +106,6 @@ accelerate launch audio_lora_training/train.py \
     --mixed_precision "$MIXED_PRECISION" \
     --pretrained_model_name_or_path "$PRETRAINED_MODEL" \
     --num_workers "$NUM_WORKERS" \
-    --save_checkpoint "$SAVE_CHECKPOINT" \
     --inference_batch_size "$INFERENCE_BATCH_SIZE" \
     --inference_save_path "$INFERENCE_SAVE_PATH" \
     --eta_audio "$ETA_AUDIO" \
@@ -121,8 +119,8 @@ accelerate launch audio_lora_training/train.py \
     --seed "$SEED" \
     --vgg_csv_path "$VGG_CSV_PATH" \
     --vgg_target_folder "$VGG_TARGET_FOLDER" \
-    --vgg_inference_path "$VGG_INFERENCE_PATH"
-
+    --vgg_inference_path "$VGG_INFERENCE_PATH" \
+    #--resume_checkpoint "$RESUME_CHECKPOINT"
 
 # 종료 메시지
 if [ $? -eq 0 ]; then
