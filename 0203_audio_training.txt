@@ -1,384 +1,0 @@
-======================= Training Configuration =======================
-CSV Path: /home/jupyter/MMG_TA_dataset_audiocaps_wavcaps/MMG_TA_dataset_preprocessed_test_10k.csv
-Audio Directory: /home/jupyter/MMG_TA_dataset_audiocaps_wavcaps/preprocessed_spec
-Output Directory: /home/jupyter/audio_teacher_LoRA_checkpoint_0203
-WandB Project: audio_teacher_lora_training_gcp_0203
-Train Batch Size: 32
-Learning Rate: 1e-5
-Number of Epochs: 64
-Gradient Accumulation Steps: 4
-Evaluate Every (epochs): 100
-Mixed Precision: no
-Pretrained Model: auffusion/auffusion-full
-Number of Workers: 8
-Save Checkpoint Every: 1 steps
-Sample Rate: 16000
-Slice Duration: 3.2 seconds
-Hop Size: 160
-Number of Mel Bands: 256
-Random Seed: 42
-
-======================= Evaluation Configuration =======================
-Inference Batch Size: 32
-Inference Save Path: /home/jupyter/audio_lora_inference_0203
-ETA Audio: 0.0
-Guidance Scale: 7.5
-Number of Inference Steps: 25
-Target Folder: /home/jupyter/MMG_TA_dataset_audiocaps_wavcaps/audio_lora_processed_gt_3_2s_10k
-VGG_CSV_PATH: /home/jupyter/MMG_TA_dataset_audiocaps_wavcaps/vggsound_sparse_curated_292.csv
-VGG_TARGET_FOLDER: /home/jupyter/MMG_TA_dataset_audiocaps_wavcaps/vggsound_sparse_test_curated_final/audio
-VGG_INFERENCE_PATH: /home/jupyter/audio_lora_vggsound_sparse_inference_0203
-==========================================================================
-/opt/conda/envs/mmg/lib/python3.10/site-packages/timm/models/layers/__init__.py:48: FutureWarning: Importing from timm.models.layers is deprecated, please import via timm.layers
-  warnings.warn(f"Importing from {__name__} is deprecated, please import via timm.layers", FutureWarning)
-/opt/conda/envs/mmg/lib/python3.10/site-packages/timm/models/layers/__init__.py:48: FutureWarning: Importing from timm.models.layers is deprecated, please import via timm.layers
-  warnings.warn(f"Importing from {__name__} is deprecated, please import via timm.layers", FutureWarning)
-/opt/conda/envs/mmg/lib/python3.10/site-packages/timm/models/layers/__init__.py:48: FutureWarning: Importing from timm.models.layers is deprecated, please import via timm.layers
-  warnings.warn(f"Importing from {__name__} is deprecated, please import via timm.layers", FutureWarning)
-/opt/conda/envs/mmg/lib/python3.10/site-packages/timm/models/layers/__init__.py:48: FutureWarning: Importing from timm.models.layers is deprecated, please import via timm.layers
-  warnings.warn(f"Importing from {__name__} is deprecated, please import via timm.layers", FutureWarning)
-wandb: Currently logged in as: rtrt505 to https://api.wandb.ai. Use `wandb login --relogin` to force relogin
-wandb: Using wandb-core as the SDK backend.  Please refer to https://wandb.me/wandb-core for more information.
-wandb: Tracking run with wandb version 0.19.5
-wandb: Run data is saved locally in /home/jupyter/MMG_01/wandb/run-20250203_140932-ug7cr0pu
-wandb: Run `wandb offline` to turn off syncing.
-wandb: Syncing run audio_lora_training
-wandb: ⭐️ View project at https://wandb.ai/rtrt505/audio_teacher_lora_training_gcp_0203
-wandb: 🚀 View run at https://wandb.ai/rtrt505/audio_teacher_lora_training_gcp_0203/runs/ug7cr0pu
-An error occurred while trying to fetch auffusion/auffusion-full: auffusion/auffusion-full does not appear to have a file named diffusion_pytorch_model.safetensors.
-Defaulting to unsafe serialization. Pass `allow_pickle=False` to raise an error instead.
-The config attributes {'decay': 0.9999, 'inv_gamma': 1.0, 'min_decay': 0.0, 'optimization_step': 100000, 'power': 0.6666666666666666, 'update_after_step': 0, 'use_ema_warmup': False} were passed to UNet2DConditionModel, but are not expected and will be ignored. Please verify your config.json configuration file.
-An error occurred while trying to fetch auffusion/auffusion-full: auffusion/auffusion-full does not appear to have a file named diffusion_pytorch_model.safetensors.
-Defaulting to unsafe serialization. Pass `allow_pickle=False` to raise an error instead.
-The config attributes {'decay': 0.9999, 'inv_gamma': 1.0, 'min_decay': 0.0, 'optimization_step': 100000, 'power': 0.6666666666666666, 'update_after_step': 0, 'use_ema_warmup': False} were passed to UNet2DConditionModel, but are not expected and will be ignored. Please verify your config.json configuration file.
-An error occurred while trying to fetch auffusion/auffusion-full: auffusion/auffusion-full does not appear to have a file named diffusion_pytorch_model.safetensors.
-Defaulting to unsafe serialization. Pass `allow_pickle=False` to raise an error instead.
-The config attributes {'decay': 0.9999, 'inv_gamma': 1.0, 'min_decay': 0.0, 'optimization_step': 100000, 'power': 0.6666666666666666, 'update_after_step': 0, 'use_ema_warmup': False} were passed to UNet2DConditionModel, but are not expected and will be ignored. Please verify your config.json configuration file.
-An error occurred while trying to fetch auffusion/auffusion-full: auffusion/auffusion-full does not appear to have a file named diffusion_pytorch_model.safetensors.
-Defaulting to unsafe serialization. Pass `allow_pickle=False` to raise an error instead.
-The config attributes {'decay': 0.9999, 'inv_gamma': 1.0, 'min_decay': 0.0, 'optimization_step': 100000, 'power': 0.6666666666666666, 'update_after_step': 0, 'use_ema_warmup': False} were passed to UNet2DConditionModel, but are not expected and will be ignored. Please verify your config.json configuration file.
-Fetching 19 files:   0%|          | 0/19 [00:00<?, ?it/s]Fetching 19 files: 100%|██████████| 19/19 [00:00<00:00, 173242.99it/s]
-An error occurred while trying to fetch /home/rtrt5060/.cache/huggingface/hub/models--auffusion--auffusion-full/snapshots/db5169f1890d4e5d926ac4c5524da0cc3d4b9a5b: Error no file named diffusion_pytorch_model.safetensors found in directory /home/rtrt5060/.cache/huggingface/hub/models--auffusion--auffusion-full/snapshots/db5169f1890d4e5d926ac4c5524da0cc3d4b9a5b.
-Defaulting to unsafe serialization. Pass `allow_pickle=False` to raise an error instead.
-Fetching 19 files:   0%|          | 0/19 [00:00<?, ?it/s]Fetching 19 files: 100%|██████████| 19/19 [00:00<00:00, 155042.37it/s]
-An error occurred while trying to fetch /home/rtrt5060/.cache/huggingface/hub/models--auffusion--auffusion-full/snapshots/db5169f1890d4e5d926ac4c5524da0cc3d4b9a5b: Error no file named diffusion_pytorch_model.safetensors found in directory /home/rtrt5060/.cache/huggingface/hub/models--auffusion--auffusion-full/snapshots/db5169f1890d4e5d926ac4c5524da0cc3d4b9a5b.
-Defaulting to unsafe serialization. Pass `allow_pickle=False` to raise an error instead.
-Fetching 19 files:   0%|          | 0/19 [00:00<?, ?it/s]Fetching 19 files: 100%|██████████| 19/19 [00:00<00:00, 173242.99it/s]
-An error occurred while trying to fetch /home/rtrt5060/.cache/huggingface/hub/models--auffusion--auffusion-full/snapshots/db5169f1890d4e5d926ac4c5524da0cc3d4b9a5b: Error no file named diffusion_pytorch_model.safetensors found in directory /home/rtrt5060/.cache/huggingface/hub/models--auffusion--auffusion-full/snapshots/db5169f1890d4e5d926ac4c5524da0cc3d4b9a5b.
-Defaulting to unsafe serialization. Pass `allow_pickle=False` to raise an error instead.
-Total params: 885030852
-Total trainable parameters: 25509888
-You are using a model of type clip_text_model to instantiate a model of type . This is not supported for all configurations of models and can yield errors.
-Fetching 19 files:   0%|          | 0/19 [00:00<?, ?it/s]Fetching 19 files: 100%|██████████| 19/19 [00:00<00:00, 93315.90it/s]
-An error occurred while trying to fetch /home/rtrt5060/.cache/huggingface/hub/models--auffusion--auffusion-full/snapshots/db5169f1890d4e5d926ac4c5524da0cc3d4b9a5b: Error no file named diffusion_pytorch_model.safetensors found in directory /home/rtrt5060/.cache/huggingface/hub/models--auffusion--auffusion-full/snapshots/db5169f1890d4e5d926ac4c5524da0cc3d4b9a5b.
-Defaulting to unsafe serialization. Pass `allow_pickle=False` to raise an error instead.
-You are using a model of type clip_text_model to instantiate a model of type . This is not supported for all configurations of models and can yield errors.
-You are using a model of type clip_text_model to instantiate a model of type . This is not supported for all configurations of models and can yield errors.
-INITIATED: ConditionAdapter: {'text_encoder_name': 'text_encoder_0', 'condition_adapter_name': 'condition_adapter_0', 'condition_type': 'clip-vit-large-patch14_text', 'pretrained_model_name_or_path': 'openai/clip-vit-large-patch14', 'condition_max_length': 77, 'condition_dim': 768, 'cross_attention_dim': 768}
-INITIATED: ConditionAdapter: {'text_encoder_name': 'text_encoder_0', 'condition_adapter_name': 'condition_adapter_0', 'condition_type': 'clip-vit-large-patch14_text', 'pretrained_model_name_or_path': 'openai/clip-vit-large-patch14', 'condition_max_length': 77, 'condition_dim': 768, 'cross_attention_dim': 768}
-INITIATED: ConditionAdapter: {'text_encoder_name': 'text_encoder_0', 'condition_adapter_name': 'condition_adapter_0', 'condition_type': 'clip-vit-large-patch14_text', 'pretrained_model_name_or_path': 'openai/clip-vit-large-patch14', 'condition_max_length': 77, 'condition_dim': 768, 'cross_attention_dim': 768}
-You are using a model of type clip_text_model to instantiate a model of type . This is not supported for all configurations of models and can yield errors.
-INITIATED: ConditionAdapter: {'text_encoder_name': 'text_encoder_0', 'condition_adapter_name': 'condition_adapter_0', 'condition_type': 'clip-vit-large-patch14_text', 'pretrained_model_name_or_path': 'openai/clip-vit-large-patch14', 'condition_max_length': 77, 'condition_dim': 768, 'cross_attention_dim': 768}
-LOADED: ConditionAdapter from /home/rtrt5060/.cache/huggingface/hub/models--auffusion--auffusion-full/snapshots/db5169f1890d4e5d926ac4c5524da0cc3d4b9a5b/condition_adapter_0
-LOADED: ConditionAdapter from /home/rtrt5060/.cache/huggingface/hub/models--auffusion--auffusion-full/snapshots/db5169f1890d4e5d926ac4c5524da0cc3d4b9a5b/condition_adapter_0
-LOADED: ConditionAdapter from /home/rtrt5060/.cache/huggingface/hub/models--auffusion--auffusion-full/snapshots/db5169f1890d4e5d926ac4c5524da0cc3d4b9a5b/condition_adapter_0
-LOADED: ConditionAdapter from /home/rtrt5060/.cache/huggingface/hub/models--auffusion--auffusion-full/snapshots/db5169f1890d4e5d926ac4c5524da0cc3d4b9a5b/condition_adapter_0
-Epoch [1/64]:   0%|          | 0/3164 [00:00<?, ?it/s]/opt/conda/envs/mmg/lib/python3.10/site-packages/timm/models/layers/__init__.py:48: FutureWarning: Importing from timm.models.layers is deprecated, please import via timm.layers
-  warnings.warn(f"Importing from {__name__} is deprecated, please import via timm.layers", FutureWarning)
-/opt/conda/envs/mmg/lib/python3.10/site-packages/timm/models/layers/__init__.py:48: FutureWarning: Importing from timm.models.layers is deprecated, please import via timm.layers
-  warnings.warn(f"Importing from {__name__} is deprecated, please import via timm.layers", FutureWarning)
-/opt/conda/envs/mmg/lib/python3.10/site-packages/timm/models/layers/__init__.py:48: FutureWarning: Importing from timm.models.layers is deprecated, please import via timm.layers
-  warnings.warn(f"Importing from {__name__} is deprecated, please import via timm.layers", FutureWarning)
-/opt/conda/envs/mmg/lib/python3.10/site-packages/timm/models/layers/__init__.py:48: FutureWarning: Importing from timm.models.layers is deprecated, please import via timm.layers
-  warnings.warn(f"Importing from {__name__} is deprecated, please import via timm.layers", FutureWarning)
-/opt/conda/envs/mmg/lib/python3.10/site-packages/timm/models/layers/__init__.py:48: FutureWarning: Importing from timm.models.layers is deprecated, please import via timm.layers
-  warnings.warn(f"Importing from {__name__} is deprecated, please import via timm.layers", FutureWarning)
-/opt/conda/envs/mmg/lib/python3.10/site-packages/timm/models/layers/__init__.py:48: FutureWarning: Importing from timm.models.layers is deprecated, please import via timm.layers
-  warnings.warn(f"Importing from {__name__} is deprecated, please import via timm.layers", FutureWarning)
-/opt/conda/envs/mmg/lib/python3.10/site-packages/timm/models/layers/__init__.py:48: FutureWarning: Importing from timm.models.layers is deprecated, please import via timm.layers
-  warnings.warn(f"Importing from {__name__} is deprecated, please import via timm.layers", FutureWarning)
-/opt/conda/envs/mmg/lib/python3.10/site-packages/timm/models/layers/__init__.py:48: FutureWarning: Importing from timm.models.layers is deprecated, please import via timm.layers
-  warnings.warn(f"Importing from {__name__} is deprecated, please import via timm.layers", FutureWarning)
-/opt/conda/envs/mmg/lib/python3.10/site-packages/timm/models/layers/__init__.py:48: FutureWarning: Importing from timm.models.layers is deprecated, please import via timm.layers
-  warnings.warn(f"Importing from {__name__} is deprecated, please import via timm.layers", FutureWarning)
-/opt/conda/envs/mmg/lib/python3.10/site-packages/timm/models/layers/__init__.py:48: FutureWarning: Importing from timm.models.layers is deprecated, please import via timm.layers
-  warnings.warn(f"Importing from {__name__} is deprecated, please import via timm.layers", FutureWarning)
-/opt/conda/envs/mmg/lib/python3.10/site-packages/timm/models/layers/__init__.py:48: FutureWarning: Importing from timm.models.layers is deprecated, please import via timm.layers
-  warnings.warn(f"Importing from {__name__} is deprecated, please import via timm.layers", FutureWarning)
-/opt/conda/envs/mmg/lib/python3.10/site-packages/timm/models/layers/__init__.py:48: FutureWarning: Importing from timm.models.layers is deprecated, please import via timm.layers
-  warnings.warn(f"Importing from {__name__} is deprecated, please import via timm.layers", FutureWarning)
-/opt/conda/envs/mmg/lib/python3.10/site-packages/timm/models/layers/__init__.py:48: FutureWarning: Importing from timm.models.layers is deprecated, please import via timm.layers
-  warnings.warn(f"Importing from {__name__} is deprecated, please import via timm.layers", FutureWarning)
-/opt/conda/envs/mmg/lib/python3.10/site-packages/timm/models/layers/__init__.py:48: FutureWarning: Importing from timm.models.layers is deprecated, please import via timm.layers
-  warnings.warn(f"Importing from {__name__} is deprecated, please import via timm.layers", FutureWarning)
-/opt/conda/envs/mmg/lib/python3.10/site-packages/timm/models/layers/__init__.py:48: FutureWarning: Importing from timm.models.layers is deprecated, please import via timm.layers
-  warnings.warn(f"Importing from {__name__} is deprecated, please import via timm.layers", FutureWarning)
-/opt/conda/envs/mmg/lib/python3.10/site-packages/timm/models/layers/__init__.py:48: FutureWarning: Importing from timm.models.layers is deprecated, please import via timm.layers
-  warnings.warn(f"Importing from {__name__} is deprecated, please import via timm.layers", FutureWarning)
-/opt/conda/envs/mmg/lib/python3.10/site-packages/timm/models/layers/__init__.py:48: FutureWarning: Importing from timm.models.layers is deprecated, please import via timm.layers
-  warnings.warn(f"Importing from {__name__} is deprecated, please import via timm.layers", FutureWarning)
-/opt/conda/envs/mmg/lib/python3.10/site-packages/timm/models/layers/__init__.py:48: FutureWarning: Importing from timm.models.layers is deprecated, please import via timm.layers
-  warnings.warn(f"Importing from {__name__} is deprecated, please import via timm.layers", FutureWarning)
-/opt/conda/envs/mmg/lib/python3.10/site-packages/timm/models/layers/__init__.py:48: FutureWarning: Importing from timm.models.layers is deprecated, please import via timm.layers
-  warnings.warn(f"Importing from {__name__} is deprecated, please import via timm.layers", FutureWarning)
-/opt/conda/envs/mmg/lib/python3.10/site-packages/timm/models/layers/__init__.py:48: FutureWarning: Importing from timm.models.layers is deprecated, please import via timm.layers
-  warnings.warn(f"Importing from {__name__} is deprecated, please import via timm.layers", FutureWarning)
-/opt/conda/envs/mmg/lib/python3.10/site-packages/timm/models/layers/__init__.py:48: FutureWarning: Importing from timm.models.layers is deprecated, please import via timm.layers
-  warnings.warn(f"Importing from {__name__} is deprecated, please import via timm.layers", FutureWarning)
-/opt/conda/envs/mmg/lib/python3.10/site-packages/timm/models/layers/__init__.py:48: FutureWarning: Importing from timm.models.layers is deprecated, please import via timm.layers
-  warnings.warn(f"Importing from {__name__} is deprecated, please import via timm.layers", FutureWarning)
-/opt/conda/envs/mmg/lib/python3.10/site-packages/timm/models/layers/__init__.py:48: FutureWarning: Importing from timm.models.layers is deprecated, please import via timm.layers
-  warnings.warn(f"Importing from {__name__} is deprecated, please import via timm.layers", FutureWarning)
-/opt/conda/envs/mmg/lib/python3.10/site-packages/timm/models/layers/__init__.py:48: FutureWarning: Importing from timm.models.layers is deprecated, please import via timm.layers
-  warnings.warn(f"Importing from {__name__} is deprecated, please import via timm.layers", FutureWarning)
-/opt/conda/envs/mmg/lib/python3.10/site-packages/timm/models/layers/__init__.py:48: FutureWarning: Importing from timm.models.layers is deprecated, please import via timm.layers
-  warnings.warn(f"Importing from {__name__} is deprecated, please import via timm.layers", FutureWarning)
-/opt/conda/envs/mmg/lib/python3.10/site-packages/timm/models/layers/__init__.py:48: FutureWarning: Importing from timm.models.layers is deprecated, please import via timm.layers
-  warnings.warn(f"Importing from {__name__} is deprecated, please import via timm.layers", FutureWarning)
-/opt/conda/envs/mmg/lib/python3.10/site-packages/timm/models/layers/__init__.py:48: FutureWarning: Importing from timm.models.layers is deprecated, please import via timm.layers
-  warnings.warn(f"Importing from {__name__} is deprecated, please import via timm.layers", FutureWarning)
-/opt/conda/envs/mmg/lib/python3.10/site-packages/timm/models/layers/__init__.py:48: FutureWarning: Importing from timm.models.layers is deprecated, please import via timm.layers
-  warnings.warn(f"Importing from {__name__} is deprecated, please import via timm.layers", FutureWarning)
-/opt/conda/envs/mmg/lib/python3.10/site-packages/timm/models/layers/__init__.py:48: FutureWarning: Importing from timm.models.layers is deprecated, please import via timm.layers
-  warnings.warn(f"Importing from {__name__} is deprecated, please import via timm.layers", FutureWarning)
-/opt/conda/envs/mmg/lib/python3.10/site-packages/timm/models/layers/__init__.py:48: FutureWarning: Importing from timm.models.layers is deprecated, please import via timm.layers
-  warnings.warn(f"Importing from {__name__} is deprecated, please import via timm.layers", FutureWarning)
-/opt/conda/envs/mmg/lib/python3.10/site-packages/timm/models/layers/__init__.py:48: FutureWarning: Importing from timm.models.layers is deprecated, please import via timm.layers
-  warnings.warn(f"Importing from {__name__} is deprecated, please import via timm.layers", FutureWarning)
-/opt/conda/envs/mmg/lib/python3.10/site-packages/timm/models/layers/__init__.py:48: FutureWarning: Importing from timm.models.layers is deprecated, please import via timm.layers
-  warnings.warn(f"Importing from {__name__} is deprecated, please import via timm.layers", FutureWarning)
-/opt/conda/envs/mmg/lib/python3.10/site-packages/diffusers/configuration_utils.py:140: FutureWarning: Accessing config attribute `num_train_timesteps` directly via 'DDPMScheduler' object attribute is deprecated. Please access 'num_train_timesteps' over 'DDPMScheduler's config object instead, e.g. 'scheduler.config.num_train_timesteps'.
-  deprecate("direct config name access", "1.0.0", deprecation_message, standard_warn=False)
-/opt/conda/envs/mmg/lib/python3.10/site-packages/diffusers/configuration_utils.py:140: FutureWarning: Accessing config attribute `num_train_timesteps` directly via 'DDPMScheduler' object attribute is deprecated. Please access 'num_train_timesteps' over 'DDPMScheduler's config object instead, e.g. 'scheduler.config.num_train_timesteps'.
-  deprecate("direct config name access", "1.0.0", deprecation_message, standard_warn=False)
-/opt/conda/envs/mmg/lib/python3.10/site-packages/diffusers/configuration_utils.py:140: FutureWarning: Accessing config attribute `num_train_timesteps` directly via 'DDPMScheduler' object attribute is deprecated. Please access 'num_train_timesteps' over 'DDPMScheduler's config object instead, e.g. 'scheduler.config.num_train_timesteps'.
-  deprecate("direct config name access", "1.0.0", deprecation_message, standard_warn=False)
-/opt/conda/envs/mmg/lib/python3.10/site-packages/diffusers/configuration_utils.py:140: FutureWarning: Accessing config attribute `num_train_timesteps` directly via 'DDPMScheduler' object attribute is deprecated. Please access 'num_train_timesteps' over 'DDPMScheduler's config object instead, e.g. 'scheduler.config.num_train_timesteps'.
-  deprecate("direct config name access", "1.0.0", deprecation_message, standard_warn=False)
-Epoch [1/64]:   0%|          | 0/3164 [01:10<?, ?it/s, loss=0.148]Epoch [1/64]:   0%|          | 1/3164 [01:10<61:41:34, 70.22s/it, loss=0.148]Epoch [1/64]:   0%|          | 1/3164 [01:13<61:41:34, 70.22s/it, loss=0.161]Epoch [1/64]:   0%|          | 2/3164 [01:13<27:10:25, 30.94s/it, loss=0.161]Epoch [1/64]:   0%|          | 2/3164 [01:17<27:10:25, 30.94s/it, loss=0.185]Epoch [1/64]:   0%|          | 3/3164 [01:17<16:13:56, 18.49s/it, loss=0.185]Epoch [1/64]:   0%|          | 3/3164 [01:21<16:13:56, 18.49s/it, loss=0.188]Epoch [1/64]:   0%|          | 4/3164 [01:21<11:25:49, 13.02s/it, loss=0.188]Epoch [1/64]:   0%|          | 4/3164 [01:25<11:25:49, 13.02s/it, loss=0.169]Epoch [1/64]:   0%|          | 5/3164 [01:25<8:26:30,  9.62s/it, loss=0.169] Epoch [1/64]:   0%|          | 5/3164 [01:29<8:26:30,  9.62s/it, loss=0.152]Epoch [1/64]:   0%|          | 6/3164 [01:29<6:41:21,  7.63s/it, loss=0.152]Epoch [1/64]:   0%|          | 6/3164 [01:32<6:41:21,  7.63s/it, loss=0.118]Epoch [1/64]:   0%|          | 7/3164 [01:32<5:32:03,  6.31s/it, loss=0.118]Epoch [1/64]:   0%|          | 7/3164 [01:36<5:32:03,  6.31s/it, loss=0.114]Epoch [1/64]:   0%|          | 8/3164 [01:36<4:53:18,  5.58s/it, loss=0.114]Epoch [1/64]:   0%|          | 8/3164 [01:40<4:53:18,  5.58s/it, loss=0.125]Epoch [1/64]:   0%|          | 9/3164 [01:40<4:21:54,  4.98s/it, loss=0.125]Epoch [1/64]:   0%|          | 9/3164 [01:44<4:21:54,  4.98s/it, loss=0.111]Epoch [1/64]:   0%|          | 10/3164 [01:44<4:00:37,  4.58s/it, loss=0.111]Epoch [1/64]:   0%|          | 10/3164 [01:47<4:00:37,  4.58s/it, loss=0.186]Epoch [1/64]:   0%|          | 11/3164 [01:47<3:45:55,  4.30s/it, loss=0.186]Epoch [1/64]:   0%|          | 11/3164 [01:51<3:45:55,  4.30s/it, loss=0.201]Epoch [1/64]:   0%|          | 12/3164 [01:51<3:35:59,  4.11s/it, loss=0.201]Epoch [1/64]:   0%|          | 12/3164 [01:55<3:35:59,  4.11s/it, loss=0.124]Epoch [1/64]:   0%|          | 13/3164 [01:55<3:31:29,  4.03s/it, loss=0.124]Epoch [1/64]:   0%|          | 13/3164 [01:58<3:31:29,  4.03s/it, loss=0.214]Epoch [1/64]:   0%|          | 14/3164 [01:58<3:22:53,  3.86s/it, loss=0.214]Epoch [1/64]:   0%|          | 14/3164 [02:02<3:22:53,  3.86s/it, loss=0.151]Epoch [1/64]:   0%|          | 15/3164 [02:02<3:22:13,  3.85s/it, loss=0.151]Epoch [1/64]:   0%|          | 15/3164 [02:06<3:22:13,  3.85s/it, loss=0.166]Epoch [1/64]:   1%|          | 16/3164 [02:06<3:18:51,  3.79s/it, loss=0.166]Epoch [1/64]:   1%|          | 16/3164 [02:10<3:18:51,  3.79s/it, loss=0.173]Epoch [1/64]:   1%|          | 17/3164 [02:10<3:15:50,  3.73s/it, loss=0.173]Epoch [1/64]:   1%|          | 17/3164 [02:13<3:15:50,  3.73s/it, loss=0.178]Epoch [1/64]:   1%|          | 18/3164 [02:13<3:10:50,  3.64s/it, loss=0.178]Epoch [1/64]:   1%|          | 18/3164 [02:16<3:10:50,  3.64s/it, loss=0.241]Epoch [1/64]:   1%|          | 19/3164 [02:16<3:07:00,  3.57s/it, loss=0.241]Epoch [1/64]:   1%|          | 19/3164 [02:20<3:07:00,  3.57s/it, loss=0.165]Epoch [1/64]:   1%|          | 20/3164 [02:20<3:14:49,  3.72s/it, loss=0.165]Epoch [1/64]:   1%|          | 20/3164 [02:24<3:14:49,  3.72s/it, loss=0.143]Epoch [1/64]:   1%|          | 21/3164 [02:24<3:13:19,  3.69s/it, loss=0.143]Epoch [1/64]:   1%|          | 21/3164 [02:28<3:13:19,  3.69s/it, loss=0.183]Epoch [1/64]:   1%|          | 22/3164 [02:28<3:15:36,  3.74s/it, loss=0.183]Epoch [1/64]:   1%|          | 22/3164 [02:32<3:15:36,  3.74s/it, loss=0.205]Epoch [1/64]:   1%|          | 23/3164 [02:32<3:19:06,  3.80s/it, loss=0.205]Epoch [1/64]:   1%|          | 23/3164 [02:36<3:19:06,  3.80s/it, loss=0.186]Epoch [1/64]:   1%|          | 24/3164 [02:36<3:19:20,  3.81s/it, loss=0.186]Epoch [1/64]:   1%|          | 24/3164 [02:39<3:19:20,  3.81s/it, loss=0.164]Epoch [1/64]:   1%|          | 25/3164 [02:39<3:16:14,  3.75s/it, loss=0.164]Epoch [1/64]:   1%|          | 25/3164 [02:43<3:16:14,  3.75s/it, loss=0.143]Epoch [1/64]:   1%|          | 26/3164 [02:43<3:18:02,  3.79s/it, loss=0.143]Epoch [1/64]:   1%|          | 26/3164 [02:47<3:18:02,  3.79s/it, loss=0.193]Epoch [1/64]:   1%|          | 27/3164 [02:47<3:17:23,  3.78s/it, loss=0.193]Epoch [1/64]:   1%|          | 27/3164 [02:51<3:17:23,  3.78s/it, loss=0.0925]Epoch [1/64]:   1%|          | 28/3164 [02:51<3:25:24,  3.93s/it, loss=0.0925]Epoch [1/64]:   1%|          | 28/3164 [02:55<3:25:24,  3.93s/it, loss=0.198] Epoch [1/64]:   1%|          | 29/3164 [02:55<3:20:13,  3.83s/it, loss=0.198]Epoch [1/64]:   1%|          | 29/3164 [02:59<3:20:13,  3.83s/it, loss=0.155]Epoch [1/64]:   1%|          | 30/3164 [02:59<3:20:50,  3.84s/it, loss=0.155]Epoch [1/64]:   1%|          | 30/3164 [03:02<3:20:50,  3.84s/it, loss=0.21] Epoch [1/64]:   1%|          | 31/3164 [03:02<3:18:30,  3.80s/it, loss=0.21]Epoch [1/64]:   1%|          | 31/3164 [03:06<3:18:30,  3.80s/it, loss=0.187]Epoch [1/64]:   1%|          | 32/3164 [03:06<3:16:55,  3.77s/it, loss=0.187]Epoch [1/64]:   1%|          | 32/3164 [03:10<3:16:55,  3.77s/it, loss=0.135]Epoch [1/64]:   1%|          | 33/3164 [03:10<3:16:40,  3.77s/it, loss=0.135]Epoch [1/64]:   1%|          | 33/3164 [03:13<3:16:40,  3.77s/it, loss=0.135]Epoch [1/64]:   1%|          | 34/3164 [03:13<3:14:22,  3.73s/it, loss=0.135]Epoch [1/64]:   1%|          | 34/3164 [03:17<3:14:22,  3.73s/it, loss=0.148]Epoch [1/64]:   1%|          | 35/3164 [03:17<3:13:44,  3.72s/it, loss=0.148]Epoch [1/64]:   1%|          | 35/3164 [03:21<3:13:44,  3.72s/it, loss=0.168]Epoch [1/64]:   1%|          | 36/3164 [03:21<3:19:59,  3.84s/it, loss=0.168]Epoch [1/64]:   1%|          | 36/3164 [03:25<3:19:59,  3.84s/it, loss=0.169]Epoch [1/64]:   1%|          | 37/3164 [03:25<3:19:28,  3.83s/it, loss=0.169]Epoch [1/64]:   1%|          | 37/3164 [03:29<3:19:28,  3.83s/it, loss=0.11] Epoch [1/64]:   1%|          | 38/3164 [03:29<3:14:09,  3.73s/it, loss=0.11]Epoch [1/64]:   1%|          | 38/3164 [03:32<3:14:09,  3.73s/it, loss=0.184]Epoch [1/64]:   1%|          | 39/3164 [03:32<3:14:43,  3.74s/it, loss=0.184]Epoch [1/64]:   1%|          | 39/3164 [03:36<3:14:43,  3.74s/it, loss=0.19] Epoch [1/64]:   1%|▏         | 40/3164 [03:36<3:15:39,  3.76s/it, loss=0.19]Epoch [1/64]:   1%|▏         | 40/3164 [03:40<3:15:39,  3.76s/it, loss=0.204]Epoch [1/64]:   1%|▏         | 41/3164 [03:40<3:11:55,  3.69s/it, loss=0.204]Epoch [1/64]:   1%|▏         | 41/3164 [03:43<3:11:55,  3.69s/it, loss=0.187]Epoch [1/64]:   1%|▏         | 42/3164 [03:43<3:12:35,  3.70s/it, loss=0.187]Epoch [1/64]:   1%|▏         | 42/3164 [03:47<3:12:35,  3.70s/it, loss=0.208]Epoch [1/64]:   1%|▏         | 43/3164 [03:47<3:09:10,  3.64s/it, loss=0.208]Epoch [1/64]:   1%|▏         | 43/3164 [03:51<3:09:10,  3.64s/it, loss=0.172]Epoch [1/64]:   1%|▏         | 44/3164 [03:51<3:16:20,  3.78s/it, loss=0.172]Epoch [1/64]:   1%|▏         | 44/3164 [03:55<3:16:20,  3.78s/it, loss=0.157]Epoch [1/64]:   1%|▏         | 45/3164 [03:55<3:13:52,  3.73s/it, loss=0.157]Epoch [1/64]:   1%|▏         | 45/3164 [03:58<3:13:52,  3.73s/it, loss=0.161]Epoch [1/64]:   1%|▏         | 46/3164 [03:58<3:11:15,  3.68s/it, loss=0.161]Epoch [1/64]:   1%|▏         | 46/3164 [04:02<3:11:15,  3.68s/it, loss=0.148]Epoch [1/64]:   1%|▏         | 47/3164 [04:02<3:13:23,  3.72s/it, loss=0.148]Epoch [1/64]:   1%|▏         | 47/3164 [04:06<3:13:23,  3.72s/it, loss=0.191]Epoch [1/64]:   2%|▏         | 48/3164 [04:06<3:18:22,  3.82s/it, loss=0.191]Epoch [1/64]:   2%|▏         | 48/3164 [04:10<3:18:22,  3.82s/it, loss=0.19] Epoch [1/64]:   2%|▏         | 49/3164 [04:10<3:18:08,  3.82s/it, loss=0.19]Epoch [1/64]:   2%|▏         | 49/3164 [04:13<3:18:08,  3.82s/it, loss=0.168]Epoch [1/64]:   2%|▏         | 50/3164 [04:13<3:13:37,  3.73s/it, loss=0.168]Epoch [1/64]:   2%|▏         | 50/3164 [04:17<3:13:37,  3.73s/it, loss=0.11] Epoch [1/64]:   2%|▏         | 51/3164 [04:17<3:11:36,  3.69s/it, loss=0.11]Epoch [1/64]:   2%|▏         | 51/3164 [04:21<3:11:36,  3.69s/it, loss=0.153]Epoch [1/64]:   2%|▏         | 52/3164 [04:21<3:14:31,  3.75s/it, loss=0.153]Epoch [1/64]:   2%|▏         | 52/3164 [04:25<3:14:31,  3.75s/it, loss=0.202]Epoch [1/64]:   2%|▏         | 53/3164 [04:25<3:13:05,  3.72s/it, loss=0.202]Epoch [1/64]:   2%|▏         | 53/3164 [04:28<3:13:05,  3.72s/it, loss=0.0868]Epoch [1/64]:   2%|▏         | 54/3164 [04:28<3:13:35,  3.73s/it, loss=0.0868]Epoch [1/64]:   2%|▏         | 54/3164 [04:32<3:13:35,  3.73s/it, loss=0.205] Epoch [1/64]:   2%|▏         | 55/3164 [04:32<3:10:29,  3.68s/it, loss=0.205]Epoch [1/64]:   2%|▏         | 55/3164 [04:36<3:10:29,  3.68s/it, loss=0.198]Epoch [1/64]:   2%|▏         | 56/3164 [04:36<3:16:35,  3.80s/it, loss=0.198]Epoch [1/64]:   2%|▏         | 56/3164 [04:39<3:16:35,  3.80s/it, loss=0.132]Epoch [1/64]:   2%|▏         | 57/3164 [04:39<3:13:28,  3.74s/it, loss=0.132]Epoch [1/64]:   2%|▏         | 57/3164 [04:43<3:13:28,  3.74s/it, loss=0.188]Epoch [1/64]:   2%|▏         | 58/3164 [04:43<3:15:27,  3.78s/it, loss=0.188]Epoch [1/64]:   2%|▏         | 58/3164 [04:47<3:15:27,  3.78s/it, loss=0.145]Epoch [1/64]:   2%|▏         | 59/3164 [04:47<3:12:26,  3.72s/it, loss=0.145]Epoch [1/64]:   2%|▏         | 59/3164 [04:51<3:12:26,  3.72s/it, loss=0.154]Epoch [1/64]:   2%|▏         | 60/3164 [04:51<3:17:13,  3.81s/it, loss=0.154]Epoch [1/64]:   2%|▏         | 60/3164 [04:55<3:17:13,  3.81s/it, loss=0.126]Epoch [1/64]:   2%|▏         | 61/3164 [04:55<3:13:23,  3.74s/it, loss=0.126]Epoch [1/64]:   2%|▏         | 61/3164 [04:58<3:13:23,  3.74s/it, loss=0.102]Epoch [1/64]:   2%|▏         | 62/3164 [04:58<3:14:20,  3.76s/it, loss=0.102]Epoch [1/64]:   2%|▏         | 62/3164 [05:02<3:14:20,  3.76s/it, loss=0.135]Epoch [1/64]:   2%|▏         | 63/3164 [05:02<3:11:24,  3.70s/it, loss=0.135]Epoch [1/64]:   2%|▏         | 63/3164 [05:06<3:11:24,  3.70s/it, loss=0.112]Epoch [1/64]:   2%|▏         | 64/3164 [05:06<3:16:13,  3.80s/it, loss=0.112]Epoch [1/64]:   2%|▏         | 64/3164 [05:09<3:16:13,  3.80s/it, loss=0.142]Epoch [1/64]:   2%|▏         | 65/3164 [05:09<3:11:41,  3.71s/it, loss=0.142]Epoch [1/64]:   2%|▏         | 65/3164 [05:13<3:11:41,  3.71s/it, loss=0.151]Epoch [1/64]:   2%|▏         | 66/3164 [05:13<3:12:46,  3.73s/it, loss=0.151]Epoch [1/64]:   2%|▏         | 66/3164 [05:17<3:12:46,  3.73s/it, loss=0.163]Epoch [1/64]:   2%|▏         | 67/3164 [05:17<3:14:08,  3.76s/it, loss=0.163]Epoch [1/64]:   2%|▏         | 67/3164 [05:21<3:14:08,  3.76s/it, loss=0.216]Epoch [1/64]:   2%|▏         | 68/3164 [05:21<3:17:12,  3.82s/it, loss=0.216]Epoch [1/64]:   2%|▏         | 68/3164 [05:25<3:17:12,  3.82s/it, loss=0.12] Epoch [1/64]:   2%|▏         | 69/3164 [05:25<3:15:44,  3.79s/it, loss=0.12]Epoch [1/64]:   2%|▏         | 69/3164 [05:29<3:15:44,  3.79s/it, loss=0.192]Epoch [1/64]:   2%|▏         | 70/3164 [05:29<3:15:07,  3.78s/it, loss=0.192]Epoch [1/64]:   2%|▏         | 70/3164 [05:32<3:15:07,  3.78s/it, loss=0.12] Epoch [1/64]:   2%|▏         | 71/3164 [05:32<3:07:31,  3.64s/it, loss=0.12]Epoch [1/64]:   2%|▏         | 71/3164 [05:36<3:07:31,  3.64s/it, loss=0.154]Epoch [1/64]:   2%|▏         | 72/3164 [05:36<3:11:19,  3.71s/it, loss=0.154]Epoch [1/64]:   2%|▏         | 72/3164 [05:39<3:11:19,  3.71s/it, loss=0.161]Epoch [1/64]:   2%|▏         | 73/3164 [05:39<3:08:18,  3.66s/it, loss=0.161]Epoch [1/64]:   2%|▏         | 73/3164 [05:43<3:08:18,  3.66s/it, loss=0.114]Epoch [1/64]:   2%|▏         | 74/3164 [05:43<3:13:09,  3.75s/it, loss=0.114]Epoch [1/64]:   2%|▏         | 74/3164 [05:47<3:13:09,  3.75s/it, loss=0.125]Epoch [1/64]:   2%|▏         | 75/3164 [05:47<3:12:48,  3.75s/it, loss=0.125]Epoch [1/64]:   2%|▏         | 75/3164 [05:51<3:12:48,  3.75s/it, loss=0.129]Epoch [1/64]:   2%|▏         | 76/3164 [05:51<3:15:24,  3.80s/it, loss=0.129]Epoch [1/64]:   2%|▏         | 76/3164 [05:55<3:15:24,  3.80s/it, loss=0.0911]Epoch [1/64]:   2%|▏         | 77/3164 [05:55<3:14:35,  3.78s/it, loss=0.0911]Epoch [1/64]:   2%|▏         | 77/3164 [05:58<3:14:35,  3.78s/it, loss=0.173] Epoch [1/64]:   2%|▏         | 78/3164 [05:58<3:12:06,  3.74s/it, loss=0.173]Epoch [1/64]:   2%|▏         | 78/3164 [06:02<3:12:06,  3.74s/it, loss=0.165]Epoch [1/64]:   2%|▏         | 79/3164 [06:02<3:12:42,  3.75s/it, loss=0.165]Epoch [1/64]:   2%|▏         | 79/3164 [06:06<3:12:42,  3.75s/it, loss=0.163]Epoch [1/64]:   3%|▎         | 80/3164 [06:06<3:19:19,  3.88s/it, loss=0.163]Epoch [1/64]:   3%|▎         | 80/3164 [06:10<3:19:19,  3.88s/it, loss=0.199]Epoch [1/64]:   3%|▎         | 81/3164 [06:10<3:16:43,  3.83s/it, loss=0.199]Epoch [1/64]:   3%|▎         | 81/3164 [06:14<3:16:43,  3.83s/it, loss=0.222]Epoch [1/64]:   3%|▎         | 82/3164 [06:14<3:14:36,  3.79s/it, loss=0.222]Epoch [1/64]:   3%|▎         | 82/3164 [06:17<3:14:36,  3.79s/it, loss=0.171]Epoch [1/64]:   3%|▎         | 83/3164 [06:17<3:12:59,  3.76s/it, loss=0.171]Epoch [1/64]:   3%|▎         | 83/3164 [06:21<3:12:59,  3.76s/it, loss=0.124]Epoch [1/64]:   3%|▎         | 84/3164 [06:21<3:18:52,  3.87s/it, loss=0.124]Epoch [1/64]:   3%|▎         | 84/3164 [06:25<3:18:52,  3.87s/it, loss=0.15] Epoch [1/64]:   3%|▎         | 85/3164 [06:25<3:17:20,  3.85s/it, loss=0.15]Epoch [1/64]:   3%|▎         | 85/3164 [06:29<3:17:20,  3.85s/it, loss=0.178]Epoch [1/64]:   3%|▎         | 86/3164 [06:29<3:16:50,  3.84s/it, loss=0.178]Epoch [1/64]:   3%|▎         | 86/3164 [06:33<3:16:50,  3.84s/it, loss=0.226]Epoch [1/64]:   3%|▎         | 87/3164 [06:33<3:11:40,  3.74s/it, loss=0.226]Epoch [1/64]:   3%|▎         | 87/3164 [06:37<3:11:40,  3.74s/it, loss=0.139]Epoch [1/64]:   3%|▎         | 88/3164 [06:37<3:17:09,  3.85s/it, loss=0.139]Epoch [1/64]:   3%|▎         | 88/3164 [06:40<3:17:09,  3.85s/it, loss=0.152]Epoch [1/64]:   3%|▎         | 89/3164 [06:40<3:15:53,  3.82s/it, loss=0.152]Epoch [1/64]:   3%|▎         | 89/3164 [06:44<3:15:53,  3.82s/it, loss=0.152]Epoch [1/64]:   3%|▎         | 90/3164 [06:44<3:13:28,  3.78s/it, loss=0.152]Epoch [1/64]:   3%|▎         | 90/3164 [06:48<3:13:28,  3.78s/it, loss=0.14] Epoch [1/64]:   3%|▎         | 91/3164 [06:48<3:13:06,  3.77s/it, loss=0.14]Epoch [1/64]:   3%|▎         | 91/3164 [06:51<3:13:06,  3.77s/it, loss=0.172]Epoch [1/64]:   3%|▎         | 92/3164 [06:51<3:08:56,  3.69s/it, loss=0.172]Epoch [1/64]:   3%|▎         | 92/3164 [06:55<3:08:56,  3.69s/it, loss=0.146]Epoch [1/64]:   3%|▎         | 93/3164 [06:55<3:08:28,  3.68s/it, loss=0.146]Epoch [1/64]:   3%|▎         | 93/3164 [06:59<3:08:28,  3.68s/it, loss=0.154]Epoch [1/64]:   3%|▎         | 94/3164 [06:59<3:10:06,  3.72s/it, loss=0.154]Epoch [1/64]:   3%|▎         | 94/3164 [07:02<3:10:06,  3.72s/it, loss=0.137]Epoch [1/64]:   3%|▎         | 95/3164 [07:02<3:05:54,  3.63s/it, loss=0.137]Epoch [1/64]:   3%|▎         | 95/3164 [07:06<3:05:54,  3.63s/it, loss=0.192]Epoch [1/64]:   3%|▎         | 96/3164 [07:06<3:09:06,  3.70s/it, loss=0.192]Epoch [1/64]:   3%|▎         | 96/3164 [07:10<3:09:06,  3.70s/it, loss=0.152]Epoch [1/64]:   3%|▎         | 97/3164 [07:10<3:05:52,  3.64s/it, loss=0.152]Epoch [1/64]:   3%|▎         | 97/3164 [07:13<3:05:52,  3.64s/it, loss=0.183]Epoch [1/64]:   3%|▎         | 98/3164 [07:13<3:06:02,  3.64s/it, loss=0.183]Epoch [1/64]:   3%|▎         | 98/3164 [07:17<3:06:02,  3.64s/it, loss=0.149]Epoch [1/64]:   3%|▎         | 99/3164 [07:17<3:08:11,  3.68s/it, loss=0.149]all_prompts lengthall_prompts lengthall_prompts lengthall_prompts length   292292292
-
-
- [rank: 1] Seed set to 43
-[rank: 3] Seed set to 45
-[rank: 2] Seed set to 44
-292
-[rank: 0] Seed set to 42
-Fetching 19 files:   0%|          | 0/19 [00:00<?, ?it/s]Fetching 19 files: 100%|██████████| 19/19 [00:00<00:00, 134161.24it/s]
-/opt/conda/envs/mmg/lib/python3.10/site-packages/torch/nn/utils/weight_norm.py:143: FutureWarning: `torch.nn.utils.weight_norm` is deprecated in favor of `torch.nn.utils.parametrizations.weight_norm`.
-  WeightNorm.apply(module, name, dim)
-Fetching 19 files:   0%|          | 0/19 [00:00<?, ?it/s]Fetching 19 files: 100%|██████████| 19/19 [00:00<00:00, 138114.00it/s]
-/opt/conda/envs/mmg/lib/python3.10/site-packages/torch/nn/utils/weight_norm.py:143: FutureWarning: `torch.nn.utils.weight_norm` is deprecated in favor of `torch.nn.utils.parametrizations.weight_norm`.
-  WeightNorm.apply(module, name, dim)
-Fetching 19 files:   0%|          | 0/19 [00:00<?, ?it/s]Fetching 19 files: 100%|██████████| 19/19 [00:00<00:00, 63398.39it/s]
-
-Fetching 19 files:   0%|          | 0/19 [00:00<?, ?it/s][AFetching 19 files: 100%|██████████| 19/19 [00:00<00:00, 106825.44it/s]
-/opt/conda/envs/mmg/lib/python3.10/site-packages/torch/nn/utils/weight_norm.py:143: FutureWarning: `torch.nn.utils.weight_norm` is deprecated in favor of `torch.nn.utils.parametrizations.weight_norm`.
-  WeightNorm.apply(module, name, dim)
-/opt/conda/envs/mmg/lib/python3.10/site-packages/torch/nn/utils/weight_norm.py:143: FutureWarning: `torch.nn.utils.weight_norm` is deprecated in favor of `torch.nn.utils.parametrizations.weight_norm`.
-  WeightNorm.apply(module, name, dim)
-Removing weight norm...
-Removing weight norm...
-Removing weight norm...
-Removing weight norm...
-
-Generating:   0%|          | 0/3 [00:00<?, ?it/s][A
-Generating:  33%|███▎      | 1/3 [00:16<00:33, 16.51s/it][A
-Generating:  67%|██████▋   | 2/3 [00:33<00:16, 16.60s/it][A
-Generating: 100%|██████████| 3/3 [00:38<00:00, 11.53s/it][AGenerating: 100%|██████████| 3/3 [00:38<00:00, 12.89s/it]
-Process 0: Completed inference. Results saved in /home/jupyter/audio_lora_vggsound_sparse_inference_0203/step_100.
-/opt/conda/envs/mmg/lib/python3.10/site-packages/torch/hub.py:330: UserWarning: You are about to download and run code from an untrusted repository. In a future release, this won't be allowed. To add the repository to your trusted list, change the command to {calling_fn}(..., trust_repo=False) and a command prompt will appear asking for an explicit confirmation of trust, or load(..., trust_repo=True), which will assume that the prompt is to be answered with 'yes'. You can also use load(..., trust_repo='check') which will only prompt for confirmation if the repo is not already trusted. This will eventually be the default behaviour
-  warnings.warn(
-Downloading: "https://github.com/harritaylor/torchvggish/zipball/master" to /home/rtrt5060/.cache/torch/hub/master.zip
-Downloading: "https://github.com/harritaylor/torchvggish/releases/download/v0.1/vggish-10086976.pth" to /home/rtrt5060/.cache/torch/hub/checkpoints/vggish-10086976.pth
-
-  0%|          | 0.00/275M [00:00<?, ?B/s][A
-  4%|▎         | 10.1M/275M [00:00<00:02, 105MB/s][A
- 11%|█         | 29.0M/275M [00:00<00:01, 159MB/s][A
- 20%|█▉        | 53.9M/275M [00:00<00:01, 205MB/s][A
- 27%|██▋       | 73.5M/275M [00:00<00:01, 198MB/s][A
- 34%|███▍      | 93.1M/275M [00:00<00:00, 200MB/s][A
- 44%|████▎     | 120M/275M [00:00<00:00, 219MB/s] [A
- 53%|█████▎    | 147M/275M [00:00<00:00, 237MB/s][A
- 62%|██████▏   | 169M/275M [00:00<00:00, 229MB/s][A
- 71%|███████   | 195M/275M [00:00<00:00, 242MB/s][A
- 81%|████████  | 222M/275M [00:01<00:00, 252MB/s][A
- 90%|█████████ | 248M/275M [00:01<00:00, 260MB/s][A
- 99%|█████████▉| 273M/275M [00:01<00:00, 261MB/s][A100%|██████████| 275M/275M [00:01<00:00, 232MB/s]
-Downloading: "https://github.com/harritaylor/torchvggish/releases/download/v0.1/vggish_pca_params-970ea276.pth" to /home/rtrt5060/.cache/torch/hub/checkpoints/vggish_pca_params-970ea276.pth
-
-  0%|          | 0.00/177k [00:00<?, ?B/s][A100%|██████████| 177k/177k [00:00<00:00, 7.48MB/s]
-
-  0%|          | 0/292 [00:00<?, ?it/s][A
-  3%|▎         | 10/292 [00:00<00:02, 98.96it/s][A
-  7%|▋         | 21/292 [00:00<00:02, 102.23it/s][A
- 11%|█         | 32/292 [00:00<00:02, 103.23it/s][A
- 15%|█▌        | 44/292 [00:00<00:02, 106.39it/s][A
- 19%|█▉        | 56/292 [00:00<00:02, 107.95it/s][A
- 23%|██▎       | 68/292 [00:00<00:02, 109.25it/s][A
- 27%|██▋       | 79/292 [00:00<00:01, 108.81it/s][A
- 31%|███       | 90/292 [00:00<00:01, 108.47it/s][A
- 35%|███▍      | 101/292 [00:00<00:01, 108.23it/s][A
- 39%|███▊      | 113/292 [00:01<00:01, 109.11it/s][A
- 42%|████▏     | 124/292 [00:01<00:01, 108.59it/s][A
- 46%|████▌     | 135/292 [00:01<00:01, 108.43it/s][A
- 50%|█████     | 146/292 [00:01<00:01, 108.22it/s][A
- 54%|█████▍    | 157/292 [00:01<00:01, 107.19it/s][A
- 58%|█████▊    | 168/292 [00:01<00:01, 106.05it/s][A
- 61%|██████▏   | 179/292 [00:01<00:01, 106.96it/s][A
- 65%|██████▌   | 190/292 [00:01<00:00, 107.73it/s][A
- 69%|██████▉   | 201/292 [00:01<00:00, 107.91it/s][A
- 73%|███████▎  | 212/292 [00:01<00:00, 108.18it/s][A
- 77%|███████▋  | 224/292 [00:02<00:00, 108.89it/s][A
- 80%|████████  | 235/292 [00:02<00:00, 108.70it/s][A
- 85%|████████▍ | 247/292 [00:02<00:00, 109.47it/s][A
- 88%|████████▊ | 258/292 [00:02<00:00, 109.21it/s][A
- 92%|█████████▏| 269/292 [00:02<00:00, 108.91it/s][A
- 96%|█████████▌| 281/292 [00:02<00:00, 109.58it/s][A
-100%|██████████| 292/292 [00:02<00:00, 109.11it/s][A100%|██████████| 292/292 [00:02<00:00, 108.03it/s]
-
-  0%|          | 0/292 [00:00<?, ?it/s][A
-  2%|▏         | 5/292 [00:00<00:05, 48.36it/s][A
-  3%|▎         | 10/292 [00:00<00:05, 47.45it/s][A
-  5%|▌         | 15/292 [00:00<00:06, 45.11it/s][A
-  7%|▋         | 21/292 [00:00<00:05, 47.67it/s][A
-  9%|▉         | 26/292 [00:00<00:05, 47.41it/s][A
- 11%|█         | 32/292 [00:00<00:05, 48.77it/s][A
- 13%|█▎        | 37/292 [00:00<00:05, 49.13it/s][A
- 14%|█▍        | 42/292 [00:00<00:05, 49.17it/s][A
- 16%|█▋        | 48/292 [00:00<00:04, 51.76it/s][A
- 18%|█▊        | 54/292 [00:01<00:04, 52.21it/s][A
- 21%|██        | 60/292 [00:01<00:04, 53.18it/s][A
- 23%|██▎       | 66/292 [00:01<00:04, 52.85it/s][A
- 25%|██▍       | 72/292 [00:01<00:04, 51.37it/s][A
- 27%|██▋       | 78/292 [00:01<00:04, 51.68it/s][A
- 29%|██▉       | 84/292 [00:01<00:04, 50.60it/s][A
- 31%|███       | 90/292 [00:01<00:04, 50.29it/s][A
- 33%|███▎      | 96/292 [00:01<00:03, 50.52it/s][A
- 35%|███▍      | 102/292 [00:02<00:03, 50.91it/s][A
- 37%|███▋      | 108/292 [00:02<00:03, 52.32it/s][A
- 39%|███▉      | 114/292 [00:02<00:03, 53.74it/s][A
- 41%|████      | 120/292 [00:02<00:03, 52.98it/s][A
- 43%|████▎     | 126/292 [00:02<00:03, 52.37it/s][A
- 45%|████▌     | 132/292 [00:02<00:03, 51.37it/s][A
- 47%|████▋     | 138/292 [00:02<00:03, 50.41it/s][A
- 49%|████▉     | 144/292 [00:02<00:02, 50.09it/s][A
- 51%|█████▏    | 150/292 [00:02<00:02, 50.23it/s][A
- 53%|█████▎    | 156/292 [00:03<00:02, 51.76it/s][A
- 55%|█████▌    | 162/292 [00:03<00:02, 52.33it/s][A
- 58%|█████▊    | 168/292 [00:03<00:02, 52.24it/s][A
- 60%|█████▉    | 174/292 [00:03<00:02, 53.00it/s][A
- 62%|██████▏   | 180/292 [00:03<00:02, 52.67it/s][A
- 64%|██████▎   | 186/292 [00:03<00:01, 53.20it/s][A
- 66%|██████▌   | 192/292 [00:03<00:01, 54.04it/s][A
- 68%|██████▊   | 198/292 [00:03<00:01, 54.43it/s][A
- 70%|██████▉   | 204/292 [00:03<00:01, 53.69it/s][A
- 72%|███████▏  | 210/292 [00:04<00:01, 52.93it/s][A
- 74%|███████▍  | 216/292 [00:04<00:01, 52.89it/s][A
- 76%|███████▌  | 222/292 [00:04<00:01, 53.03it/s][A
- 78%|███████▊  | 228/292 [00:04<00:01, 53.50it/s][A
- 80%|████████  | 234/292 [00:04<00:01, 52.66it/s][A
- 82%|████████▏ | 240/292 [00:04<00:00, 54.11it/s][A
- 84%|████████▍ | 246/292 [00:04<00:00, 55.09it/s][A
- 86%|████████▋ | 252/292 [00:04<00:00, 54.84it/s][A
- 88%|████████▊ | 258/292 [00:04<00:00, 55.89it/s][A
- 90%|█████████ | 264/292 [00:05<00:00, 55.99it/s][A
- 92%|█████████▏| 270/292 [00:05<00:00, 55.62it/s][A
- 95%|█████████▍| 276/292 [00:05<00:00, 55.01it/s][A
- 97%|█████████▋| 282/292 [00:05<00:00, 55.67it/s][A
- 99%|█████████▊| 288/292 [00:05<00:00, 55.65it/s][A100%|██████████| 292/292 [00:05<00:00, 52.43it/s]
-/opt/conda/envs/mmg/lib/python3.10/site-packages/torch/functional.py:539: UserWarning: torch.meshgrid: in an upcoming release, it will be required to pass the indexing argument. (Triggered internally at /pytorch/aten/src/ATen/native/TensorShape.cpp:3637.)
-  return _VF.meshgrid(tensors, **kwargs)  # type: ignore[attr-defined]
-Some weights of RobertaModel were not initialized from the model checkpoint at roberta-base and are newly initialized: ['roberta.pooler.dense.bias', 'roberta.pooler.dense.weight']
-You should probably TRAIN this model on a down-stream task to be able to use it for predictions and inference.
-Load our best checkpoint in the paper.
-Downloading laion_clap weight files...
-Download completed!
-Load Checkpoint...
-Epoch [1/64]:   3%|▎         | 99/3164 [08:46<4:31:34,  5.32s/it, loss=0.149]
-Traceback (most recent call last):
-  File "/home/jupyter/MMG_01/audio_lora_training/train.py", line 465, in <module>
-    main()
-  File "/home/jupyter/MMG_01/audio_lora_training/train.py", line 386, in main
-    vgg_fad, vgg_clap_avg, vgg_clap_std = evaluate_model(
-  File "/home/jupyter/MMG_01/audio_lora_training/train.py", line 87, in evaluate_model
-    fad, clap_avg, clap_std = evaluate_audio_metrics(
-  File "/home/jupyter/MMG_01/audio_lora_training/../run_audio_eval.py", line 117, in evaluate_audio_metrics
-    model_clap.load_ckpt(model_id=clap_model) # Download the default pretrained checkpoint.
-  File "/opt/conda/envs/mmg/lib/python3.10/site-packages/laion_clap/hook.py", line 113, in load_ckpt
-    ckpt = load_state_dict(ckpt, skip_params=True)
-  File "/opt/conda/envs/mmg/lib/python3.10/site-packages/laion_clap/clap_module/factory.py", line 54, in load_state_dict
-    checkpoint = torch.load(checkpoint_path, map_location=map_location)
-  File "/opt/conda/envs/mmg/lib/python3.10/site-packages/torch/serialization.py", line 1470, in load
-    raise pickle.UnpicklingError(_get_wo_message(str(e))) from None
-_pickle.UnpicklingError: Weights only load failed. This file can still be loaded, to do so you have two options, [1mdo those steps only if you trust the source of the checkpoint[0m. 
-	(1) In PyTorch 2.6, we changed the default value of the `weights_only` argument in `torch.load` from `False` to `True`. Re-running `torch.load` with `weights_only` set to `False` will likely succeed, but it can result in arbitrary code execution. Do it only if you got the file from a trusted source.
-	(2) Alternatively, to load with `weights_only=True` please check the recommended steps in the following error message.
-	WeightsUnpickler error: Unsupported global: GLOBAL numpy.core.multiarray.scalar was not an allowed global by default. Please use `torch.serialization.add_safe_globals([scalar])` or the `torch.serialization.safe_globals([scalar])` context manager to allowlist this global if you trust this class/function.
-
-Check the documentation of torch.load to learn more about types accepted by default with weights_only https://pytorch.org/docs/stable/generated/torch.load.html.
-[rank0]: Traceback (most recent call last):
-[rank0]:   File "/home/jupyter/MMG_01/audio_lora_training/train.py", line 465, in <module>
-[rank0]:     main()
-[rank0]:   File "/home/jupyter/MMG_01/audio_lora_training/train.py", line 386, in main
-[rank0]:     vgg_fad, vgg_clap_avg, vgg_clap_std = evaluate_model(
-[rank0]:   File "/home/jupyter/MMG_01/audio_lora_training/train.py", line 87, in evaluate_model
-[rank0]:     fad, clap_avg, clap_std = evaluate_audio_metrics(
-[rank0]:   File "/home/jupyter/MMG_01/audio_lora_training/../run_audio_eval.py", line 117, in evaluate_audio_metrics
-[rank0]:     model_clap.load_ckpt(model_id=clap_model) # Download the default pretrained checkpoint.
-[rank0]:   File "/opt/conda/envs/mmg/lib/python3.10/site-packages/laion_clap/hook.py", line 113, in load_ckpt
-[rank0]:     ckpt = load_state_dict(ckpt, skip_params=True)
-[rank0]:   File "/opt/conda/envs/mmg/lib/python3.10/site-packages/laion_clap/clap_module/factory.py", line 54, in load_state_dict
-[rank0]:     checkpoint = torch.load(checkpoint_path, map_location=map_location)
-[rank0]:   File "/opt/conda/envs/mmg/lib/python3.10/site-packages/torch/serialization.py", line 1470, in load
-[rank0]:     raise pickle.UnpicklingError(_get_wo_message(str(e))) from None
-[rank0]: _pickle.UnpicklingError: Weights only load failed. This file can still be loaded, to do so you have two options, [1mdo those steps only if you trust the source of the checkpoint[0m. 
-[rank0]: 	(1) In PyTorch 2.6, we changed the default value of the `weights_only` argument in `torch.load` from `False` to `True`. Re-running `torch.load` with `weights_only` set to `False` will likely succeed, but it can result in arbitrary code execution. Do it only if you got the file from a trusted source.
-[rank0]: 	(2) Alternatively, to load with `weights_only=True` please check the recommended steps in the following error message.
-[rank0]: 	WeightsUnpickler error: Unsupported global: GLOBAL numpy.core.multiarray.scalar was not an allowed global by default. Please use `torch.serialization.add_safe_globals([scalar])` or the `torch.serialization.safe_globals([scalar])` context manager to allowlist this global if you trust this class/function.
-
-[rank0]: Check the documentation of torch.load to learn more about types accepted by default with weights_only https://pytorch.org/docs/stable/generated/torch.load.html.
-[1;34mwandb[0m: 
-[1;34mwandb[0m: 🚀 View run [33maudio_lora_training[0m at: [34mhttps://wandb.ai/rtrt505/audio_teacher_lora_training_gcp_0203/runs/ug7cr0pu[0m
-[1;34mwandb[0m: Find logs at: [1;35mwandb/run-20250203_140932-ug7cr0pu/logs[0m
-W0203 14:18:27.809000 217318 site-packages/torch/distributed/elastic/multiprocessing/api.py:897] Sending process 217505 closing signal SIGTERM
-W0203 14:18:27.810000 217318 site-packages/torch/distributed/elastic/multiprocessing/api.py:897] Sending process 217506 closing signal SIGTERM
-W0203 14:18:27.811000 217318 site-packages/torch/distributed/elastic/multiprocessing/api.py:897] Sending process 217507 closing signal SIGTERM
-/opt/conda/envs/mmg/lib/python3.10/multiprocessing/resource_tracker.py:224: UserWarning: resource_tracker: There appear to be 33 leaked semaphore objects to clean up at shutdown
-  warnings.warn('resource_tracker: There appear to be %d '
-/opt/conda/envs/mmg/lib/python3.10/multiprocessing/resource_tracker.py:224: UserWarning: resource_tracker: There appear to be 33 leaked semaphore objects to clean up at shutdown
-  warnings.warn('resource_tracker: There appear to be %d '
-/opt/conda/envs/mmg/lib/python3.10/multiprocessing/resource_tracker.py:224: UserWarning: resource_tracker: There appear to be 33 leaked semaphore objects to clean up at shutdown
-  warnings.warn('resource_tracker: There appear to be %d '
-E0203 14:18:29.091000 217318 site-packages/torch/distributed/elastic/multiprocessing/api.py:869] failed (exitcode: 1) local_rank: 0 (pid: 217504) of binary: /opt/conda/envs/mmg/bin/python3.10
-Traceback (most recent call last):
-  File "/opt/conda/envs/mmg/bin/accelerate", line 8, in <module>
-    sys.exit(main())
-  File "/opt/conda/envs/mmg/lib/python3.10/site-packages/accelerate/commands/accelerate_cli.py", line 48, in main
-    args.func(args)
-  File "/opt/conda/envs/mmg/lib/python3.10/site-packages/accelerate/commands/launch.py", line 1163, in launch_command
-    multi_gpu_launcher(args)
-  File "/opt/conda/envs/mmg/lib/python3.10/site-packages/accelerate/commands/launch.py", line 792, in multi_gpu_launcher
-    distrib_run.run(args)
-  File "/opt/conda/envs/mmg/lib/python3.10/site-packages/torch/distributed/run.py", line 909, in run
-    elastic_launch(
-  File "/opt/conda/envs/mmg/lib/python3.10/site-packages/torch/distributed/launcher/api.py", line 138, in __call__
-    return launch_agent(self._config, self._entrypoint, list(args))
-  File "/opt/conda/envs/mmg/lib/python3.10/site-packages/torch/distributed/launcher/api.py", line 269, in launch_agent
-    raise ChildFailedError(
-torch.distributed.elastic.multiprocessing.errors.ChildFailedError: 
-============================================================
-audio_lora_training/train.py FAILED
-------------------------------------------------------------
-Failures:
-  <NO_OTHER_FAILURES>
-------------------------------------------------------------
-Root Cause (first observed failure):
-[0]:
-  time      : 2025-02-03_14:18:27
-  host      : audio-training-test.c.tangential-age-445908-h1.internal
-  rank      : 0 (local_rank: 0)
-  exitcode  : 1 (pid: 217504)
-  error_file: <N/A>
-  traceback : To enable traceback see: https://pytorch.org/docs/stable/elastic/errors.html
-============================================================
-Training failed. Please check the logs for more details.
