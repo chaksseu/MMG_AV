@@ -1,15 +1,15 @@
-sudo /opt/deeplearning/install-driver.sh
-sudo chmod -R 777 /home/
-sudo chmod -R 777 /home/jupyter/
-sudo apt-get update
-sudo apt-get upgrade -y
-sudo apt-get install ffmpeg wget git zip unzip gcc libopenmpi-dev libmpich-dev curl tar libjpeg-dev libpng-dev libgl1-mesa-glx libglib2.0-0 libsndfile1 ninja-build -y
-sudo apt-get update
-sudo apt-get upgrade -y
+# sudo /opt/deeplearning/install-driver.sh
+# sudo chmod -R 777 /home/
+# sudo chmod -R 777 /home/jupyter/
+apt-get update
+apt-get upgrade -y
+apt-get install ffmpeg wget git zip unzip gcc libopenmpi-dev libmpich-dev curl tar libjpeg-dev libpng-dev libgl1-mesa-glx libglib2.0-0 libsndfile1 ninja-build -y
+pip install -U pip
+pip install torch torchvision torchaudio --index-url https://download.pytorch.org/whl/cu118
 pip install -r requirements.txt
-pip uninstall -y torch torchvision torchaudio
-pip cache purge
-pip install torch torchvision torchaudio --index-url https://download.pytorch.org/whl/cu121
+# pip uninstall -y torch torchvision torchaudio
+# pip cache purge
+# pip install torch torchvision torchaudio --index-url https://download.pytorch.org/whl/cu118
 
 # conda create -n mmg python=3.10 -y
 # conda init

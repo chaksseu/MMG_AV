@@ -14,11 +14,6 @@ from datetime import timedelta
 
 from dataset_spec import AudioTextDataset
 
-
-from mmg_inference.auffusion_pipe_functions_copy_0123 import (
-    encode_audio_prompt, ConditionAdapter, import_model_class_from_model_name_or_path, retrieve_latents
-)
-
 import os
 import json
 import random
