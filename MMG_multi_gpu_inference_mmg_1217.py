@@ -286,6 +286,7 @@ def load_text_encoders(
 def load_audio_unet(model_dir: str, device: torch.device, dtype: torch.dtype) -> UNet2DConditionModel:
     return UNet2DConditionModel.from_pretrained(model_dir, subfolder="unet").to(device, dtype)
 
+
 def load_cross_modal_unet(
     audio_unet: torch.nn.Module,
     video_unet: torch.nn.Module,
@@ -299,8 +300,9 @@ def load_cross_modal_unet(
         'device': device
     }
     cross_modal_model = CrossModalCoupledUNet(audio_unet, video_unet, cross_modal_config).to(device, dtype).eval()
-    #checkpoint = load_file(checkpoint_path)
-    #cross_modal_model.load_state_dict(checkpoint)
+    checkpoint = load_file(checkpoint_path)
+    cross_modal_model.load_state_dict(checkpoint)
+
     return cross_modal_model
 
 def get_parser() -> argparse.ArgumentParser:

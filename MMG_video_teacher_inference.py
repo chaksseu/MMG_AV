@@ -51,7 +51,6 @@ def load_prompts(prompt_file: str) -> List[str]:
     
     return prompts
 
-
 import os
 
 ############################################################

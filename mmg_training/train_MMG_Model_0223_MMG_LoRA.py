@@ -1,48 +1,70 @@
 import os
+import sys
+sys.path.append(os.path.join(os.path.dirname(__file__), '../'))
+
+import argparse
+import json
+import random
+from datetime import timedelta
+
 import torch
 import torch.nn as nn
 import torch.nn.functional as F
 from torch.utils.data import DataLoader
 import torch.optim as optim
-from diffusers import PNDMScheduler, UNet2DConditionModel, DDPMScheduler
+
+from diffusers import (
+    PNDMScheduler,
+    UNet2DConditionModel,
+    DDPMScheduler,
+    AutoencoderKL
+)
+from diffusers.image_processor import VaeImageProcessor
+
 from lvdm.models.utils_diffusion import timestep_embedding
 from lvdm.modules.networks.openaimodel3d import (
-    ResBlock, SpatialTransformer, TemporalTransformer, CrossModalTransformer,
-    Downsample, Upsample, TimestepBlock
+    ResBlock,
+    SpatialTransformer,
+    TemporalTransformer,
+    CrossModalTransformer,
+    Downsample,
+    Upsample,
+    TimestepBlock
 )
+
 from einops import rearrange
 from omegaconf import OmegaConf
 from utils.utils import instantiate_from_config
-from accelerate import Accelerator
+
+from accelerate import Accelerator, InitProcessGroupKwargs
 from tqdm import tqdm
 import wandb
 from peft import LoraConfig
-import argparse
+from safetensors.torch import load_file
+from transformers import AutoTokenizer
+from huggingface_hub import snapshot_download
 
-
+from dataset_spec import AudioTextDataset
 from dataset_mmg_0223 import AudioVideoDataset
-
 from mmg_inference.auffusion_pipe_functions_copy_0123 import (
     encode_audio_prompt,
     ConditionAdapter,
     import_model_class_from_model_name_or_path,
-    retrieve_latents,
+    retrieve_latents
 )
-
+from MMG_multi_gpu_inference_mmg_0223 import run_inference
 from run_audio_eval import evaluate_audio_metrics
 from run_video_eval import evaluate_video_metrics
-
 from run_imagebind_score import evaluate_imagebind_score
 from run_av_align import evaluate_av_align_score
 
 
 
-from MMG_multi_gpu_inference_mmg_0223 import run_inference
-
 
 
 os.environ['CUDA_LAUNCH_BLOCKING'] = "0"
 os.environ['TORCH_USE_CUDA_DSA'] = "0"
+
 
 
 def parse_args():
@@ -61,7 +83,7 @@ def parse_args():
     parser.add_argument('--video_loss_weight', type=float, default=4.0, help='Loss weight for the video component.')
     parser.add_argument('--gradient_accumulation', type=int, default=1, help='Number of steps to accumulate gradients.')
     parser.add_argument('--learning_rate', type=float, default=1e-5, help='Learning rate for training.')
-    parser.add_argument('--train_batch_size', type=int, default=4, help='Training batch size.')
+    parser.add_argument('--train_batch_size', type=int, default=1, help='Training batch size.')
     parser.add_argument('--num_epochs', type=int, default=128, help='Number of training epochs.')
     parser.add_argument('--csv_path', type=str, default='/workspace/processed_vggsound_sparse_0218/processed_vggsound_sparse_mmg.csv', help='Path to the CSV file containing data information.')
     parser.add_argument('--spectrogram_dir', type=str, default='/workspace/processed_vggsound_sparse_0218/spec', help='Directory where spectrogram files are stored.')
@@ -71,43 +93,83 @@ def parse_args():
     parser.add_argument('--num_workers', type=int, default=4, help='Number of worker processes for data loading.')
     parser.add_argument('--date', type=str, default='0224', help='Experiment date.')
     parser.add_argument('--num_gpu', type=int, default=1, help='Number of GPU')
+    parser.add_argument('--dtype', type=str, default='bf16', help='data type (mixed_precision)')
+    parser.add_argument('--cross_modal_checkpoint_path', type=str, default=None, help='Path to the cross-modal checkpoint file.')
+    parser.add_argument('--video_lora_ckpt_path', type=str, default='/workspace/video_lora_training_checkpoints_0213/checkpoint-step-16384/model.safetensors', help='video_lora_ckpt_path')
+    parser.add_argument('--audio_lora_ckpt_path', type=str, default='/workspace/GCP_BACKUP_0213/checkpoint-step-6400/model.safetensors', help='audio_lora_ckpt_path')
 
     parser.add_argument('--inference_save_path', type=str, default='/workspace/MMG_SAVE_FOLDER', help='Directory where outputs will be saved.')
     parser.add_argument('--ckpt_save_path', type=str, default='/workspace/MMG_CHECKPOINT', help='Directory where outputs will be saved.')
-    parser.add_argument('--cross_modal_checkpoint_path', type=str, required=True, help='Path to the cross-modal checkpoint file.')
-    parser.add_argument('--inference_batch_size', type=int, default=4, help='Inference batch size.')
+    parser.add_argument('--inference_batch_size', type=int, default=1, help='Inference batch size.')
     parser.add_argument('--audio_ddim_eta', type=float, default=0.0, help='DDIM eta parameter for audio generation.')
     parser.add_argument('--video_ddim_eta', type=float, default=0.0, help='DDIM eta parameter for video generation.')
     parser.add_argument('--num_inference_steps', type=int, default=25, help='Number of inference steps to perform.')
     parser.add_argument('--audio_guidance_scale', type=float, default=7.5, help='Scale factor for audio guidance.')
     parser.add_argument('--video_unconditional_guidance_scale', type=float, default=12.0, help='Scale factor for video unconditional guidance.')
     parser.add_argument('--eval_every', type=int, default=100, help='eval & save ckpt step')
-    parser.add_argument('--vgg_target_folder', type=str, default='/workspace/processed_vggsound_sparse_0218/vgg_test', help='Directory where outputs will be saved.')
-    parser.add_argument('--avsync_target_folder', type=str, default='/workspace/processed_vggsound_sparse_0218/avsync_test', help='Directory where outputs will be saved.')
+    parser.add_argument('--vgg_csv_path', type=str, default='/workspace/processed_vggsound_sparse_0218/vgg_test', help='Directory where outputs will be saved.')
+    parser.add_argument('--vgg_gt_test_path', type=str, default='/workspace/processed_vggsound_sparse_0218/vgg_gt_test.csv', help='Directory where outputs will be saved.')
+    parser.add_argument('--avsync_csv_path', type=str, default='/workspace/processed_vggsound_sparse_0218/avsync_test', help='Directory where outputs will be saved.')
+    parser.add_argument('--avsync_gt_test_path', type=str, default='/workspace/processed_vggsound_sparse_0218/avsync_gt_test.csv', help='Directory where outputs will be saved.')
 
 
     args = parser.parse_args()
     return args
 
 
+def load_accelerator_ckpt(model: torch.nn.Module, checkpoint_path: str):
+    checkpoint = load_file(checkpoint_path)
+    model.load_state_dict(checkpoint)
+    return model
 
 
-def evaluate_model(args, model, eval_id, target_path):
+def load_prompts(prompt_file: str):
+    """
+    CSV 파일에서 'split'이 'test'인 행의 'caption'을 불러오는 함수
+    """
+    prompts = []
+    try:
+        with open(prompt_file, newline='', encoding='utf-8') as csvfile:
+            reader = csv.DictReader(csvfile)
+            for row in reader:
+                if row.get('split') == 'test':
+                    caption = row.get('caption', '').strip()
+                    if caption:
+                        prompts.append(caption)
+    except Exception as e:
+        print(f"Error reading prompt file: {e}")
 
-    inference_save_path = os.path.join(args.inference_save_path, eval_id)
+    
+    return prompts
+
+def evaluate_model(args, accelerator, target_csv_files, eval_id, target_path, ckpt_dir):
 
     audio_target_path = os.path.join(target_path, "audio")
     video_target_path = os.path.join(target_path, "video")
 
+    inference_save_path = os.path.join(args.inference_save_path, eval_id)
     audio_inference_path = os.path.join(inference_save_path, "audio")
     video_inference_path = os.path.join(inference_save_path, "video")
 
+    # prompt 분배
+    assert os.path.exists(target_csv_files), f"Prompt file not found: {target_csv_files}"
+    all_prompts = load_prompts(target_csv_files)
+    print("all_prompts length", len(all_prompts))
+    num_processes = accelerator.num_processes
+    prompt_subsets = split_prompts_evenly(all_prompts, num_processes)
+    if accelerator.process_index < len(prompt_subsets):
+        process_prompts = prompt_subsets[accelerator.process_index]
+    else:
+        process_prompts = []
+    prompt_sublist = process_prompts
 
+    # MMG inference
+    run_inference(args, accelerator, prompt_sublist, inference_save_path, ckpt_dir)
+
+    # MMG_EVAL
     with torch.no_grad():
         accelerator.wait_for_everyone()
-
         fad, clap_avg, fvd, clip_avg= 0.0, 0.0, 0.0, 0.0
-
 
         if accelerator.is_main_process:
             fad, clap_avg, _ = evaluate_audio_metrics(
@@ -127,21 +189,21 @@ def evaluate_model(args, model, eval_id, target_path):
                 device=accelerator.device,
                 num_frames=frames
             )
-
         accelerator.wait_for_everyone()
 
-        # ImageBind Score
         if accelerator.is_main_process:
             imagebind_score = evaluate_video_metrics(
                 inference_save_path=inference_save_path,
                 device=device
             )
-        # AV-Align
+        accelerator.wait_for_everyone()
+
         if accelerator.is_main_process:
             av_align = evaluate_av_align_score(
                 audio_inference_path=audio_inference_path,
                 video_inference_path=video_inference_path
             )
+        accelerator.wait_for_everyone()
 
         # CAM_SCORE
         # if accelerator.is_main_process:
@@ -152,15 +214,10 @@ def evaluate_model(args, model, eval_id, target_path):
         #         device=accelerator.device,
         #         num_frames=frames
         #     )
-        
+
         accelerator.wait_for_everyone()
 
         return fad, clap_avg, fvd, clip_avg, imagebind_score, av_align#, cam_score
-
-
-
-
-
 
 
 class CrossModalCoupledUNet(nn.Module):
@@ -172,25 +229,19 @@ class CrossModalCoupledUNet(nn.Module):
         super(CrossModalCoupledUNet, self).__init__()
         # Freeze audio_unet
         self.audio_unet = audio_unet
-        for param in self.audio_unet.parameters():
+        for name, param in self.audio_unet.named_parameters():
             param.requires_grad = False
-
-        unet_lora_config = LoraConfig(
-            r=8,
-            lora_alpha=8,
-            init_lora_weights="gaussian",
-            target_modules=["to_k", "to_q", "to_v", "to_out.0"],
-        )
-        self.audio_unet.add_adapter(unet_lora_config)
-
 
         # Freeze video_unet
         self.video_unet = video_unet
         for name, param in self.video_unet.named_parameters():
-            if 'lora_block' in name:
-                param.requires_grad = True
-            else:
-                param.requires_grad = False
+            param.requires_grad = False
+
+        # for name, param in self.video_unet.named_parameters():
+        #     if 'lora_block' in name:
+        #         param.requires_grad = True
+        #     else:
+        #         param.requires_grad = False
 
 
         self.audio_cmt = nn.ModuleList()
@@ -533,7 +584,6 @@ class CrossModalCoupledUNet(nn.Module):
 
 
 def main():
-
     args = parse_args()
 
     # Datasets
@@ -550,20 +600,31 @@ def main():
         target_width=args.width,
     )
     # dataloader
-    dataloader = DataLoader(dataset, batch_size=args.train_batch_size, shuffle=True, num_workers=4, args.num_workers, pin_memory=True)
-
+    dataloader = DataLoader(dataset, batch_size=args.train_batch_size, shuffle=True, num_workers=args.num_workers, pin_memory=True)
 
 
     from accelerate import DistributedDataParallelKwargs
     ddp_kwargs = DistributedDataParallelKwargs(find_unused_parameters=True)
 
-    accelerator = Accelerator(mixed_precision="bf16", gradient_accumulation_steps=args.gradient_accumulation, kwargs_handlers=[ddp_kwargs])
+    accelerator = Accelerator(mixed_precision=args.dtype, gradient_accumulation_steps=args.gradient_accumulation, kwargs_handlers=[ddp_kwargs])
     device = accelerator.device
 
 
     # Audio Models
     audio_unet = UNet2DConditionModel.from_pretrained(args.audio_model_name, subfolder="unet")
     audio_unet.eval()
+    for param in audio_unet.parameters():
+        param.requires_grad = False
+
+    # LoRA config
+    lora_config = LoraConfig(
+        r=128,
+        lora_alpha=128,
+        init_lora_weights=True,
+        target_modules=["to_k", "to_q", "to_v", "to_out.0"],
+    )
+    audio_unet.add_adapter(lora_config)
+    audio_unet = load_accelerator_ckpt(audio_unet, args.audio_lora_ckpt_path)
 
     if not os.path.isdir(args.audio_model_name):
         pretrained_model_name_or_path = snapshot_download(args.audio_model_name)
@@ -597,7 +658,7 @@ def main():
             audio_text_encoder_path = os.path.join(pretrained_model_name_or_path, cond_item["text_encoder_name"])
             audio_tokenizer = AutoTokenizer.from_pretrained(audio_text_encoder_path)
             audio_text_encoder_cls = import_model_class_from_model_name_or_path(audio_text_encoder_path)
-            audio_text_encoder = text_encoder_cls.from_pretrained(audio_text_encoder_path)
+            audio_text_encoder = audio_text_encoder_cls.from_pretrained(audio_text_encoder_path)
 
             audio_text_encoder.requires_grad_(False)
 
@@ -622,11 +683,12 @@ def main():
     # Video UNet
     video_config = OmegaConf.load(args.videocrafter_config)
     video_model = instantiate_from_config(video_config.model)
-    state_dict = torch.load(args.videocrafter_ckpt_path)['state_dict']
-    video_model.load_state_dict(state_dict, strict=False) # 로라 때문에 false
+    #state_dict = torch.load(args.videocrafter_ckpt_path)['state_dict']
+    #video_model.load_state_dict(state_dict, strict=False) # 로라 때문에 false
     video_model.to(device)
     video_unet = video_model.model.diffusion_model.eval()
-
+    
+    video_unet = load_accelerator_ckpt(video_unet, args.video_lora_ckpt_path)
 
 
 
@@ -650,11 +712,36 @@ def main():
         print(f"Total params: {total_params}")
         print(f"Trainable params: {trainable_params}")
 
-    optimizer = optim.AdamW(filter(lambda p: p.requires_grad, model.parameters()), lr=lr)
+    optimizer = optim.AdamW(filter(lambda p: p.requires_grad, model.parameters()), lr=args.learning_rate)
     model, optimizer, dataloader = accelerator.prepare(model, optimizer, dataloader)
 
     # audio_vae, audio_image_processor, audio_text_encoder_list, audio_adapter_list, 
-    
+
+
+
+    # ====== 체크포인트에서 resume하는 부분 추가 ======
+    start_epoch = 0
+    global_step = 0
+    resume_batch_idx = 0
+    if args.cross_modal_checkpoint_path is not None:
+        # accelerator가 저장했던 전체 상태를 로드합니다.
+        accelerator.load_state(args.cross_modal_checkpoint_path)
+        training_state_path = os.path.join(args.cross_modal_checkpoint_path, "training_state.json")
+        if os.path.exists(training_state_path):
+            with open(training_state_path, "r") as f:
+                training_state = json.load(f)
+            global_step = training_state.get("global_step", 0)
+            # 마지막 저장된 에폭 이후부터 재개하도록 (+1)
+            start_epoch = training_state.get("epoch", 0) + 1
+            resume_batch_idx = training_state.get("batch_idx", -1) + 1
+            print(f"체크포인트로부터 학습 재개: 에폭 {start_epoch}부터, 글로벌 스텝 {global_step}")
+        else:
+            print("체크포인트 내 training_state.json 파일을 찾을 수 없어, 새롭게 시작합니다.")
+    # =================================================
+
+
+
+
     model.train()
 
     global_step = 0
@@ -665,13 +752,16 @@ def main():
     full_batch_size = args.num_gpu * args.gradient_accumulation * args.train_batch_size
 
     if accelerator.is_main_process:
-        wandb.init(project="MMG_auffusion_videocrafter", name=f"{args.date}_lr_{lr}_batch_{full_batch_size}")
+        wandb.init(project="MMG_auffusion_videocrafter", name=f"{args.date}_lr_{args.learning_rate}_batch_{full_batch_size}")
     else:
         os.environ["WANDB_MODE"] = "offline"
 
     for epoch in range(args.num_epochs):
         with tqdm(dataloader, desc=f"Epoch {epoch+1}/{args.num_epochs}", unit="batch") as tepoch:
             for batch_idx, batch in enumerate(tepoch):
+                if epoch == start_epoch and batch_idx < resume_batch_idx:
+                    continue
+                
                 with accelerator.accumulate(model):
 
                     optimizer.zero_grad()
@@ -765,7 +855,6 @@ def main():
                         })
 
 
-
                 # Save & Evaluate Checkpoints
                 if global_step > 0 and (global_step % args.eval_every == 0):
                     # save checkpoint
@@ -779,24 +868,14 @@ def main():
                         print(f"[Step {global_step}] Checkpoint saved at: {ckpt_dir}")
                     accelerator.wait_for_everyone()
 
+
                     # evaluate model
-                    vgg_fad, vgg_clap_avg, vgg_fvd, vgg_clip_avg = evaluate_model(
+                    vgg_fad, vgg_clap_avg, vgg_fvd, vgg_clip_avg, vgg_imagebind_score, vgg_av_align = evaluate_model(
                         accelerator=accelerator,
-                        unet_model=video_unet,
-                        video_model=video_model,
-                        csv_path=args.vgg_csv_path,
-                        inference_path=args.vgg_inference_save_path,
-                        inference_batch_size=args.inference_batch_size,
-                        seed=args.seed,
-                        guidance_scale=args.guidance_scale,
-                        num_inference_steps=args.num_inference_steps,
-                        step=global_step,
-                        height=args.height,
-                        width=args.width,
-                        frames=args.target_frames,
-                        ddim_eta=args.ddim_eta,
-                        fps=args.video_fps,
-                        target_folder=args.vgg_target_folder
+                        target_csv_files=args.vgg_csv_path,
+                        target_path=args.vgg_gt_test_path,
+                        eval_id=f"{args.date}_step_{global_step}_vggsound_sparse",
+                        ckpt_dir=ckpt_dir
                     )
 
                     if accelerator.is_main_process:
@@ -805,10 +884,10 @@ def main():
                             "eval/vgg_clap_avg": vgg_clap_avg,
                             "eval/vgg_fvd": vgg_fvd,
                             "eval/vgg_clip_avg": vgg_clip_avg,
+                            "eval/vgg_imagebind_score": vgg_imagebind_score,
+                            "eval/vgg_av_align": vgg_av_align,
                             "step": global_step
                         })
-
-
 
     print("Training Done.")
 

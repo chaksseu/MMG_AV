@@ -184,8 +184,8 @@ def main():
 
     # LoRA config
     lora_config = LoraConfig(
-        r=16,
-        lora_alpha=16,
+        r=128,
+        lora_alpha=128,
         init_lora_weights=True,
         target_modules=["to_k", "to_q", "to_v", "to_out.0"],
     )
