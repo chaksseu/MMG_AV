@@ -5,7 +5,7 @@ apt-get update
 apt-get upgrade -y
 apt-get install ffmpeg wget git zip unzip gcc libopenmpi-dev libmpich-dev curl tar libjpeg-dev libpng-dev libgl1-mesa-glx libglib2.0-0 libsndfile1 ninja-build -y
 pip install -U pip
-pip install torch torchvision torchaudio --index-url https://download.pytorch.org/whl/cu118
+pip install torch torchvision torchaudio --index-url https://download.pytorch.org/whl/cu121
 pip install -r requirements.txt
 # pip uninstall -y torch torchvision torchaudio
 # pip cache purge

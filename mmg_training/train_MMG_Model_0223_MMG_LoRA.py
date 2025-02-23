@@ -106,9 +106,9 @@ def parse_args():
     parser.add_argument('--num_inference_steps', type=int, default=25, help='Number of inference steps to perform.')
     parser.add_argument('--audio_guidance_scale', type=float, default=7.5, help='Scale factor for audio guidance.')
     parser.add_argument('--video_unconditional_guidance_scale', type=float, default=12.0, help='Scale factor for video unconditional guidance.')
-    parser.add_argument('--eval_every', type=int, default=100, help='eval & save ckpt step')
-    parser.add_argument('--vgg_csv_path', type=str, default='/workspace/processed_vggsound_sparse_0218/vgg_test', help='Directory where outputs will be saved.')
-    parser.add_argument('--vgg_gt_test_path', type=str, default='/workspace/processed_vggsound_sparse_0218/vgg_gt_test.csv', help='Directory where outputs will be saved.')
+    parser.add_argument('--eval_every', type=int, default=1, help='eval & save ckpt step')
+    parser.add_argument('--vgg_csv_path', type=str, default='/workspace/vggsound_sparse_curated_292.csv', help='Directory where outputs will be saved.')
+    parser.add_argument('--vgg_gt_test_path', type=str, default='/workspace/vggsound_sparse_test_curated_final', help='Directory where outputs will be saved.')
     parser.add_argument('--avsync_csv_path', type=str, default='/workspace/processed_vggsound_sparse_0218/avsync_test', help='Directory where outputs will be saved.')
     parser.add_argument('--avsync_gt_test_path', type=str, default='/workspace/processed_vggsound_sparse_0218/avsync_gt_test.csv', help='Directory where outputs will be saved.')
 
@@ -154,6 +154,8 @@ def evaluate_model(args, accelerator, target_csv_files, eval_id, target_path, ck
     # prompt 분배
     assert os.path.exists(target_csv_files), f"Prompt file not found: {target_csv_files}"
     all_prompts = load_prompts(target_csv_files)
+    all_prompts = all_prompts[:4]
+
     print("all_prompts length", len(all_prompts))
     num_processes = accelerator.num_processes
     prompt_subsets = split_prompts_evenly(all_prompts, num_processes)
@@ -609,6 +611,7 @@ def main():
     accelerator = Accelerator(mixed_precision=args.dtype, gradient_accumulation_steps=args.gradient_accumulation, kwargs_handlers=[ddp_kwargs])
     device = accelerator.device
 
+    dtype = torch.bfloat16
 
     # Audio Models
     audio_unet = UNet2DConditionModel.from_pretrained(args.audio_model_name, subfolder="unet")
@@ -637,6 +640,7 @@ def main():
             pretrained_model_name_or_path,
             subfolder="vae"
         )
+    audio_vae = audio_vae.to(device=device,dtype=dtype)
     audio_vae.requires_grad_(False)
 
     # 2-3) VAE scale factor 기반 ImageProcessor
@@ -657,10 +661,12 @@ def main():
             # text encoder / tokenizer
             audio_text_encoder_path = os.path.join(pretrained_model_name_or_path, cond_item["text_encoder_name"])
             audio_tokenizer = AutoTokenizer.from_pretrained(audio_text_encoder_path)
+            
             audio_text_encoder_cls = import_model_class_from_model_name_or_path(audio_text_encoder_path)
             audio_text_encoder = audio_text_encoder_cls.from_pretrained(audio_text_encoder_path)
 
             audio_text_encoder.requires_grad_(False)
+            audio_text_encoder = audio_text_encoder.to(device=device, dtype=dtype)
 
             audio_tokenizer_list.append(audio_tokenizer)
             audio_text_encoder_list.append(audio_text_encoder)
@@ -669,6 +675,8 @@ def main():
             audio_adapter_path = os.path.join(pretrained_model_name_or_path, cond_item["condition_adapter_name"])
             audio_adapter = ConditionAdapter.from_pretrained(audio_adapter_path)
             audio_adapter.requires_grad_(False)
+            audio_adapter = audio_adapter.to(device=device,dtype=dtype)
+
             audio_adapter_list.append(audio_adapter)
 
 
@@ -685,7 +693,7 @@ def main():
     video_model = instantiate_from_config(video_config.model)
     #state_dict = torch.load(args.videocrafter_ckpt_path)['state_dict']
     #video_model.load_state_dict(state_dict, strict=False) # 로라 때문에 false
-    video_model.to(device)
+    video_model.to(device=device,dtype=dtype)
     video_unet = video_model.model.diffusion_model.eval()
     
     video_unet = load_accelerator_ckpt(video_unet, args.video_lora_ckpt_path)
@@ -766,8 +774,8 @@ def main():
 
                     optimizer.zero_grad()
 
-                    spec_tensors = batch["spec"]
-                    video_tensors = batch["video_tensor"]
+                    spec_tensors = batch["spec"].to(device=device,dtype=dtype)
+                    video_tensors = batch["video_tensor"].to(device=device,dtype=dtype)
                     caption_list = batch["caption"]
                     
                     batch_size = spec_tensors.size(0)
@@ -775,7 +783,7 @@ def main():
 
                     # video encoding
                     video_tensors = video_tensors.permute(0, 4, 1, 2, 3)
-                    with torch.no_grad():
+                    with accelerator.autocast():
                         video_latents = video_model.encode_first_stage(video_tensors)
                         video_text_embed = video_model.get_learned_conditioning(caption_list)
                         video_null_prompts = batch_size * [""]

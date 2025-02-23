@@ -362,6 +362,7 @@ def encode_audio_prompt(
             encoder_hidden_states_list = []
             for j in range(len(text_encoder_list)):
                 input_ids = tokenizer_list[j](p, return_tensors="pt", padding=True, truncation=True, max_length=77).input_ids
+                input_ids = input_ids.to(device=device)
                 cond_embs = text_encoder_list[j](input_ids).last_hidden_state
                 # Pad/truncate embeddings
                 if cond_embs.shape[1] < tokenizer_model_max_length:
