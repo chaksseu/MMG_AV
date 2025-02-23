@@ -32,9 +32,12 @@ from mmg_inference.auffusion_pipe_functions_copy_0123 import (
 from run_audio_eval import evaluate_audio_metrics
 from run_video_eval import evaluate_video_metrics
 
+from run_imagebind_score import evaluate_imagebind_score
+from run_av_align import evaluate_av_align_score
 
 
-from MMG_inference import run_inference
+
+from MMG_multi_gpu_inference_mmg_0223 import run_inference
 
 
 
@@ -69,7 +72,8 @@ def parse_args():
     parser.add_argument('--date', type=str, default='0224', help='Experiment date.')
     parser.add_argument('--num_gpu', type=int, default=1, help='Number of GPU')
 
-    parser.add_argument('--savedir', type=str, required=True, help='Directory where outputs will be saved.')
+    parser.add_argument('--inference_save_path', type=str, default='/workspace/MMG_SAVE_FOLDER', help='Directory where outputs will be saved.')
+    parser.add_argument('--ckpt_save_path', type=str, default='/workspace/MMG_CHECKPOINT', help='Directory where outputs will be saved.')
     parser.add_argument('--cross_modal_checkpoint_path', type=str, required=True, help='Path to the cross-modal checkpoint file.')
     parser.add_argument('--inference_batch_size', type=int, default=4, help='Inference batch size.')
     parser.add_argument('--audio_ddim_eta', type=float, default=0.0, help='DDIM eta parameter for audio generation.')
@@ -77,6 +81,10 @@ def parse_args():
     parser.add_argument('--num_inference_steps', type=int, default=25, help='Number of inference steps to perform.')
     parser.add_argument('--audio_guidance_scale', type=float, default=7.5, help='Scale factor for audio guidance.')
     parser.add_argument('--video_unconditional_guidance_scale', type=float, default=12.0, help='Scale factor for video unconditional guidance.')
+    parser.add_argument('--eval_every', type=int, default=100, help='eval & save ckpt step')
+    parser.add_argument('--vgg_target_folder', type=str, default='/workspace/processed_vggsound_sparse_0218/vgg_test', help='Directory where outputs will be saved.')
+    parser.add_argument('--avsync_target_folder', type=str, default='/workspace/processed_vggsound_sparse_0218/avsync_test', help='Directory where outputs will be saved.')
+
 
     args = parser.parse_args()
     return args
@@ -84,49 +92,70 @@ def parse_args():
 
 
 
-def evaluate_model():
-    """
-    FAD, CLAP 등 계산을 위한 평가 함수.
-    """
+def evaluate_model(args, model, eval_id, target_path):
 
-    unet_model.eval()
+    inference_save_path = os.path.join(args.inference_save_path, eval_id)
 
-    inference_path = f"{inference_path}/{eval_id}"
-    
+    audio_target_path = os.path.join(target_path, "audio")
+    video_target_path = os.path.join(target_path, "video")
+
+    audio_inference_path = os.path.join(inference_save_path, "audio")
+    video_inference_path = os.path.join(inference_save_path, "video")
+
+
     with torch.no_grad():
-
-
         accelerator.wait_for_everyone()
 
-        # TODO: real FAD, CLAP calculation
-        fad, clap_avg, clap_std = 0.0, 0.0, 0.0
+        fad, clap_avg, fvd, clip_avg= 0.0, 0.0, 0.0, 0.0
+
+
         if accelerator.is_main_process:
             fad, clap_avg, _ = evaluate_audio_metrics(
-                preds_folder=inference_path,
-                target_folder=target_folder,
+                preds_folder=audio_inference_path,
+                target_folder=audio_target_path,
                 metrics=['FAD','CLAP'],
                 clap_model=1,
                 device=accelerator.device
             )
-        unet_model.train()
         accelerator.wait_for_everyone()
 
-        # 실제 fvd, CLIP 등 계산
-        fvd, clip_avg = -1111, -1111
         if accelerator.is_main_process:
             fvd, clip_avg = evaluate_video_metrics(
-                preds_folder=inference_path,
-                target_folder=target_folder,
+                preds_folder=video_inference_path,
+                target_folder=video_target_path,
                 metrics=['fvd','clip'],
                 device=accelerator.device,
                 num_frames=frames
             )
 
-        model.train()
         accelerator.wait_for_everyone()
 
-        return fad, clap_avg, fvd, clip_avg
+        # ImageBind Score
+        if accelerator.is_main_process:
+            imagebind_score = evaluate_video_metrics(
+                inference_save_path=inference_save_path,
+                device=device
+            )
+        # AV-Align
+        if accelerator.is_main_process:
+            av_align = evaluate_av_align_score(
+                audio_inference_path=audio_inference_path,
+                video_inference_path=video_inference_path
+            )
 
+        # CAM_SCORE
+        # if accelerator.is_main_process:
+        #     cam_score = evaluate_video_metrics(
+        #         preds_folder=video_inference_path,
+        #         target_folder=video_target_path,
+        #         metrics=['fvd','clip'],
+        #         device=accelerator.device,
+        #         num_frames=frames
+        #     )
+        
+        accelerator.wait_for_everyone()
+
+        return fad, clap_avg, fvd, clip_avg, imagebind_score, av_align#, cam_score
 
 
 
@@ -659,8 +688,8 @@ def main():
                     with torch.no_grad():
                         video_latents = video_model.encode_first_stage(video_tensors)
                         video_text_embed = video_model.get_learned_conditioning(caption_list)
-                        prompts = batch_size * [""]
-                        video_null_text_embed = video_model.get_learned_conditioning(prompts)
+                        video_null_prompts = batch_size * [""]
+                        video_null_text_embed = video_model.get_learned_conditioning(video_null_prompts)
                         video_text_embed = torch.where(mask, video_null_text_embed, video_text_embed)
                         fps_tensor = torch.full((batch_size,), args.fps, device=device)
 
@@ -737,11 +766,49 @@ def main():
 
 
 
+                # Save & Evaluate Checkpoints
+                if global_step > 0 and (global_step % args.eval_every == 0):
+                    # save checkpoint
+                    if accelerator.is_main_process:
+                        ckpt_dir = os.path.join(args.ckpt_save_path, f"checkpint_{args.date}/checkpoint-step-{global_step}")
+                        accelerator.save_state(ckpt_dir)
+
+                        training_state = {"global_step": global_step, "epoch": epoch, "step": step}
+                        with open(os.path.join(ckpt_dir, "training_state.json"), "w") as f:
+                            json.dump(training_state, f)
+                        print(f"[Step {global_step}] Checkpoint saved at: {ckpt_dir}")
+                    accelerator.wait_for_everyone()
+
+                    # evaluate model
+                    vgg_fad, vgg_clap_avg, vgg_fvd, vgg_clip_avg = evaluate_model(
+                        accelerator=accelerator,
+                        unet_model=video_unet,
+                        video_model=video_model,
+                        csv_path=args.vgg_csv_path,
+                        inference_path=args.vgg_inference_save_path,
+                        inference_batch_size=args.inference_batch_size,
+                        seed=args.seed,
+                        guidance_scale=args.guidance_scale,
+                        num_inference_steps=args.num_inference_steps,
+                        step=global_step,
+                        height=args.height,
+                        width=args.width,
+                        frames=args.target_frames,
+                        ddim_eta=args.ddim_eta,
+                        fps=args.video_fps,
+                        target_folder=args.vgg_target_folder
+                    )
+
+                    if accelerator.is_main_process:
+                        wandb.log({
+                            "eval/vgg_fad": vgg_fad,
+                            "eval/vgg_clap_avg": vgg_clap_avg,
+                            "eval/vgg_fvd": vgg_fvd,
+                            "eval/vgg_clip_avg": vgg_clip_avg,
+                            "step": global_step
+                        })
 
 
-                if accelerator.is_main_process and (epoch+1) % 10 == 0:
-                    checkpoint_path = f"MMG_CHECKPOINTS_1221/{args.date}_lr_{lr}_batch_{full_batch_size}_epoch_{epoch+1}_{dataset_name}"
-                    accelerator.save_state(checkpoint_path)
 
     print("Training Done.")
 
