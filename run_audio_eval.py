@@ -56,15 +56,14 @@ def check_folders(preds_folder, target_folder):
     return True
 
 def evaluate_audio_metrics(preds_folder, target_folder, metrics, clap_model, device="cpu"):
+    fad_score = -1
 
     # Frechet Audio Distance 사용 여부
     if 'FAD' in metrics:
         frechet = FrechetAudioDistance(device=device)
         torch.manual_seed(0)
 
-        # FAD 계산
-        if 'FAD' in metrics:
-            fad_score = frechet.score(preds_folder, target_folder, limit_num=None)
+        fad_score = frechet.score(preds_folder, target_folder, limit_num=None)
         
 
     # Loading Clap Model
@@ -80,11 +79,11 @@ def evaluate_audio_metrics(preds_folder, target_folder, metrics, clap_model, dev
 
 
     # Get the list of filenames and set up the progress bar
-    filenames = [f for f in os.listdir(preds_folder) if f.endswith('.wav')]
+    filenames = [f for f in os.listdir(preds_folder) if f.endswith('.wav') or f.endswith('.flac')]
     progress_bar = tqdm(filenames, desc='Processing')
     clap_score = []
     for filename in progress_bar:
-        if filename.endswith('.wav'):
+        if filename.endswith('.wav') or filename.endswith('.flac'):
             try:
                 preds_audio, _ = torchaudio.load(os.path.join(preds_folder, filename), num_frames=160000)
 
@@ -110,29 +109,69 @@ CLAP_MODEL_DESCRIPTIONS = {
     3: '630k+audioset fusion ckpt'
 }
 
-if __name__ == '__main__':
-    parser = argparse.ArgumentParser(description='Evaluate audio on acoustic metrics.')
 
-    parser.add_argument('--preds_folder', required=True, help='Path to the folder with predicted audio files.')
-    parser.add_argument('--target_folder', required=False, default=None, help='Path to the folder with target audio files.')
-    
-    parser.add_argument('--metrics', nargs='+',
-                        choices=['SI_SDR', 'SDR', 'SI_SNR', 'SNR', 'PESQ', 'STOI', 'CLAP', 'FAD', 'ISC', 'FD', 'KL'],
-                        help='List of metrics to calculate.')
-    
-    parser.add_argument('--clap_model', type=int, default=1, help='CLAP model id for score computations.')
-    parser.add_argument('--results_file', required=True, help='Path to the text file to save the results.')
-    
-    # device 인자 추가 (기본값 "cpu")
-    parser.add_argument('--device', default="cpu", help='Device to use: "cpu" or "cuda"')
 
-                        
+
+
+def main():
+
+    parser = argparse.ArgumentParser(description="Evaluate Audio Metrics")
+    parser.add_argument(
+        "--preds_folder",
+        type=str,
+        required=True,
+        help="예측 오디오(.wav) 파일들이 있는 폴더 경로"
+    )
+    parser.add_argument(
+        "--target_folder",
+        type=str,
+        default=None,
+        help="타겟 오디오(.wav) 파일들이 있는 폴더 경로"
+    )
+    parser.add_argument(
+        "--metrics",
+        type=str,
+        nargs='+',
+        default=["FAD"],
+        help="평가할 메트릭 리스트 (예: FAD)"
+    )
+    parser.add_argument(
+        "--clap_model",
+        type=int,
+        choices=[0, 1, 2, 3],
+        default=1,
+        help="사용할 CLAP 모델 id (0, 1, 2, 3 중 선택)"
+    )
+    parser.add_argument(
+        "--device",
+        type=str,
+        default="cpu",
+        help="평가를 수행할 디바이스 (예: cpu 또는 cuda)"
+    )
     args = parser.parse_args()
-    evaluate_audio_metrics(
+
+    # # 폴더 내 파일 수 확인
+    # if not check_folders(args.preds_folder, args.target_folder):
+    #     print("폴더 내 파일 개수가 일치하지 않습니다. 종료합니다.")
+    #     exit(1)
+
+    # 평가 실행
+    fad_score, clap_avg, clap_std = evaluate_audio_metrics(
         args.preds_folder,
         args.target_folder,
         args.metrics,
-        args.results_file,
         args.clap_model,
         device=args.device
     )
+
+    # 결과 출력
+    print("\n=== 평가 결과 ===")
+    if fad_score is not None:
+        print(f"FAD Score: {fad_score}")
+    else:
+        print("FAD Score: 계산되지 않음")
+    print(f"CLAP Average: {clap_avg}")
+    print(f"CLAP Std: {clap_std}")
+
+if __name__ == "__main__":
+    main()

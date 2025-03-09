@@ -60,17 +60,23 @@ class CrossModalCoupledUNet(nn.Module):
     A coupled UNet model that fuses features from audio and video UNets via cross-modal transformers.
     Audio and video UNets are frozen, and only cross-modal layers are trainable.
     """
-    def __init__(self, audio_unet, video_unet, cross_modal_config):
+    def __init__(self, audio_unet, video_unet, cross_modal_config, device, dtype):
         super(CrossModalCoupledUNet, self).__init__()
         # Freeze audio_unet
-        self.audio_unet = audio_unet
+
+        self.dtype = dtype
+        self.device = device
+
+        self.audio_unet = audio_unet.to(device=device, dtype=dtype)
+        # self.audio_unet.dtype=dtype
         for name, param in self.audio_unet.named_parameters():
             param.requires_grad = False
 
         # Freeze video_unet
-        self.video_unet = video_unet
+        self.video_unet = video_unet.to(device=device, dtype=dtype)
         for name, param in self.video_unet.named_parameters():
             param.requires_grad = False
+        self.video_unet.dtype=dtype
 
         # for name, param in self.video_unet.named_parameters():
         #     if 'lora_block' in name:
@@ -260,10 +266,12 @@ class CrossModalCoupledUNet(nn.Module):
         audio_down_block_res_samples = (audio_hidden_states,)
 
         # ---- Prepare Video Branch ----
-        video_emb = self.video_unet.time_embed(timestep_embedding(video_timestep, self.video_unet.model_channels))
+
+        video_emb = self.video_unet.time_embed(timestep_embedding(video_timestep, self.video_unet.model_channels).to(self.dtype))
+
         if self.video_unet.fps_cond:
             video_fps_tensor = torch.full_like(video_timestep, video_fps) if isinstance(video_fps, int) else video_fps
-            video_emb += self.video_unet.fps_embedding(timestep_embedding(video_fps_tensor, self.video_unet.model_channels))
+            video_emb += self.video_unet.fps_embedding(timestep_embedding(video_fps_tensor, self.video_unet.model_channels).to(self.dtype))
         b, _, t, _, _ = video_latents.shape
         video_context = video_context.repeat_interleave(repeats=t, dim=0) if video_context is not None else None
         video_emb = video_emb.repeat_interleave(repeats=t, dim=0)
@@ -279,6 +287,7 @@ class CrossModalCoupledUNet(nn.Module):
             audio_down_block_res_samples
         )
         h, hs = self.video_down_block(0, self.video_unet, h, video_emb, video_context, b, hs)
+
         h, hs = self.video_down_block(1, self.video_unet, h, video_emb, video_context, b, hs)
         h, hs = self.video_down_block(2, self.video_unet, h, video_emb, video_context, b, hs)
 
@@ -667,20 +676,21 @@ def load_audio_unet(model_dir: str, device: torch.device, dtype: torch.dtype) ->
     return UNet2DConditionModel.from_pretrained(model_dir, subfolder="unet").to(device, dtype)
 
 def load_cross_modal_unet(
-    audio_unet: torch.nn.Module,
-    video_unet: torch.nn.Module,
-    checkpoint_path: str,
-    device: torch.device,
-    dtype: torch.dtype
+    audio_unet,
+    video_unet,
+    checkpoint_path,
+    device,
+    dtype,
 ) -> CrossModalCoupledUNet:
     cross_modal_config = {
         'layer_channels': [320, 640, 1280, 1280, 1280, 640],
         'd_head': 64,
         'device': device
     }
-    cross_modal_model = CrossModalCoupledUNet(audio_unet, video_unet, cross_modal_config).to(device, dtype).eval()
+    cross_modal_model = CrossModalCoupledUNet(audio_unet, video_unet, cross_modal_config, device, dtype)
     checkpoint = load_file(checkpoint_path)
     cross_modal_model.load_state_dict(checkpoint)
+    cross_modal_model = cross_modal_model.to(device, dtype).eval()
     return cross_modal_model
 
 
@@ -693,10 +703,14 @@ def run_inference(
     ckpt_dir
 ):
     try:
+        print("Start Inference")
+
         # Set unique seed per process
         unique_seed = args.seed + accelerator.process_index
         seed_everything(unique_seed)
         device = accelerator.device
+
+        dtype =  torch.float32
         generator = torch.Generator(device=device).manual_seed(unique_seed)
 
         if not prompt_sublist:
@@ -717,7 +731,7 @@ def run_inference(
         assert os.path.exists(args.videocrafter_ckpt_path), f"Checkpoint [{args.videocrafter_ckpt_path}] not found!"
         video_pipeline = load_model_checkpoint(video_pipeline, args.videocrafter_ckpt_path, full_strict=False)
         video_pipeline.eval()
-        video_unet = video_pipeline.model.diffusion_model.to(device, args.dtype)
+        video_unet = video_pipeline.model.diffusion_model.to(device, dtype)
 
         # Model directory
         model_dir = args.audio_model_name
@@ -725,15 +739,23 @@ def run_inference(
             model_dir = snapshot_download(model_dir)
 
         # Load audio components
-        vocoder = load_vocoder(model_dir, device, args.dtype)
-        vae, image_processor = load_vae(model_dir, device, args.dtype)
-        text_encoders, tokenizers, adapters = load_text_encoders(model_dir, device, args.dtype)
-        audio_unet = load_audio_unet(model_dir, device, args.dtype)
-
+        vocoder = load_vocoder(model_dir, device, dtype)
+        vae, image_processor = load_vae(model_dir, device, dtype)
+        text_encoders, tokenizers, adapters = load_text_encoders(model_dir, device, dtype)
+        
+        audio_unet = load_audio_unet(model_dir, device, dtype)
+            # LoRA config
+        lora_config = LoraConfig(
+            r=128,
+            lora_alpha=128,
+            init_lora_weights=True,
+            target_modules=["to_k", "to_q", "to_v", "to_out.0"],
+        )
+        audio_unet.add_adapter(lora_config)
 
 
         # Load MMG components
-        cross_modal_model = load_cross_modal_unet(audio_unet, video_unet, ckpt_dir, device, args.dtype)
+        cross_modal_model = load_cross_modal_unet(audio_unet, video_unet, ckpt_dir, device, dtype)
 
  
 
@@ -747,7 +769,7 @@ def run_inference(
         if accelerator.is_main_process:
             os.makedirs(inference_save_path, exist_ok=True)
             audio_dir = os.path.join(inference_save_path, "audio")
-            video_dir = os.path.join(inference_save_pathr, "video")
+            video_dir = os.path.join(inference_save_path, "video")
             combined_dir = os.path.join(inference_save_path, "combined_video")
             os.makedirs(audio_dir, exist_ok=True)
             os.makedirs(video_dir, exist_ok=True)
@@ -773,6 +795,13 @@ def run_inference(
             end_idx = min(start_idx + args.inference_batch_size, total_prompts)
             current_batch_size = end_idx - start_idx
             current_prompts = prompt_sublist[start_idx:end_idx]
+
+
+            # print("################################################################")
+            # for i in range(len(current_prompts)):
+            #     print(current_prompts[i])
+            # print("################################################################")
+
 
             video_noise_shape = [current_batch_size, channels, frames, latent_h, latent_w]
             fps_tensor = torch.tensor([args.fps] * current_batch_size).to(device).long()
@@ -810,7 +839,7 @@ def run_inference(
             audio_prompt_embeds = encode_audio_prompt(
                 text_encoders, tokenizers, adapters,
                 max_length=77,
-                dtype=args.dtype,
+                dtype=dtype,
                 prompt=current_prompts,
                 device=device,
                 do_classifier_free_guidance=do_audio_cfg
@@ -818,7 +847,7 @@ def run_inference(
 
             # Initialize audio latents
             audio_latent_shape = (current_batch_size, 4, 32, latent_time)
-            audio_latents = randn_tensor(audio_latent_shape, generator=generator, device=device, dtype=audio_prompt_embeds.dtype)
+            audio_latents = randn_tensor(audio_latent_shape, generator=generator, device=device, dtype=dtype)
             audio_latents *= audio_scheduler.init_noise_sigma
 
             extra_step_kwargs = prepare_extra_step_kwargs(audio_scheduler, generator, args.audio_ddim_eta)
@@ -829,11 +858,14 @@ def run_inference(
             # Denoising loop
             for step_idx, (video_step, audio_step) in enumerate(zip(time_range, audio_timesteps)):
                 index = total_steps - step_idx - 1
-                video_ts = torch.full((current_batch_size,), video_step, device=device, dtype=torch.long)
+                video_ts = torch.full((current_batch_size,), video_step, device=device, dtype=dtype)
+
+                audio_latents
+
 
                 # CFG for audio/video
                 if do_audio_cfg or do_video_cfg:
-                    neg_audio_prompt_embeds = torch.zeros_like(audio_prompt_embeds, dtype=audio_prompt_embeds.dtype, device=device)
+                    neg_audio_prompt_embeds = torch.zeros_like(audio_prompt_embeds, dtype=dtype, device=device)
                     audio_uncond_input = audio_scheduler.scale_model_input(audio_latents, audio_step)
                     audio_out_uncond, video_out_uncond = cross_modal_model(
                         audio_latents=audio_uncond_input,

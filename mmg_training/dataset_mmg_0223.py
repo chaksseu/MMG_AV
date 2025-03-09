@@ -79,17 +79,6 @@ class AudioVideoDataset(Dataset):
         spec = torch.load(spec_path)  # shape: [n_mels, total_T]
         spec = normalize_spectrogram(spec)  # 정규화 (값을 [0,1] 등 범위로 변환)
 
-        total_T = spec.shape[1]
-        if total_T < self.expected_time_len:
-            if self.pad_to_spec_len:
-                # expected_time_len에 도달할 때까지 제로 패딩 (random_crop=False)
-                spec = pad_spec(spec, spec_length=self.expected_time_len, pad_value=0.0, random_crop=False)
-        else:
-            # 총 T 길이에서 expected_time_len 만큼 랜덤 슬라이스
-            max_start = total_T - self.expected_time_len
-            start = random.randint(0, max_start)
-            spec = spec[:, start:start + self.expected_time_len]
-
 
         # ----- Video 처리 -----
         # video 파일 경로 (필요시 파일 확장자 추가 가능)
@@ -98,6 +87,10 @@ class AudioVideoDataset(Dataset):
             raise FileNotFoundError(f"Video file not found: {video_path}.mp4")
         video, _, _ = io.read_video(video_path, pts_unit="sec")  # shape: (T, H, W, C)
 
+
+
+
+        ### video slicing ###
         current_video_frames = video.shape[0]
         if current_video_frames < self.target_frames:
             pad_frames = self.target_frames - current_video_frames
@@ -107,6 +100,7 @@ class AudioVideoDataset(Dataset):
         else:
             max_start = current_video_frames - self.target_frames
             start = random.randint(0, max_start)
+            video_start = start
             video_tensor = video[start: start + self.target_frames]
 
         video_tensor = video_tensor.float()
@@ -125,6 +119,23 @@ class AudioVideoDataset(Dataset):
             video_tensor = F.pad(video_tensor, (0, 0, 0, pad_w, 0, pad_h), mode="constant", value=0)
 
             print("sliced_video.shape after padding:", video_tensor.shape)
+
+
+        ### audio slicing ###
+        total_T = spec.shape[1]
+        if total_T < self.expected_time_len:
+            if self.pad_to_spec_len:
+                # expected_time_len에 도달할 때까지 제로 패딩 (random_crop=False)
+                spec = pad_spec(spec, spec_length=self.expected_time_len, pad_value=0.0, random_crop=False)
+        else:
+            # 총 T 길이에서 expected_time_len 만큼 랜덤 슬라이스
+            max_start = total_T - self.expected_time_len
+            # start = random.randint(0, max_start)
+            start = video_start * 8 # 320 / 40 = 8
+            spec = spec[:, start:start + self.expected_time_len]
+
+
+
 
         return {
             "spec": spec,                   # 전처리된 spectrogram tensor

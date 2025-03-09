@@ -94,6 +94,9 @@ def clean_sentence(filename):
         if not pattern_words.match(word) and not pattern_numbers.match(word)
     ]
     cleaned_sentence = ' '.join(filtered_words)
+
+    # print(cleaned_sentence)
+
     return cleaned_sentence
 
 def load_videos_with_caps(folder_path, num_frames):
@@ -146,6 +149,10 @@ def process_metric(metric_name, data):
 
 def evaluate_video_metrics(preds_folder, target_folder, metrics, device, num_frames):
 
+    fvd_score = {}
+
+    fvd_score["fvd"] = -1
+
     calculate_final = True
     calculate_per_frame = 8
 
@@ -161,41 +168,67 @@ def evaluate_video_metrics(preds_folder, target_folder, metrics, device, num_fra
     return fvd_score["fvd"], clip_score["clip"]['final']
 
 
-if __name__ == "__main__":
-    parser = argparse.ArgumentParser(description='Evaluate video on visual metrics')
 
-    # Paths
-    parser.add_argument('--target_folder', required=True, type=str,
-                        help='Path to original videos.')
-    parser.add_argument('--preds_folder', required=True, type=str,
-                        help='Path to new videos.')
 
-    # Metrics related arguments
-    parser.add_argument('--metrics', nargs='+', type=str,
-                        default=['fvd', 'ssim', 'psnr', 'psnrb', 'lpips', 'ms_ssim', 'clip', 'fid', 'kid',
-                                 'mifid', 'vmaf', 'vif'],
-                        help='Metrics to compute. Possible values: fvd, ssim, psnr, psnrb, lpips, ms_ssim, clip, fid, kid, mifid, vmaf, vif')
-    #parser.add_argument('--net', default='alex', type=str,
-    #                    help="Backbone network type for lpips. Choose between 'alex', 'vgg', or 'squeeze'")
-    parser.add_argument('--clip_model', default='openai/clip-vit-base-patch16', type=str,
-                        help='Version of the CLIP model to use. Available models: "openai/clip-vit-base-patch16", "openai/clip-vit-base-patch32", "openai/clip-vit-large-patch14-336", "openai/clip-vit-large-patch14"')
-    parser.add_argument('--feat_layer', default=64, type=int,
-                        help='Inceptionv3 feature layer for FID, KID, IS, MIFID. Options: 64, 192, 768, 2048')
 
-    # Frame related arguments
-    parser.add_argument('--num_frames', default=40, type=int, help='Number of frames.')
-    #parser.add_argument('--subset_size', default=16, type=int,
-    #                    help='Frame samples in each video for KID computation')
-    parser.add_argument('--calculate_per_frame', default=8, type=int,
-                        help='Calculation per frame.')
-
-    # Miscellaneous
-    parser.add_argument('--results_file', default='results.txt', type=str,
-                        help='File to save the results.')
-    parser.add_argument('--calculate_final', default=True, action='store_true',
-                        help='Calculate final metrics.')
-    parser.add_argument('--device', default='cuda:0', type=str,
-                        help='Device for computations. Default is cuda.')
-
+def main():
+    parser = argparse.ArgumentParser(description="Evaluate Video Metrics")
+    parser.add_argument(
+        "--preds_folder",
+        type=str,
+        required=True,
+        help="예측 비디오 파일들이 있는 폴더 경로"
+    )
+    parser.add_argument(
+        "--target_folder",
+        type=str,
+        default=None,
+        help="정답(타겟) 비디오 파일들이 있는 폴더 경로"
+    )
+    parser.add_argument(
+        "--metrics",
+        type=str,
+        nargs="+",
+        default=["fvd", "clip"],
+        help="평가할 메트릭 리스트 (예: fvd clip)"
+    )
+    parser.add_argument(
+        "--device",
+        type=str,
+        default="cuda",
+        help="평가를 수행할 디바이스 (예: cpu 또는 cuda)"
+    )
+    parser.add_argument(
+        "--num_frames",
+        type=int,
+        default=16,
+        help="각 비디오에서 로드할 프레임 수"
+    )
     args = parser.parse_args()
-    main(args)
+
+    # # 폴더 존재 여부 확인
+    # if not os.path.exists(args.preds_folder):
+    #     print(f"예측 폴더 {args.preds_folder} 가 존재하지 않습니다.")
+    #     exit(1)
+    # if not os.path.exists(args.target_folder):
+    #     print(f"타겟 폴더 {args.target_folder} 가 존재하지 않습니다.")
+    #     exit(1)
+
+    # 평가 실행
+    fvd_value, clip_value = evaluate_video_metrics(
+        args.preds_folder,
+        args.target_folder,
+        args.metrics,
+        args.device,
+        args.num_frames
+    )
+
+    # 결과 출력
+    print("\n=== Video Metrics Evaluation Results ===")
+    if "fvd" in args.metrics:
+        print(f"FVD Score: {fvd_value}")
+    if "clip" in args.metrics:
+        print(f"CLIP Score: {clip_value}")
+
+if __name__ == "__main__":
+    main()

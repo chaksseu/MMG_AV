@@ -34,10 +34,10 @@ def calculate_clap(model_clap, preds_audio, filename, freq):
 
     # Get text embeddings from texts
     sentence_clean = clean_sentence(filename)
-    
+        
     text_data = [sentence_clean]
     
-    #print(text_data)
+    # print(text_data)
 
     text_embed = model_clap.get_text_embedding(text_data)
 

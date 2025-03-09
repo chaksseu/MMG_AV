@@ -93,6 +93,8 @@ def evaluate_model(accelerator, unet_model, vae, image_processor, text_encoder_l
         return fad, clap_avg, clap_std
 
 
+
+
 def parse_args():
     parser = argparse.ArgumentParser(description="Train LoRA on Audio+Text data")
     parser.add_argument("--csv_path", type=str, required=True, help="CSV 파일 경로")
@@ -131,6 +133,9 @@ def parse_args():
     parser.add_argument("--seed", type=int, default=42, help="랜덤 시드")
     args = parser.parse_args()
     return args
+
+
+
 
 
 def main():

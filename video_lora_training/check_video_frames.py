@@ -10,7 +10,7 @@ def count_frames(video_path):
     cap.release()
     return frame_count
 
-def log_frame_counts(folder_path, log_file="frame_log.txt", low_frame_log="low_frame_videos.txt"):
+def log_frame_counts(folder_path, log_file="0305_frame_log.txt", low_frame_log="low_frame_videos.txt"):
     """폴더 내 MP4 파일의 프레임 개수를 측정하여 로깅, 40보다 작은 파일을 별도 저장"""
     with open(log_file, "w") as log, open(low_frame_log, "w") as low_log:
         log.write("파일명, 프레임 개수\n")
@@ -25,11 +25,11 @@ def log_frame_counts(folder_path, log_file="frame_log.txt", low_frame_log="low_f
                     if frame_count is not None:
                         log.write(f"{file}, {frame_count}\n")
                         
-                        if frame_count < 40:
+                        if frame_count < 120:
                             low_log.write(f"{file}, {frame_count}\n")
                             print(f"[경고] {file}: 프레임 개수 {frame_count} (40 미만)")
-                        elif frame_count != 40:
-                            print(f"[알림] {file}: 프레임 개수 {frame_count} (40과 다름)")
+                        # elif frame_count != 40:
+                        #     print(f"[알림] {file}: 프레임 개수 {frame_count} (40과 다름)")
                     else:
                         print(f"[오류] {file}: 프레임 개수 확인 실패")
 
@@ -37,5 +37,5 @@ def log_frame_counts(folder_path, log_file="frame_log.txt", low_frame_log="low_f
     print(f"프레임 개수 40 미만 파일 로깅 완료: {low_frame_log}")
 
 # 사용 예시
-folder_path = "/home/jupyter/preprocessed_WebVid_10M_gt_test_videos_1k_random_crop_0210"  # 여기에 폴더 경로 입력
+folder_path = "/workspace/processed_vggsound_sparse_0218/video"  # 여기에 폴더 경로 입력
 log_frame_counts(folder_path)

@@ -1,4 +1,6 @@
 import os
+import csv
+import argparse
 import sys
 import torch
 import argparse
@@ -19,7 +21,23 @@ def evaluate_imagebind_score(inference_save_path, device):
     audio_dir = os.path.join(base_dir, "audio")
     video_dir = os.path.join(base_dir, "video")
 
+    # folders = [
+    #     '/workspace/MMG_Inferencce_folder/0227_avsync_audio_teacher',
+    #     '/workspace/MMG_Inferencce_folder/0227_audio_teacher',
+    #     '/workspace/MMG_Inferencce_folder/0227_avsync_video_teacher',
+    #     '/workspace/MMG_Inferencce_folder/0227_video_teacher',
+    # ]
+
+    audio_dir = '/workspace/MMG_Inferencce_folder/0227_audio_teacher'
+    video_dir = '/workspace/MMG_Inferencce_folder/0227_video_teacher'
+
+
+
+
     audio_files = set([f for f in os.listdir(audio_dir) if f.endswith('.wav')])
+    if len(audio_files) == 0:
+        audio_files = set([f for f in os.listdir(audio_dir) if f.endswith('.flac')])
+
     video_files = set([f for f in os.listdir(video_dir) if f.endswith('.mp4')])
 
     audio_basenames = {os.path.splitext(f)[0] for f in audio_files}
@@ -32,6 +50,8 @@ def evaluate_imagebind_score(inference_save_path, device):
         for basename in sorted(matching_basenames):
             video_path = os.path.join(video_dir, basename + ".mp4") 
             audio_path = os.path.join(audio_dir, basename + ".wav")
+            # audio_path = os.path.join(audio_dir, basename + ".flac")
+
             writer.writerow([video_path, audio_path])
 
 
@@ -73,8 +93,27 @@ def evaluate_imagebind_score(inference_save_path, device):
 
 
 
+
+
 def main():
-    return 0
+    parser = argparse.ArgumentParser(description="Evaluate ImageBind Score")
+    parser.add_argument(
+        "--inference_save_path",
+        type=str,
+        required=True,
+        help="audio와 video 폴더를 포함한 inference 결과 저장 경로"
+    )
+    parser.add_argument(
+        "--device",
+        type=str,
+        default="cpu",
+        help="평가를 실행할 디바이스 (예: cpu 또는 cuda)"
+    )
+    args = parser.parse_args()
+
+    avg_score_av = evaluate_imagebind_score(args.inference_save_path, args.device)
+    print("\n=== ImageBind Score Evaluation ===")
+    print(f"Average ImageBind Score: {avg_score_av}")
 
 if __name__ == "__main__":
     main()

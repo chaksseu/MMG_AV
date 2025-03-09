@@ -22,6 +22,10 @@ from mmg_inference.auffusion_pipe_functions_copy_0123 import (
     encode_audio_prompt, prepare_extra_step_kwargs, ConditionAdapter, import_model_class_from_model_name_or_path, Generator
 )
 
+def load_accelerator_ckpt(model: torch.nn.Module, checkpoint_path: str):
+    checkpoint = load_file(checkpoint_path)
+    model.load_state_dict(checkpoint)
+    return model
 
 def load_prompts(prompt_file: str) -> List[str]:
     """
@@ -376,12 +380,163 @@ def run_inference(
         accelerator.print(f"Process {accelerator.process_index}: Encountered an error.")
         traceback.print_exc()
 
+
+
+
+
+import argparse
+import os
+import torch
+from accelerate import Accelerator
+from safetensors.torch import load_file
+import os
+import sys
+
+import argparse
+import json
+import random
+from datetime import timedelta
+import csv
+
+import torch
+import torch.nn as nn
+import torch.nn.functional as F
+from torch.utils.data import DataLoader
+import torch.optim as optim
+
+from diffusers import (
+    PNDMScheduler,
+    UNet2DConditionModel,
+    DDPMScheduler,
+    AutoencoderKL
+)
+from diffusers.image_processor import VaeImageProcessor
+
+
+from einops import rearrange
+from omegaconf import OmegaConf
+from utils.utils import instantiate_from_config
+
+from accelerate import Accelerator, InitProcessGroupKwargs
+from tqdm import tqdm
+import wandb
+from peft import LoraConfig
+from safetensors.torch import load_file
+from transformers import AutoTokenizer
+from huggingface_hub import snapshot_download
+
+
 def main():
-    # Accelerate 초기화
-    accelerator = Accelerator(mixed_precision="bf16")
-    
+    parser = argparse.ArgumentParser(description="Audio Generation Inference")
+    parser.add_argument("--prompt_file", type=str, default="/workspace/processed_unseen_AVSync15/unseen_AVSync15_669.csv", help="CSV 파일 경로 (프롬프트 파일)")
+    parser.add_argument("--savedir", type=str, default="/workspace/MMG_Inferencce_folder/0227_avsync_audio_teacher", help="결과 비디오 저장 디렉토리")
+    parser.add_argument("--bs", type=int, default=4, help="배치 사이즈")
+    parser.add_argument("--seed", type=int, default=42, help="랜덤 시드")
+    parser.add_argument("--audio_model_name", type=str, default="auffusion/auffusion-full", 
+                        help="사전 학습된 모델 디렉토리 또는 identifier")
+    parser.add_argument("--audio_lora_ckpt_path", type=str, default="/workspace/GCP_BACKUP_0213/checkpoint-step-6400/model.safetensors")
+
+    parser.add_argument("--duration", type=float, default=3.2, help="오디오 길이 (초)")
+    parser.add_argument("--guidance_scale", type=float, default=7.5, help="Guidance scale 값")
+    parser.add_argument("--num_inference_steps", type=int, default=25, help="DDIM 스케줄러 추론 단계 수")
+    parser.add_argument("--eta_audio", type=float, default=0.0, help="오디오 DDIM eta 파라미터")
+    args = parser.parse_args()
+
+    # Accelerator 초기화 및 device/dtype 설정
+    accelerator = Accelerator()
+    device = accelerator.device
+    dtype = torch.float32
+
+
+    # Audio Models
+    audio_unet = UNet2DConditionModel.from_pretrained(args.audio_model_name, subfolder="unet")
+    audio_unet.eval()
+    for param in audio_unet.parameters():
+        param.requires_grad = False
+
+    # LoRA config
+    lora_config = LoraConfig(
+        r=128,
+        lora_alpha=128,
+        init_lora_weights=True,
+        target_modules=["to_k", "to_q", "to_v", "to_out.0"],
+    )
+    audio_unet.add_adapter(lora_config)
+    audio_unet = load_accelerator_ckpt(audio_unet, args.audio_lora_ckpt_path)
+    audio_unet = audio_unet.to(device)
+
+    if not os.path.isdir(args.audio_model_name):
+        pretrained_model_name_or_path = snapshot_download(args.audio_model_name)
+    else:
+        pretrained_model_name_or_path = args.audio_model_name
+
+    # 2-2) VAE 로드
+    with torch.no_grad():
+        audio_vae = AutoencoderKL.from_pretrained(
+            pretrained_model_name_or_path,
+            subfolder="vae"
+        )
+    audio_vae = audio_vae.to(device=device,dtype=dtype)
+    audio_vae.requires_grad_(False)
+
+    # 2-3) VAE scale factor 기반 ImageProcessor
+    audio_vae_scale_factor = 2 ** (len(audio_vae.config.block_out_channels) - 1)
+    audio_image_processor = VaeImageProcessor(vae_scale_factor=audio_vae_scale_factor)
+
+    # 2-4) condition_config.json 기반으로 text_encoder_list, tokenizer_list, adapter_list 로딩
+    audio_condition_json_path = os.path.join(pretrained_model_name_or_path, "condition_config.json")
+    with open(audio_condition_json_path, "r", encoding="utf-8") as f:
+        audio_condition_json_list = json.load(f)
+
+    audio_text_encoder_list = []
+    audio_tokenizer_list = []
+    audio_adapter_list = []
+
+    with torch.no_grad():
+        for cond_item in audio_condition_json_list:
+            # text encoder / tokenizer
+            audio_text_encoder_path = os.path.join(pretrained_model_name_or_path, cond_item["text_encoder_name"])
+            audio_tokenizer = AutoTokenizer.from_pretrained(audio_text_encoder_path)
+            
+            audio_text_encoder_cls = import_model_class_from_model_name_or_path(audio_text_encoder_path)
+            audio_text_encoder = audio_text_encoder_cls.from_pretrained(audio_text_encoder_path)
+
+            audio_text_encoder.requires_grad_(False)
+            audio_text_encoder = audio_text_encoder.to(device=device, dtype=dtype)
+
+            audio_tokenizer_list.append(audio_tokenizer)
+            audio_text_encoder_list.append(audio_text_encoder)
+
+            # condition adapter
+            audio_adapter_path = os.path.join(pretrained_model_name_or_path, cond_item["condition_adapter_name"])
+            audio_adapter = ConditionAdapter.from_pretrained(audio_adapter_path)
+            audio_adapter.requires_grad_(False)
+            audio_adapter = audio_adapter.to(device=device,dtype=dtype)
+
+            audio_adapter_list.append(audio_adapter)
 
 
 
-if __name__ == '__main__':
+
+    # run_inference 실행
+    run_inference(
+         accelerator=accelerator,
+         unet_model=audio_unet,
+         vae=audio_vae,
+         image_processor=audio_image_processor,
+         text_encoder_list=audio_text_encoder_list,
+         adapter_list=audio_adapter_list,
+         tokenizer_list=audio_tokenizer_list,
+         seed=args.seed,
+         prompt_file=args.prompt_file,
+         savedir=args.savedir,
+         bs=args.bs,
+         pretrained_model_name_or_path=args.audio_model_name,
+         duration=args.duration,
+         guidance_scale=args.guidance_scale,
+         num_inference_steps=args.num_inference_steps,
+         eta_audio=args.eta_audio
+    )
+
+if __name__ == "__main__":
     main()

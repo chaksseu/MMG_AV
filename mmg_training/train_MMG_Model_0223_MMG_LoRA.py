@@ -6,6 +6,7 @@ import argparse
 import json
 import random
 from datetime import timedelta
+import csv
 
 import torch
 import torch.nn as nn
@@ -122,6 +123,20 @@ def load_accelerator_ckpt(model: torch.nn.Module, checkpoint_path: str):
     model.load_state_dict(checkpoint)
     return model
 
+def split_prompts_evenly(prompts, num_splits):
+    """
+    전체 프롬프트를 num_splits개로 최대한 균등하게 나누는 함수
+    """
+    total = len(prompts)
+    base = total // num_splits
+    extra = total % num_splits
+    subsets = []
+    start = 0
+    for i in range(num_splits):
+        length = base + (1 if i < extra else 0)
+        subsets.append(prompts[start:start+length])
+        start += length
+    return subsets
 
 def load_prompts(prompt_file: str):
     """
@@ -142,6 +157,7 @@ def load_prompts(prompt_file: str):
     
     return prompts
 
+
 def evaluate_model(args, accelerator, target_csv_files, eval_id, target_path, ckpt_dir):
 
     audio_target_path = os.path.join(target_path, "audio")
@@ -152,9 +168,10 @@ def evaluate_model(args, accelerator, target_csv_files, eval_id, target_path, ck
     video_inference_path = os.path.join(inference_save_path, "video")
 
     # prompt 분배
+    print("target_csv_files", target_csv_files)
     assert os.path.exists(target_csv_files), f"Prompt file not found: {target_csv_files}"
     all_prompts = load_prompts(target_csv_files)
-    all_prompts = all_prompts[:4]
+    all_prompts = all_prompts[:]
 
     print("all_prompts length", len(all_prompts))
     num_processes = accelerator.num_processes
@@ -167,6 +184,9 @@ def evaluate_model(args, accelerator, target_csv_files, eval_id, target_path, ck
 
     # MMG inference
     run_inference(args, accelerator, prompt_sublist, inference_save_path, ckpt_dir)
+
+
+    accelerator.wait_for_everyone()
 
     # MMG_EVAL
     with torch.no_grad():
@@ -189,14 +209,14 @@ def evaluate_model(args, accelerator, target_csv_files, eval_id, target_path, ck
                 target_folder=video_target_path,
                 metrics=['fvd','clip'],
                 device=accelerator.device,
-                num_frames=frames
+                num_frames=args.frames
             )
         accelerator.wait_for_everyone()
 
         if accelerator.is_main_process:
-            imagebind_score = evaluate_video_metrics(
+            imagebind_score = evaluate_imagebind_score(
                 inference_save_path=inference_save_path,
-                device=device
+                device=accelerator.device
             )
         accelerator.wait_for_everyone()
 
@@ -229,21 +249,24 @@ class CrossModalCoupledUNet(nn.Module):
     """
     def __init__(self, audio_unet, video_unet, cross_modal_config):
         super(CrossModalCoupledUNet, self).__init__()
-        # Freeze audio_unet
+
+
+        # Freeze all parameters in audio_unet
         self.audio_unet = audio_unet
         for name, param in self.audio_unet.named_parameters():
-            param.requires_grad = False
+            param.requires_grad = "lora" in name  # Enable only LoRA layers
 
-        # Freeze video_unet
+        # Freeze all parameters in video_unet
         self.video_unet = video_unet
         for name, param in self.video_unet.named_parameters():
-            param.requires_grad = False
+            param.requires_grad = "lora" in name  # Enable only LoRA layers
 
-        # for name, param in self.video_unet.named_parameters():
-        #     if 'lora_block' in name:
-        #         param.requires_grad = True
-        #     else:
-        #         param.requires_grad = False
+        # Count trainable parameters for each UNet
+        audio_trainable_params = sum(p.numel() for p in self.audio_unet.parameters() if p.requires_grad)
+        video_trainable_params = sum(p.numel() for p in self.video_unet.parameters() if p.requires_grad)
+
+        print(f"Trainable parameters in audio_unet (LoRA): {audio_trainable_params}")
+        print(f"Trainable parameters in video_unet (LoRA): {video_trainable_params}")
 
 
         self.audio_cmt = nn.ModuleList()
@@ -268,7 +291,14 @@ class CrossModalCoupledUNet(nn.Module):
             )
             self.initialize_cross_modal_transformer(video_transformer)
             self.video_cmt.append(video_transformer)
-
+        
+        # cmt 모듈 zero init
+        for cmt_module in self.audio_cmt:
+            for param in cmt_module.parameters():
+                nn.init.zeros_(param)
+        for cmt_module in self.video_cmt:
+            for param in cmt_module.parameters():
+                nn.init.zeros_(param)
 
 
     def initialize_basic_transformer_block(self, block):
@@ -691,8 +721,8 @@ def main():
     # Video UNet
     video_config = OmegaConf.load(args.videocrafter_config)
     video_model = instantiate_from_config(video_config.model)
-    #state_dict = torch.load(args.videocrafter_ckpt_path)['state_dict']
-    #video_model.load_state_dict(state_dict, strict=False) # 로라 때문에 false
+    state_dict = torch.load(args.videocrafter_ckpt_path)['state_dict']
+    video_model.load_state_dict(state_dict, strict=False) # 로라 때문에 false
     video_model.to(device=device,dtype=dtype)
     video_unet = video_model.model.diffusion_model.eval()
     
@@ -741,7 +771,7 @@ def main():
             global_step = training_state.get("global_step", 0)
             # 마지막 저장된 에폭 이후부터 재개하도록 (+1)
             start_epoch = training_state.get("epoch", 0) + 1
-            resume_batch_idx = training_state.get("batch_idx", -1) + 1
+            resume_batch_idx = global_step
             print(f"체크포인트로부터 학습 재개: 에폭 {start_epoch}부터, 글로벌 스텝 {global_step}")
         else:
             print("체크포인트 내 training_state.json 파일을 찾을 수 없어, 새롭게 시작합니다.")
@@ -751,8 +781,6 @@ def main():
 
 
     model.train()
-
-    global_step = 0
     losses = []
     losses_video = []
     losses_audio = []
@@ -767,7 +795,7 @@ def main():
     for epoch in range(args.num_epochs):
         with tqdm(dataloader, desc=f"Epoch {epoch+1}/{args.num_epochs}", unit="batch") as tepoch:
             for batch_idx, batch in enumerate(tepoch):
-                if epoch == start_epoch and batch_idx < resume_batch_idx:
+                if batch_idx < resume_batch_idx:
                     continue
                 
                 with accelerator.accumulate(model):
@@ -808,7 +836,7 @@ def main():
                         image = audio_image_processor.preprocess(spec_tensors)
                         vae_output = audio_vae.encode(image)
                         audio_latents = retrieve_latents(vae_output, generator=generator)
-                        audio_latents = vae.config.scaling_factor * audio_latents
+                        audio_latents = audio_vae.config.scaling_factor * audio_latents
 
 
 
@@ -831,8 +859,8 @@ def main():
 
                     # Weighted loss
                     
-                    loss_audio = audio_loss_weight * F.mse_loss(audio_output, noise_audio)
-                    loss_video = video_loss_weight * F.mse_loss(video_output, noise_video)
+                    loss_audio = args.audio_loss_weight * F.mse_loss(audio_output, noise_audio)
+                    loss_video = args.video_loss_weight * F.mse_loss(video_output, noise_video)
                     loss = loss_audio + loss_video
                     loss.requires_grad_(True)
 
@@ -846,7 +874,7 @@ def main():
                     global_step += 1
 
 
-                    if accelerator.is_main_process and batch_idx % args.gradient_accumulation == 0:
+                    if accelerator.is_main_process:
                         avg_losses = sum(losses) / len(losses)
                         avg_losses_video = sum(losses_video) / len(losses_video)
                         avg_losses_audio = sum(losses_audio) / len(losses_audio)
@@ -862,40 +890,40 @@ def main():
                             "step": global_step
                         })
 
+            # Save & Evaluate Checkpoints
+            if (epoch+1) % args.eval_every == 0:
+                ckpt_dir = os.path.join(args.ckpt_save_path, f"checkpint_{args.date}/checkpoint-step-{global_step}")
+                # save checkpoint
+                if accelerator.is_main_process:
+                    accelerator.save_state(ckpt_dir)
 
-                # Save & Evaluate Checkpoints
-                if global_step > 0 and (global_step % args.eval_every == 0):
-                    # save checkpoint
-                    if accelerator.is_main_process:
-                        ckpt_dir = os.path.join(args.ckpt_save_path, f"checkpint_{args.date}/checkpoint-step-{global_step}")
-                        accelerator.save_state(ckpt_dir)
+                    training_state = {"global_step": global_step, "epoch": epoch, "step": global_step}
+                    with open(os.path.join(ckpt_dir, "training_state.json"), "w") as f:
+                        json.dump(training_state, f)
+                    print(f"[Step {global_step}] Checkpoint saved at: {ckpt_dir}")
+                accelerator.wait_for_everyone()
 
-                        training_state = {"global_step": global_step, "epoch": epoch, "step": step}
-                        with open(os.path.join(ckpt_dir, "training_state.json"), "w") as f:
-                            json.dump(training_state, f)
-                        print(f"[Step {global_step}] Checkpoint saved at: {ckpt_dir}")
-                    accelerator.wait_for_everyone()
+                safetensor_path = os.path.join(ckpt_dir, "model.safetensors")
+                # evaluate model
+                vgg_fad, vgg_clap_avg, vgg_fvd, vgg_clip_avg, vgg_imagebind_score, vgg_av_align = evaluate_model(
+                    args=args,
+                    accelerator=accelerator,
+                    target_csv_files=args.vgg_csv_path,
+                    target_path=args.vgg_gt_test_path,
+                    eval_id=f"{args.date}_step_{global_step}_vggsound_sparse",
+                    ckpt_dir=safetensor_path
+                )
 
-
-                    # evaluate model
-                    vgg_fad, vgg_clap_avg, vgg_fvd, vgg_clip_avg, vgg_imagebind_score, vgg_av_align = evaluate_model(
-                        accelerator=accelerator,
-                        target_csv_files=args.vgg_csv_path,
-                        target_path=args.vgg_gt_test_path,
-                        eval_id=f"{args.date}_step_{global_step}_vggsound_sparse",
-                        ckpt_dir=ckpt_dir
-                    )
-
-                    if accelerator.is_main_process:
-                        wandb.log({
-                            "eval/vgg_fad": vgg_fad,
-                            "eval/vgg_clap_avg": vgg_clap_avg,
-                            "eval/vgg_fvd": vgg_fvd,
-                            "eval/vgg_clip_avg": vgg_clip_avg,
-                            "eval/vgg_imagebind_score": vgg_imagebind_score,
-                            "eval/vgg_av_align": vgg_av_align,
-                            "step": global_step
-                        })
+                if accelerator.is_main_process:
+                    wandb.log({
+                        "eval/vgg_fad": vgg_fad,
+                        "eval/vgg_clap_avg": vgg_clap_avg,
+                        "eval/vgg_fvd": vgg_fvd,
+                        "eval/vgg_clip_avg": vgg_clip_avg,
+                        "eval/vgg_imagebind_score": vgg_imagebind_score,
+                        "eval/vgg_av_align": vgg_av_align,
+                        "step": global_step
+                    })
 
     print("Training Done.")
 

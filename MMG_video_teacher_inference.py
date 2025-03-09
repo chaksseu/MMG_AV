@@ -28,9 +28,14 @@ from lvdm.common import noise_like
 from mmg_inference.auffusion_pipe_functions import (
     prepare_extra_step_kwargs, ConditionAdapter, import_model_class_from_model_name_or_path, Generator
 )
+from safetensors.torch import load_file
 
 import csv
 
+def load_accelerator_ckpt(model: torch.nn.Module, checkpoint_path: str):
+    checkpoint = load_file(checkpoint_path)
+    model.load_state_dict(checkpoint)
+    return model
 
 def load_prompts(prompt_file: str) -> List[str]:
     """
@@ -371,43 +376,68 @@ def run_inference(
         accelerator.print(f"Process {accelerator.process_index}: Encountered an error.")
         traceback.print_exc()
 
+
+
 def main():
-    # 예시로 간단하게 구성
+    parser = argparse.ArgumentParser(description="Video Generation Inference")
+    # 기본 인자들
+    parser.add_argument("--prompt_file", type=str, default="/workspace/processed_unseen_AVSync15/unseen_AVSync15_669.csv", help="CSV 파일 경로 (프롬프트 파일)")
+    parser.add_argument("--savedir", type=str, default="/workspace/MMG_Inferencce_folder/0227_avsync_video_teacher", help="결과 비디오 저장 디렉토리")
+    parser.add_argument("--bs", type=int, default=2, help="배치 사이즈")
+    parser.add_argument("--seed", type=int, default=42, help="랜덤 시드")
+    parser.add_argument("--unconditional_guidance_scale", type=float, default=12.0, help="Unconditional guidance scale 값")
+    parser.add_argument("--num_inference_steps", type=int, default=25, help="DDIM inference 단계 수")
+    parser.add_argument("--height", type=int, default=320, help="비디오 높이 (16의 배수)")
+    parser.add_argument("--width", type=int, default=512, help="비디오 너비 (16의 배수)")
+    parser.add_argument("--frames", type=int, default=40, help="생성할 프레임 수 (-1인 경우 모델의 기본값 사용)")
+    parser.add_argument("--ddim_eta", type=float, default=0.0, help="DDIM eta 파라미터")
+    parser.add_argument("--fps", type=float, default=12.5, help="비디오 FPS")
+
+    # 모델 체크포인트 관련 인자
+    parser.add_argument("--videocrafter_config", type=str, default="configs/inference_t2v_512_v2.0.yaml", help="UNet 모델 체크포인트 경로")
+    parser.add_argument("--videocrafter_ckpt_path", type=str, default="scripts/evaluation/model.ckpt", help="Video 모델 체크포인트 경로")
+    parser.add_argument("--video_lora_ckpt_path", type=str, default="/workspace/video_lora_training_checkpoints_0213/checkpoint-step-16384/model.safetensors"
+, help="Video 모델 체크포인트 경로")
+
+
+    args = parser.parse_args()
+
+    # Accelerator 초기화
     accelerator = Accelerator()
+    device = accelerator.device
+    dtype = torch.float32
+
+    video_config = OmegaConf.load(args.videocrafter_config)
+    video_model = instantiate_from_config(video_config.model)
+    state_dict = torch.load(args.videocrafter_ckpt_path)['state_dict']
+    video_model.load_state_dict(state_dict, strict=False) # 로라 때문에 false
+    video_model.to(device=device,dtype=dtype)
+    video_unet = video_model.model.diffusion_model.eval()
     
-    # 예시: prompt 읽기
-    prompt_file = "my_prompts.csv"
-    prompts = load_prompts(prompt_file)
-    
-    # 예시: 스플릿
-    # (multi-process 환경이라 가정)
-    num_processes = accelerator.num_processes
-    prompt_sublist = split_prompts_evenly(prompts, num_processes)[accelerator.process_index]
-    
-    # 예시: 모델/파라미터 세팅(가상의 코드)
-    video_model = CrossModalCoupledUNet(...)  # 실제 사용 모델
-    unet_model = None                         # 필요하다면 설정
-    
-    # run_inference에 필요한 인자들(가상의 값)
+    video_unet = load_accelerator_ckpt(video_unet, args.video_lora_ckpt_path)
+
+
+    # 모델을 Accelerator 디바이스로 이동
+    video_unet.to(accelerator.device)
+    video_model.to(accelerator.device)
+
+    # run_inference 실행
     run_inference(
         accelerator=accelerator,
-        unet_model=unet_model,
+        unet_model=video_unet,
         video_model=video_model,
-        prompt_file=prompt_file,
-        savedir="./outputs",
-        bs=1,
-        seed=42,
-        unconditional_guidance_scale=5.0,
-        num_inference_steps=50,
-        height=256,
-        width=256,
-        frames=16,
-        ddim_eta=0.0,
-        fps=10
-        # etc...
-        # prompt_sublist=prompt_sublist (함수 파라미터에 추가해줘야 함)
+        prompt_file=args.prompt_file,
+        savedir=args.savedir,
+        bs=args.bs,
+        seed=args.seed,
+        unconditional_guidance_scale=args.unconditional_guidance_scale,
+        num_inference_steps=args.num_inference_steps,
+        height=args.height,
+        width=args.width,
+        frames=args.frames,
+        ddim_eta=args.ddim_eta,
+        fps=args.fps
     )
 
-
-if __name__ == '__main__':
+if __name__ == "__main__":
     main()
