@@ -73,9 +73,9 @@ class AudioVideoDataset(Dataset):
         caption_text = row["caption"]
 
         # ----- Spectrogram 처리 -----
-        spec_path = os.path.join(self.spectrogram_dir, f"{file_id}.wav.pt")
+        spec_path = os.path.join(self.spectrogram_dir, f"{file_id}.pt")
         if not os.path.isfile(spec_path):
-            raise FileNotFoundError(f"Spectrogram file not found: {spec_path}.wav.pt")
+            raise FileNotFoundError(f"Spectrogram file not found: {spec_path}")
         spec = torch.load(spec_path)  # shape: [n_mels, total_T]
         spec = normalize_spectrogram(spec)  # 정규화 (값을 [0,1] 등 범위로 변환)
 
@@ -84,7 +84,7 @@ class AudioVideoDataset(Dataset):
         # video 파일 경로 (필요시 파일 확장자 추가 가능)
         video_path = os.path.join(self.video_dir, f"{file_id}.mp4")
         if not os.path.isfile(video_path):
-            raise FileNotFoundError(f"Video file not found: {video_path}.mp4")
+            raise FileNotFoundError(f"Video file not found: {video_path}")
         video, _, _ = io.read_video(video_path, pts_unit="sec")  # shape: (T, H, W, C)
 
 
@@ -151,9 +151,9 @@ if __name__ == "__main__":
     from tqdm import tqdm
 
     # 예시 경로 (사용 환경에 맞게 수정)
-    csv_path = "/workspace/processed_vggsound_sparse_0218/processed_vggsound_sparse_mmg.csv"
-    spectrogram_dir = "/workspace/processed_vggsound_sparse_0218/spec"
-    video_dir = "/workspace/processed_vggsound_sparse_0218/video"
+    csv_path = "/workspace/vggsound_processing/New_VGGSound_0311.csv"
+    spectrogram_dir = "/workspace/data/preprocessed_VGGSound_train_spec_0310"
+    video_dir = "/workspace/data/preprocessed_VGGSound_train_videos_0313"
     split = "train"
 
     dataset = AudioVideoDataset(
@@ -170,7 +170,7 @@ if __name__ == "__main__":
         target_width=512,
     )
 
-    dataloader = DataLoader(dataset, batch_size=16, shuffle=False, num_workers=4)
+    dataloader = DataLoader(dataset, batch_size=16, shuffle=False, num_workers=16)
 
     for batch in tqdm(dataloader, desc="Processing Batches", unit="batch"):
         print("Spectrogram shape:", batch["spec"].shape)

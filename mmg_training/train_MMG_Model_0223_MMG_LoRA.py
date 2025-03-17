@@ -657,7 +657,7 @@ def main():
         target_modules=["to_k", "to_q", "to_v", "to_out.0"],
     )
     audio_unet.add_adapter(lora_config)
-    audio_unet = load_accelerator_ckpt(audio_unet, args.audio_lora_ckpt_path)
+    # audio_unet = load_accelerator_ckpt(audio_unet, args.audio_lora_ckpt_path)
 
     if not os.path.isdir(args.audio_model_name):
         pretrained_model_name_or_path = snapshot_download(args.audio_model_name)
@@ -726,7 +726,7 @@ def main():
     video_model.to(device=device,dtype=dtype)
     video_unet = video_model.model.diffusion_model.eval()
     
-    video_unet = load_accelerator_ckpt(video_unet, args.video_lora_ckpt_path)
+    # video_unet = load_accelerator_ckpt(video_unet, args.video_lora_ckpt_path)
 
 
 
@@ -890,40 +890,76 @@ def main():
                             "step": global_step
                         })
 
-            # Save & Evaluate Checkpoints
-            if (epoch+1) % args.eval_every == 0:
-                ckpt_dir = os.path.join(args.ckpt_save_path, f"checkpint_{args.date}/checkpoint-step-{global_step}")
-                # save checkpoint
-                if accelerator.is_main_process:
-                    accelerator.save_state(ckpt_dir)
+                # Save & Evaluate Checkpoints (step)
+                if (global_step+1) % args.eval_every == 0:
+                    ckpt_dir = os.path.join(args.ckpt_save_path, f"checkpint_{args.date}/checkpoint-step-{global_step}")
+                    # save checkpoint
+                    if accelerator.is_main_process:
+                        accelerator.save_state(ckpt_dir)
 
-                    training_state = {"global_step": global_step, "epoch": epoch, "step": global_step}
-                    with open(os.path.join(ckpt_dir, "training_state.json"), "w") as f:
-                        json.dump(training_state, f)
-                    print(f"[Step {global_step}] Checkpoint saved at: {ckpt_dir}")
-                accelerator.wait_for_everyone()
+                        training_state = {"global_step": global_step, "epoch": epoch, "step": global_step}
+                        with open(os.path.join(ckpt_dir, "training_state.json"), "w") as f:
+                            json.dump(training_state, f)
+                        print(f"[Step {global_step}] Checkpoint saved at: {ckpt_dir}")
+                    accelerator.wait_for_everyone()
 
-                safetensor_path = os.path.join(ckpt_dir, "model.safetensors")
-                # evaluate model
-                vgg_fad, vgg_clap_avg, vgg_fvd, vgg_clip_avg, vgg_imagebind_score, vgg_av_align = evaluate_model(
-                    args=args,
-                    accelerator=accelerator,
-                    target_csv_files=args.vgg_csv_path,
-                    target_path=args.vgg_gt_test_path,
-                    eval_id=f"{args.date}_step_{global_step}_vggsound_sparse",
-                    ckpt_dir=safetensor_path
-                )
+                    safetensor_path = os.path.join(ckpt_dir, "model.safetensors")
+                    # evaluate model
+                    vgg_fad, vgg_clap_avg, vgg_fvd, vgg_clip_avg, vgg_imagebind_score, vgg_av_align = evaluate_model(
+                        args=args,
+                        accelerator=accelerator,
+                        target_csv_files=args.vgg_csv_path,
+                        target_path=args.vgg_gt_test_path,
+                        eval_id=f"{args.date}_step_{global_step}_vggsound_sparse",
+                        ckpt_dir=safetensor_path
+                    )
 
-                if accelerator.is_main_process:
-                    wandb.log({
-                        "eval/vgg_fad": vgg_fad,
-                        "eval/vgg_clap_avg": vgg_clap_avg,
-                        "eval/vgg_fvd": vgg_fvd,
-                        "eval/vgg_clip_avg": vgg_clip_avg,
-                        "eval/vgg_imagebind_score": vgg_imagebind_score,
-                        "eval/vgg_av_align": vgg_av_align,
-                        "step": global_step
-                    })
+                    if accelerator.is_main_process:
+                        wandb.log({
+                            "eval/vgg_fad": vgg_fad,
+                            "eval/vgg_clap_avg": vgg_clap_avg,
+                            "eval/vgg_fvd": vgg_fvd,
+                            "eval/vgg_clip_avg": vgg_clip_avg,
+                            "eval/vgg_imagebind_score": vgg_imagebind_score,
+                            "eval/vgg_av_align": vgg_av_align,
+                            "step": global_step
+                        })
+
+
+            # # Save & Evaluate Checkpoints (epoch)
+            # if (epoch+1) % args.eval_every == 0:
+            #     ckpt_dir = os.path.join(args.ckpt_save_path, f"checkpint_{args.date}/checkpoint-step-{global_step}")
+            #     # save checkpoint
+            #     if accelerator.is_main_process:
+            #         accelerator.save_state(ckpt_dir)
+
+            #         training_state = {"global_step": global_step, "epoch": epoch, "step": global_step}
+            #         with open(os.path.join(ckpt_dir, "training_state.json"), "w") as f:
+            #             json.dump(training_state, f)
+            #         print(f"[Step {global_step}] Checkpoint saved at: {ckpt_dir}")
+            #     accelerator.wait_for_everyone()
+
+            #     safetensor_path = os.path.join(ckpt_dir, "model.safetensors")
+            #     # evaluate model
+            #     vgg_fad, vgg_clap_avg, vgg_fvd, vgg_clip_avg, vgg_imagebind_score, vgg_av_align = evaluate_model(
+            #         args=args,
+            #         accelerator=accelerator,
+            #         target_csv_files=args.vgg_csv_path,
+            #         target_path=args.vgg_gt_test_path,
+            #         eval_id=f"{args.date}_step_{global_step}_vggsound_sparse",
+            #         ckpt_dir=safetensor_path
+            #     )
+
+            #     if accelerator.is_main_process:
+            #         wandb.log({
+            #             "eval/vgg_fad": vgg_fad,
+            #             "eval/vgg_clap_avg": vgg_clap_avg,
+            #             "eval/vgg_fvd": vgg_fvd,
+            #             "eval/vgg_clip_avg": vgg_clip_avg,
+            #             "eval/vgg_imagebind_score": vgg_imagebind_score,
+            #             "eval/vgg_av_align": vgg_av_align,
+            #             "step": global_step
+            #         })
 
     print("Training Done.")
 

@@ -1,14 +1,14 @@
 #!/bin/bash
 
 # ========================= 기본값 설정 =========================
-DATE="0308"
-LEARNING_RATE=1e-5
-NUM_EPOCHS=128
+DATE="0313"
+LEARNING_RATE=1e-4
+NUM_EPOCHS=100
 NUM_GPU=1
-TRAIN_BATCH_SIZE=2
-GRADIENT_ACCUMULATION=256
+TRAIN_BATCH_SIZE=2 # 2
+GRADIENT_ACCUMULATION=256 # 256
 INFERENCE_BATCH_SIZE=4
-EVAL_EVERY=4
+EVAL_EVERY=16000
 
 NUM_INFERENCE_STEPS=25
 DTYPE="bf16"
@@ -24,9 +24,9 @@ FRAMES=40
 FPS=12.5
 AUDIO_LOSS_WEIGHT=1.0
 VIDEO_LOSS_WEIGHT=1.5
-CSV_PATH="/workspace/processed_vggsound_sparse_0218/processed_vggsound_sparse_mmg.csv"
-SPECTROGRAM_DIR="/workspace/processed_vggsound_sparse_0218/spec"
-VIDEO_DIR="/workspace/processed_vggsound_sparse_0218/video"
+CSV_PATH="/workspace/vggsound_processing/New_VGGSound_0311.csv" #"/workspace/processed_vggsound_sparse_0218/processed_vggsound_sparse_mmg.csv"
+SPECTROGRAM_DIR="/workspace/data/preprocessed_VGGSound_train_spec_0310" #"/workspace/processed_vggsound_sparse_0218/spec"
+VIDEO_DIR="/workspace/data/preprocessed_VGGSound_train_videos_0313" #"/workspace/processed_vggsound_sparse_0218/video"
 SAMPLING_RATE=16000
 HOP_SIZE=160
 NUM_WORKERS=4

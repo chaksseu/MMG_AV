@@ -28,8 +28,8 @@ def evaluate_imagebind_score(inference_save_path, device):
     #     '/workspace/MMG_Inferencce_folder/0227_video_teacher',
     # ]
 
-    audio_dir = '/workspace/MMG_Inferencce_folder/0227_audio_teacher'
-    video_dir = '/workspace/MMG_Inferencce_folder/0227_video_teacher'
+    # audio_dir = '/workspace/MMG_Inferencce_folder/0227_audio_teacher'
+    # video_dir = '/workspace/MMG_Inferencce_folder/0227_video_teacher'
 
 
 
