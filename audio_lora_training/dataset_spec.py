@@ -95,3 +95,39 @@ class AudioTextDataset(Dataset):
             "spec": spec,
             "caption": caption_text
         }
+
+
+import argparse
+from torch.utils.data import DataLoader
+from tqdm import tqdm
+
+def main():
+    # config
+    csv_path = "/workspace/data/MMG_TA_dataset_audiocaps_wavcaps/MMG_TA_dataset_filtered_0321.csv"
+    audio_dir = "/workspace/data/MMG_TA_dataset_audiocaps_wavcaps_spec_0320"
+    split = "train"
+    batch_size = 64
+    num_workers = 4  # 오류 없도록 0으로 설정. 성능이 괜찮으면 늘려도 됨.
+
+    dataset = AudioTextDataset(
+        csv_path=csv_path,
+        audio_dir=audio_dir,
+        split=split,
+        slice_duration=3.2,
+        sample_rate=16000,
+        hop_size=160,
+        pad_to_spec_len=True
+    )
+
+    dataloader = DataLoader(dataset, batch_size=batch_size, shuffle=False, num_workers=num_workers)
+
+    for i, batch in enumerate(tqdm(dataloader, desc="Validating dataset")):
+        specs = batch["spec"]
+        captions = batch["caption"]
+        
+        print(f"Spec shape: {specs.shape}")  # [B, n_mels, T]
+        # print(f"Captions: {captions}")
+        
+
+if __name__ == "__main__":
+    main()

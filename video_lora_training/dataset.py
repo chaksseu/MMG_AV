@@ -123,9 +123,9 @@ def main():
     """
 
     # 예시용 CSV 경로와 비디오 폴더 경로 (사용 환경에 맞춰 수정)
-    csv_path = "/home/jupyter/preprocessed_WebVid_10M_videos_0208_test_1k.csv"               # 실제 CSV 파일 경로
-    video_dir = "/home/jupyter/preprocessed_WebVid_10M_train_videos_0130"  
-    split = "test"
+    csv_path = "/workspace/processed_OpenVid_0321.csv"               # 실제 CSV 파일 경로
+    video_dir = "/workspace/data/preprocessed_openvid_videos_train_0318"  
+    split = "train"
 
     # Dataset 생성
     dataset = VideoTextDataset(
@@ -138,7 +138,7 @@ def main():
     # DataLoader 생성
     dataloader = DataLoader(
         dataset,
-        batch_size=32,           # 적절한 배치 사이즈로 설정
+        batch_size=64,           # 적절한 배치 사이즈로 설정
         shuffle=False,
         num_workers=8,   
         drop_last=False,

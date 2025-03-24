@@ -740,7 +740,11 @@ def main():
     }
 
     model = CrossModalCoupledUNet(audio_unet, video_unet, cross_modal_config)
-    
+    cmcu_path = os.path.join(args.cross_modal_checkpoint_path, "model.safetensors")
+    # print(cmcu_path)
+
+    model = load_accelerator_ckpt(model, cmcu_path)
+
     noise_scheduler = DDPMScheduler.from_pretrained(args.audio_model_name, subfolder="scheduler")
 
 
@@ -769,6 +773,7 @@ def main():
             with open(training_state_path, "r") as f:
                 training_state = json.load(f)
             global_step = training_state.get("global_step", 0)
+            global_step -= 16
             # 마지막 저장된 에폭 이후부터 재개하도록 (+1)
             start_epoch = training_state.get("epoch", 0) + 1
             resume_batch_idx = global_step
@@ -792,10 +797,13 @@ def main():
     else:
         os.environ["WANDB_MODE"] = "offline"
 
+    currunt_idx = 0
     for epoch in range(args.num_epochs):
         with tqdm(dataloader, desc=f"Epoch {epoch+1}/{args.num_epochs}", unit="batch") as tepoch:
             for batch_idx, batch in enumerate(tepoch):
-                if batch_idx < resume_batch_idx:
+                currunt_idx += 1
+
+                if currunt_idx < global_step: # and epoch+1 <= start_epoch: 
                     continue
                 
                 with accelerator.accumulate(model):

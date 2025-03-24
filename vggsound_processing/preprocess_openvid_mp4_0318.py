@@ -9,14 +9,14 @@ import tempfile
 # ---------------------------
 # 설정 변수
 # ---------------------------
-SOURCE_DIR = "/workspace/openvid_100_test" #'/workspace/openvid_1m_dataset/video'    # 원본 mp4 파일 폴더
-DEST_DIR = '/workspace/data/preprocessed_openvid_videos_100_0318'  # 전처리된 결과 저장 폴더
-MIN_DURATION = 3.6      # 최소 영상 길이(초)
-MAX_DURATION = 30.0     # 최대 영상 길이(초)
+SOURCE_DIR = '/workspace/openvid_1m_dataset/video' # "/workspace/openvid_100_test" #    # 원본 mp4 파일 폴더
+DEST_DIR = '/workspace/data/preprocessed_openvid_videos_train_0318'  # 전처리된 결과 저장 폴더
+MIN_DURATION = 3.2      # 최소 영상 길이(초)
+MAX_DURATION = 10.0     # 최대 영상 길이(초)
 RESIZE_WIDTH = 512
 RESIZE_HEIGHT = 320
 OUTPUT_FPS = 12.5     # 최종 출력 FPS
-NUM_WORKERS = 4
+NUM_WORKERS = 16
 
 os.makedirs(DEST_DIR, exist_ok=True)
 

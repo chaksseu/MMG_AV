@@ -72,13 +72,13 @@ def process_audio(audio_id, args):
 
 def main():
     parser = argparse.ArgumentParser()
-    parser.add_argument("--csv_path", type=str, default='/workspace/vggsound_processing/New_VGGSound.csv', help="CSV 파일 경로")
-    parser.add_argument("--audio_dir", type=str, default="/workspace/data/preprocessed_VGGSound_train_audio_0310", help="오디오(flac) 파일 폴더 경로")
-    parser.add_argument("--spectrogram_dir", type=str, default="/workspace/data/preprocessed_VGGSound_train_spec_0310", help="미리 생성된 Mel Spectrog")# /home/rtrt5060/preprocessed_spec, /home/jupyter/MMG_TA_dataset_audiocaps_wavcaps/preprocessed_spec
+    parser.add_argument("--csv_path", type=str, default='/workspace/data/MMG_TA_dataset_audiocaps_wavcaps/MMG_TA_dataset_preprocessed.csv', help="CSV 파일 경로")
+    parser.add_argument("--audio_dir", type=str, default="/workspace/data/MMG_TA_dataset_audiocaps_wavcaps/preprocessed_audio", help="오디오(flac) 파일 폴더 경로")
+    parser.add_argument("--spectrogram_dir", type=str, default="/workspace/data/MMG_TA_dataset_audiocaps_wavcaps_spec_0320", help="미리 생성된 Mel Spectrog")# /home/rtrt5060/preprocessed_spec, /home/jupyter/MMG_TA_dataset_audiocaps_wavcaps/preprocessed_spec
     parser.add_argument("--sample_rate", type=int, default=16000, help="오디오 리샘플링 레이트")
     parser.add_argument("--n_mels", type=int, default=256, help="Mel bands 개수")
     parser.add_argument("--hop_size", type=int, default=160, help="hop size")
-    parser.add_argument("--num_workers", type=int, default=8, help="병렬 처리에 사용할 CPU 코어 수")
+    parser.add_argument("--num_workers", type=int, default=4, help="병렬 처리에 사용할 CPU 코어 수")
     args = parser.parse_args()
 
     os.makedirs(args.spectrogram_dir, exist_ok=True)

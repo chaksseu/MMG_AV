@@ -79,9 +79,9 @@ def check_pt_files(spec_dir, log_file="invalid_pt_files.log", num_workers=4):
 
 def parse_args():
     parser = argparse.ArgumentParser(description="Check .pt files for corruption or invalid format.")
-    parser.add_argument("--spec_dir", type=str, default="/home/jupyter/MMG_TA_dataset_audiocaps_wavcaps/preprocessed_spec", help="Spectrogram .pt 파일들이 있는 디렉토리 경로")
-    parser.add_argument("--log_file", type=str, default="invalid_pt_files_0208.log", help="이상한 파일들을 기록할 로그 파일명")
-    parser.add_argument("--num_workers", type=int, default=4, help="동시 실행할 워커 프로세스 수")
+    parser.add_argument("--spec_dir", type=str, default="/workspace/data/MMG_TA_dataset_audiocaps_wavcaps_spec_0320", help="Spectrogram .pt 파일들이 있는 디렉토리 경로")
+    parser.add_argument("--log_file", type=str, default="invalid_pt_files_0321.log", help="이상한 파일들을 기록할 로그 파일명")
+    parser.add_argument("--num_workers", type=int, default=8, help="동시 실행할 워커 프로세스 수")
     return parser.parse_args()
 
 if __name__ == "__main__":
