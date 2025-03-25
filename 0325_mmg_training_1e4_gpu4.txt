@@ -1,0 +1,110 @@
+======================= Training Configuration =======================
+Seed: 42
+Duration: 3.2
+VideoCrafter Config: configs/inference_t2v_512_v2.0.yaml
+VideoCrafter Checkpoint: scripts/evaluation/model.ckpt
+Audio Model Name: auffusion/auffusion-full
+Height: 320
+Width: 512
+Frames: 40
+FPS: 12.5
+Audio Loss Weight: 1.0
+Video Loss Weight: 1.5
+Gradient Accumulation: 64
+Learning Rate: 1e-4
+Train Batch Size: 2
+Number of Epochs: 128
+CSV Path: /home/work/kby_hgh/workspace/data/preprocessed_VGGSound_train_dataset_0318/New_VGGSound_0311.csv
+Spectrogram Dir: /home/work/kby_hgh/workspace/data/preprocessed_VGGSound_train_dataset_0318/preprocessed_VGGSound_train_spec_0310
+Video Dir: /home/work/kby_hgh/workspace/data/preprocessed_VGGSound_train_dataset_0318/preprocessed_VGGSound_train_videos_0313
+Sampling Rate: 16000
+Hop Size: 160
+Number of Workers: 4
+Date: 0325_1e4
+Number of GPU: 4
+Data Type: bf16
+Video LORA Checkpoint Path: /home/work/kby_hgh/video_lora_training_checkpoints_0213/checkpoint-step-16384/model.safetensors
+Audio LORA Checkpoint Path: /home/work/kby_hgh/GCP_BACKUP_0213/checkpoint-step-6400/model.safetensors
+Inference Save Path: /home/work/kby_hgh/MMG_Inferencce_folder
+Checkpoint Save Path: /home/work/kby_hgh/MMG_CHECKPOINT
+Inference Batch Size: 4
+Audio DDIM Eta: 0.0
+Video DDIM Eta: 0.0
+Number of Inference Steps: 25
+Audio Guidance Scale: 7.5
+Video Unconditional Guidance Scale: 12.0
+Eval Every: 8
+VGG CSV Path: /home/work/kby_hgh/vggsound_sparse_test_curated_final_0320/vggsound_sparse_curated_292.csv
+VGG GT Test Path: /home/work/kby_hgh/vggsound_sparse_test_curated_final_0320
+AVSync CSV Path: /home/work/kby_hgh/processed_vggsound_sparse_0218/avsync_test
+AVSync GT Test Path: /home/work/kby_hgh/processed_vggsound_sparse_0218/avsync_gt_test.csv
+=======================================================================
+[W325 06:48:32.131602292 socket.cpp:204] [c10d] The hostname of the client socket cannot be retrieved. err=-3
+[W325 06:48:32.135734877 socket.cpp:204] [c10d] The hostname of the client socket cannot be retrieved. err=-3
+[W325 06:48:41.079305279 socket.cpp:204] [c10d] The hostname of the client socket cannot be retrieved. err=-3
+[W325 06:48:41.083812691 socket.cpp:204] [c10d] The hostname of the client socket cannot be retrieved. err=-3
+[W325 06:48:41.087567619 socket.cpp:204] [c10d] The hostname of the client socket cannot be retrieved. err=-3
+[W325 06:48:41.094517221 socket.cpp:204] [c10d] The hostname of the client socket cannot be retrieved. err=-3
+[W325 06:48:41.103000488 socket.cpp:204] [c10d] The hostname of the client socket cannot be retrieved. err=-3
+[W325 06:48:41.110503280 socket.cpp:204] [c10d] The hostname of the client socket cannot be retrieved. err=-3
+[W325 06:48:41.116734357 socket.cpp:204] [c10d] The hostname of the client socket cannot be retrieved. err=-3
+[W325 06:48:41.120993098 socket.cpp:204] [c10d] The hostname of the client socket cannot be retrieved. err=-3
+An error occurred while trying to fetch auffusion/auffusion-full: auffusion/auffusion-full does not appear to have a file named diffusion_pytorch_model.safetensors.
+Defaulting to unsafe serialization. Pass `allow_pickle=False` to raise an error instead.
+The config attributes {'decay': 0.9999, 'inv_gamma': 1.0, 'min_decay': 0.0, 'optimization_step': 100000, 'power': 0.6666666666666666, 'update_after_step': 0, 'use_ema_warmup': False} were passed to UNet2DConditionModel, but are not expected and will be ignored. Please verify your config.json configuration file.
+An error occurred while trying to fetch auffusion/auffusion-full: auffusion/auffusion-full does not appear to have a file named diffusion_pytorch_model.safetensors.
+Defaulting to unsafe serialization. Pass `allow_pickle=False` to raise an error instead.
+The config attributes {'decay': 0.9999, 'inv_gamma': 1.0, 'min_decay': 0.0, 'optimization_step': 100000, 'power': 0.6666666666666666, 'update_after_step': 0, 'use_ema_warmup': False} were passed to UNet2DConditionModel, but are not expected and will be ignored. Please verify your config.json configuration file.
+An error occurred while trying to fetch auffusion/auffusion-full: auffusion/auffusion-full does not appear to have a file named diffusion_pytorch_model.safetensors.
+Defaulting to unsafe serialization. Pass `allow_pickle=False` to raise an error instead.
+The config attributes {'decay': 0.9999, 'inv_gamma': 1.0, 'min_decay': 0.0, 'optimization_step': 100000, 'power': 0.6666666666666666, 'update_after_step': 0, 'use_ema_warmup': False} were passed to UNet2DConditionModel, but are not expected and will be ignored. Please verify your config.json configuration file.
+An error occurred while trying to fetch auffusion/auffusion-full: auffusion/auffusion-full does not appear to have a file named diffusion_pytorch_model.safetensors.
+Defaulting to unsafe serialization. Pass `allow_pickle=False` to raise an error instead.
+The config attributes {'decay': 0.9999, 'inv_gamma': 1.0, 'min_decay': 0.0, 'optimization_step': 100000, 'power': 0.6666666666666666, 'update_after_step': 0, 'use_ema_warmup': False} were passed to UNet2DConditionModel, but are not expected and will be ignored. Please verify your config.json configuration file.
+Fetching 19 files:   0%|          | 0/19 [00:00<?, ?it/s]Fetching 19 files: 100%|██████████| 19/19 [00:00<00:00, 206991.63it/s]
+An error occurred while trying to fetch /home/work/.cache/huggingface/hub/models--auffusion--auffusion-full/snapshots/db5169f1890d4e5d926ac4c5524da0cc3d4b9a5b: Error no file named diffusion_pytorch_model.safetensors found in directory /home/work/.cache/huggingface/hub/models--auffusion--auffusion-full/snapshots/db5169f1890d4e5d926ac4c5524da0cc3d4b9a5b.
+Defaulting to unsafe serialization. Pass `allow_pickle=False` to raise an error instead.
+Fetching 19 files:   0%|          | 0/19 [00:00<?, ?it/s]Fetching 19 files: 100%|██████████| 19/19 [00:00<00:00, 212511.40it/s]
+An error occurred while trying to fetch /home/work/.cache/huggingface/hub/models--auffusion--auffusion-full/snapshots/db5169f1890d4e5d926ac4c5524da0cc3d4b9a5b: Error no file named diffusion_pytorch_model.safetensors found in directory /home/work/.cache/huggingface/hub/models--auffusion--auffusion-full/snapshots/db5169f1890d4e5d926ac4c5524da0cc3d4b9a5b.
+Defaulting to unsafe serialization. Pass `allow_pickle=False` to raise an error instead.
+Fetching 19 files:   0%|          | 0/19 [00:00<?, ?it/s]Fetching 19 files: 100%|██████████| 19/19 [00:00<00:00, 201241.86it/s]Fetching 19 files:   0%|          | 0/19 [00:00<?, ?it/s]
+Fetching 19 files: 100%|██████████| 19/19 [00:00<00:00, 178281.38it/s]
+An error occurred while trying to fetch /home/work/.cache/huggingface/hub/models--auffusion--auffusion-full/snapshots/db5169f1890d4e5d926ac4c5524da0cc3d4b9a5b: Error no file named diffusion_pytorch_model.safetensors found in directory /home/work/.cache/huggingface/hub/models--auffusion--auffusion-full/snapshots/db5169f1890d4e5d926ac4c5524da0cc3d4b9a5b.
+An error occurred while trying to fetch /home/work/.cache/huggingface/hub/models--auffusion--auffusion-full/snapshots/db5169f1890d4e5d926ac4c5524da0cc3d4b9a5b: Error no file named diffusion_pytorch_model.safetensors found in directory /home/work/.cache/huggingface/hub/models--auffusion--auffusion-full/snapshots/db5169f1890d4e5d926ac4c5524da0cc3d4b9a5b.
+Defaulting to unsafe serialization. Pass `allow_pickle=False` to raise an error instead.
+Defaulting to unsafe serialization. Pass `allow_pickle=False` to raise an error instead.
+You are using a model of type clip_text_model to instantiate a model of type . This is not supported for all configurations of models and can yield errors.
+You are using a model of type clip_text_model to instantiate a model of type . This is not supported for all configurations of models and can yield errors.
+You are using a model of type clip_text_model to instantiate a model of type . This is not supported for all configurations of models and can yield errors.
+You are using a model of type clip_text_model to instantiate a model of type . This is not supported for all configurations of models and can yield errors.
+INITIATED: ConditionAdapter: {'text_encoder_name': 'text_encoder_0', 'condition_adapter_name': 'condition_adapter_0', 'condition_type': 'clip-vit-large-patch14_text', 'pretrained_model_name_or_path': 'openai/clip-vit-large-patch14', 'condition_max_length': 77, 'condition_dim': 768, 'cross_attention_dim': 768}
+LOADED: ConditionAdapter from /home/work/.cache/huggingface/hub/models--auffusion--auffusion-full/snapshots/db5169f1890d4e5d926ac4c5524da0cc3d4b9a5b/condition_adapter_0
+INITIATED: ConditionAdapter: {'text_encoder_name': 'text_encoder_0', 'condition_adapter_name': 'condition_adapter_0', 'condition_type': 'clip-vit-large-patch14_text', 'pretrained_model_name_or_path': 'openai/clip-vit-large-patch14', 'condition_max_length': 77, 'condition_dim': 768, 'cross_attention_dim': 768}
+INITIATED: ConditionAdapter: {'text_encoder_name': 'text_encoder_0', 'condition_adapter_name': 'condition_adapter_0', 'condition_type': 'clip-vit-large-patch14_text', 'pretrained_model_name_or_path': 'openai/clip-vit-large-patch14', 'condition_max_length': 77, 'condition_dim': 768, 'cross_attention_dim': 768}
+INITIATED: ConditionAdapter: {'text_encoder_name': 'text_encoder_0', 'condition_adapter_name': 'condition_adapter_0', 'condition_type': 'clip-vit-large-patch14_text', 'pretrained_model_name_or_path': 'openai/clip-vit-large-patch14', 'condition_max_length': 77, 'condition_dim': 768, 'cross_attention_dim': 768}
+LOADED: ConditionAdapter from /home/work/.cache/huggingface/hub/models--auffusion--auffusion-full/snapshots/db5169f1890d4e5d926ac4c5524da0cc3d4b9a5b/condition_adapter_0
+LOADED: ConditionAdapter from /home/work/.cache/huggingface/hub/models--auffusion--auffusion-full/snapshots/db5169f1890d4e5d926ac4c5524da0cc3d4b9a5b/condition_adapter_0
+LOADED: ConditionAdapter from /home/work/.cache/huggingface/hub/models--auffusion--auffusion-full/snapshots/db5169f1890d4e5d926ac4c5524da0cc3d4b9a5b/condition_adapter_0
+AE working on z of shape (1, 4, 64, 64) = 16384 dimensions.
+INFO:root:Loaded ViT-H-14 model config.
+AE working on z of shape (1, 4, 64, 64) = 16384 dimensions.
+AE working on z of shape (1, 4, 64, 64) = 16384 dimensions.
+AE working on z of shape (1, 4, 64, 64) = 16384 dimensions.
+INFO:root:Loaded ViT-H-14 model config.
+INFO:root:Loaded ViT-H-14 model config.
+INFO:root:Loaded ViT-H-14 model config.
+Trainable parameters in audio_unet (LoRA): 25509888
+Trainable parameters in video_unet (LoRA): 106332160
+Trainable parameters in audio_unet (LoRA): 25509888
+Trainable parameters in video_unet (LoRA): 106332160
+Trainable parameters in audio_unet (LoRA): 25509888
+Trainable parameters in video_unet (LoRA): 106332160
+Trainable parameters in audio_unet (LoRA): 25509888
+Trainable parameters in video_unet (LoRA): 106332160
+Total params: 2706281352
+Trainable params: 433475968
+Epoch 1/128:   0%|          | 0/20253 [00:00<?, ?batch/s]Epoch 1/128:   0%|          | 0/20253 [00:00<?, ?batch/s]Epoch 1/128:   0%|          | 0/20253 [00:00<?, ?batch/s]wandb: Using wandb-core as the SDK backend.  Please refer to https://wandb.me/wandb-core for more information.
+wandb: Tracking run with wandb version 0.19.8
+wandb: W&B syncing is set to `offline` in this directory.  
+wandb: Run `wandb online` or set WANDB_MODE=online to enable cloud syncing.
+Epoch 1/128:   0%|          | 0/20253 [00:00<?, ?batch/s]Epoch 1/128:   0%|          | 1/20253 [00:35<202:06:10, 35.93s/batch]Epoch 1/128:   0%|          | 1/20253 [00:36<202:32:51, 36.00s/batch]Epoch 1/128:   0%|          | 1/20253 [00:36<203:01:10, 36.09s/batch]Epoch 1/128:   0%|          | 1/20253 [00:37<210:37:19, 37.44s/batch]Epoch 1/128:   0%|          | 2/20253 [00:39<94:05:18, 16.73s/batch] Epoch 1/128:   0%|          | 2/20253 [00:39<94:30:15, 16.80s/batch] Epoch 1/128:   0%|          | 2/20253 [00:39<94:41:23, 16.83s/batch] Epoch 1/128:   0%|          | 3/20253 [00:41<56:59:25, 10.13s/batch]Epoch 1/128:   0%|          | 3/20253 [00:41<57:11:41, 10.17s/batch]Epoch 1/128:   0%|          | 3/20253 [00:41<57:18:42, 10.19s/batch]Epoch 1/128:   0%|          | 2/20253 [00:42<103:30:08, 18.40s/batch]Epoch 1/128:   0%|          | 4/20253 [00:43<39:33:40,  7.03s/batch]Epoch 1/128:   0%|          | 4/20253 [00:43<39:40:28,  7.05s/batch]Epoch 1/128:   0%|          | 4/20253 [00:44<39:45:00,  7.07s/batch]Epoch 1/128:   0%|          | 3/20253 [00:44<62:04:35, 11.04s/batch] Epoch 1/128:   0%|          | 5/20253 [00:46<30:38:51,  5.45s/batch]Epoch 1/128:   0%|          | 5/20253 [00:46<30:42:06,  5.46s/batch]Epoch 1/128:   0%|          | 5/20253 [00:46<30:43:59,  5.46s/batch]

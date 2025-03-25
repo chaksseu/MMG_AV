@@ -1,7 +1,7 @@
 decord
 einops
 imageio
-numpy
+numpy==1.23.5
 omegaconf
 opencv_python
 pandas
@@ -11,9 +11,7 @@ PyYAML
 setuptools
 tqdm
 transformers
-moviepy
 av
-xformers
 gradio
 timm
 open_clip_torch==2.22.0
@@ -25,7 +23,8 @@ ipykernel
 librosa==0.9.2
 matplotlib
 scikit-learn
-scipy==1.11.1
+scipy
+#==1.11.1
 soundfile
 tokenizers
 imageio[ffmpeg]
@@ -36,4 +35,3 @@ laion-clap==1.1.6
 ffmpeg_quality_metrics
 pytorchvideo
 av
-mpi4py

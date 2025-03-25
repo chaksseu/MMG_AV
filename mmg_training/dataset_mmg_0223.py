@@ -151,9 +151,9 @@ if __name__ == "__main__":
     from tqdm import tqdm
 
     # 예시 경로 (사용 환경에 맞게 수정)
-    csv_path = "/workspace/vggsound_processing/New_VGGSound_0311.csv"
-    spectrogram_dir = "/workspace/data/preprocessed_VGGSound_train_spec_0310"
-    video_dir = "/workspace/data/preprocessed_VGGSound_train_videos_0313"
+    csv_path = "/home/work/kby_hgh/workspace/data/preprocessed_VGGSound_train_dataset_0318/New_VGGSound_0311.csv"
+    spectrogram_dir = "/home/work/kby_hgh/workspace/data/preprocessed_VGGSound_train_dataset_0318/preprocessed_VGGSound_train_spec_0310"
+    video_dir = "/home/work/kby_hgh/workspace/data/preprocessed_VGGSound_train_dataset_0318/preprocessed_VGGSound_train_videos_0313"
     split = "train"
 
     dataset = AudioVideoDataset(
@@ -170,7 +170,7 @@ if __name__ == "__main__":
         target_width=512,
     )
 
-    dataloader = DataLoader(dataset, batch_size=16, shuffle=False, num_workers=16)
+    dataloader = DataLoader(dataset, batch_size=16, shuffle=False, num_workers=0)
 
     for batch in tqdm(dataloader, desc="Processing Batches", unit="batch"):
         print("Spectrogram shape:", batch["spec"].shape)
