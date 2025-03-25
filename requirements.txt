@@ -35,3 +35,5 @@ laion-clap==1.1.6
 ffmpeg_quality_metrics
 pytorchvideo
 av
+tensorboard
+tensorboardX

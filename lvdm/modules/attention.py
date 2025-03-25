@@ -615,7 +615,9 @@ class LoRALinear(nn.Module):
         # LoRA A and B matrices
         self.lora_A = nn.Linear(in_features, r, bias=False)
         self.lora_B = nn.Linear(r, out_features, bias=False)
-        nn.init.kaiming_uniform_(self.lora_A.weight, a=math.sqrt(5))
+        
+        #nn.init.kaiming_uniform_(self.lora_A.weight, a=math.sqrt(5))
+        nn.init.zeros_(self.lora_A.weight)
         nn.init.zeros_(self.lora_B.weight)
         # Scaling
         self.scaling = self.lora_alpha / self.r

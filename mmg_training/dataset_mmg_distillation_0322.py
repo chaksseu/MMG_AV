@@ -154,9 +154,9 @@ class AudioVideoDataset(Dataset):
         video, _, _ = io.read_video(video_path, pts_unit="sec")  # shape: (T, H, W, C)
 
         # tv video 처리
-        tv_video_path = os.path.join(self.tv_video_dir, f"{tv_file_id}")
+        tv_video_path = os.path.join(self.tv_video_dir, f"{tv_file_id}.mp4")
         if not os.path.isfile(tv_video_path):
-            raise FileNotFoundError(f"Video file not found: {tv_video_path}")
+            raise FileNotFoundError(f"Video file not found: {tv_video_path}.mp4")
         tv_video, _, _ = io.read_video(tv_video_path, pts_unit="sec")  # shape: (T, H, W, C)
 
 

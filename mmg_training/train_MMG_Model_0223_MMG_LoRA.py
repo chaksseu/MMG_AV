@@ -60,6 +60,7 @@ from run_imagebind_score import evaluate_imagebind_score
 from run_av_align import evaluate_av_align_score
 
 
+from torch.utils.tensorboard import SummaryWriter  # <--- TensorBoard SummaryWriter 추가
 
 
 
@@ -113,6 +114,7 @@ def parse_args():
     parser.add_argument('--avsync_csv_path', type=str, default='/workspace/processed_vggsound_sparse_0218/avsync_test', help='Directory where outputs will be saved.')
     parser.add_argument('--avsync_gt_test_path', type=str, default='/workspace/processed_vggsound_sparse_0218/avsync_gt_test.csv', help='Directory where outputs will be saved.')
 
+    parser.add_argument('--tensorboard_log_dir', type=str, default='runs', help='TensorBoard log directory.')
 
     args = parser.parse_args()
     return args
@@ -792,6 +794,11 @@ def main():
 
     full_batch_size = args.num_gpu * args.gradient_accumulation * args.train_batch_size
 
+    writer = None
+    if accelerator.is_main_process:
+        writer = SummaryWriter(log_dir=args.tensorboard_log_dir)
+
+
     if accelerator.is_main_process:
         os.environ["WANDB_MODE"] = "offline"
         wandb.init(project="MMG_auffusion_videocrafter", name=f"{args.date}_lr_{args.learning_rate}_batch_{full_batch_size}")
@@ -887,9 +894,14 @@ def main():
                         avg_losses = sum(losses) / len(losses)
                         avg_losses_video = sum(losses_video) / len(losses_video)
                         avg_losses_audio = sum(losses_audio) / len(losses_audio)
-                        losses = []
-                        losses_video = []
-                        losses_audio = []
+
+
+                        # 텐서보드에 로그
+                        if writer is not None:
+                            writer.add_scalar("train/loss", avg_losses, global_step)
+                            writer.add_scalar("train/loss_audio", avg_losses_audio, global_step)
+                            writer.add_scalar("train/loss_video", avg_losses_video, global_step)
+                            writer.add_scalar("epoch", epoch, global_step)
 
                         wandb.log({
                             "train/loss": avg_losses,
@@ -898,6 +910,10 @@ def main():
                             "epoch": epoch,
                             "step": global_step
                         })
+
+                        losses = []
+                        losses_video = []
+                        losses_audio = []
 
                 # Save & Evaluate Checkpoints (step)
                 if (global_step+1) % args.eval_every == 0:
@@ -933,7 +949,13 @@ def main():
                     #         "eval/vgg_av_align": vgg_av_align,
                     #         "step": global_step
                     #     })
-
+                    # if accelerator.is_main_process and writer is not None:
+                    #     writer.add_scalar("eval/vgg_fad", vgg_fad, global_step)
+                    #     writer.add_scalar("eval/vgg_clap_avg", vgg_clap_avg, global_step)
+                    #     writer.add_scalar("eval/vgg_fvd", vgg_fvd, global_step)
+                    #     writer.add_scalar("eval/vgg_clip_avg", vgg_clip_avg, global_step)
+                    #     writer.add_scalar("eval/vgg_imagebind_score", vgg_imagebind_score, global_step)
+                    #     writer.add_scalar("eval/vgg_av_align", vgg_av_align, global_step)
 
             # # Save & Evaluate Checkpoints (epoch)
             # if (epoch+1) % args.eval_every == 0:
@@ -969,6 +991,9 @@ def main():
             #             "eval/vgg_av_align": vgg_av_align,
             #             "step": global_step
             #         })
+
+    if accelerator.is_main_process and writer is not None:
+        writer.close()
 
     print("Training Done.")
 

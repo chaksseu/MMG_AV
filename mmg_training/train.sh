@@ -1,7 +1,10 @@
 #!/bin/bash
 
 # ========================= 기본값 설정 =========================
-DATE="0325_1e4"
+DATE="0325_MMG"
+LOG_NAME="test_HJ"
+
+
 LEARNING_RATE=1e-4
 NUM_EPOCHS=128
 NUM_GPU=4
@@ -9,7 +12,10 @@ TRAIN_BATCH_SIZE=2 # 2
 GRADIENT_ACCUMULATION=64 # 256
 INFERENCE_BATCH_SIZE=4
 
-EVAL_EVERY=8
+EVAL_EVERY=10000
+
+TENSORBOARD_LOG_DIR="tensorboard/${DATE}_${LEARNING_RATE}_${LOG_NAME}"
+
 
 NUM_INFERENCE_STEPS=25
 DTYPE="bf16"
@@ -71,6 +77,7 @@ mkdir -p "$INFERENCE_SAVE_PATH"
 
 # ========================= 로깅(파라미터 확인) =========================
 echo "======================= Training Configuration ======================="
+echo "TENSORBOARD_LOG_DIR: $TENSORBOARD_LOG_DIR" 
 echo "Seed: $SEED"
 echo "Duration: $DURATION"
 echo "VideoCrafter Config: $VIDEOCRAFTER_CONFIG"
@@ -154,6 +161,7 @@ accelerate launch mmg_training/train_MMG_Model_0223_MMG_LoRA.py \
     --vgg_csv_path "$VGG_CSV_PATH" \
     --vgg_gt_test_path "$VGG_GT_TEST_PATH" \
     --avsync_csv_path "$AVSYNC_CSV_PATH" \
+    --tensorboard_log_dir "$TENSORBOARD_LOG_DIR" \
     --avsync_gt_test_path "$AVSYNC_GT_TEST_PATH" #\
 #    --cross_modal_checkpoint_path "$CROSS_MODAL_CHECKPOINT_PATH"
 

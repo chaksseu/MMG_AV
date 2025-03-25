@@ -20,5 +20,5 @@ pip install -r requirements.txt
 
 accelerate config
 
-# nano /home/work/miniconda3/envs/mmg_01/lib/python3.10/site-packages/pytorchvideo/transforms/augmentations.py
+# nano /home/work/miniconda3/envs/mmg/lib/python3.10/site-packages/pytorchvideo/transforms/augmentations.py
 # delete _tensor?

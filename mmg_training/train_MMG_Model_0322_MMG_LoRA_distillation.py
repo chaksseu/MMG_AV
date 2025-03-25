@@ -45,6 +45,7 @@ from safetensors.torch import load_file
 from transformers import AutoTokenizer
 from huggingface_hub import snapshot_download
 
+
 from dataset_mmg_distillation_0322 import AudioVideoDataset
 from mmg_inference.auffusion_pipe_functions_copy_0123 import (
     encode_audio_prompt,
@@ -59,6 +60,7 @@ from run_imagebind_score import evaluate_imagebind_score
 from run_av_align import evaluate_av_align_score
 
 
+from torch.utils.tensorboard import SummaryWriter  # <--- TensorBoard SummaryWriter 추가
 
 
 
@@ -121,6 +123,7 @@ def parse_args():
     parser.add_argument('--avsync_csv_path', type=str, default='/workspace/processed_vggsound_sparse_0218/avsync_test', help='Directory where outputs will be saved.')
     parser.add_argument('--avsync_gt_test_path', type=str, default='/workspace/processed_vggsound_sparse_0218/avsync_gt_test.csv', help='Directory where outputs will be saved.')
 
+    parser.add_argument('--tensorboard_log_dir', type=str, default='runs', help='TensorBoard log directory.')
 
     args = parser.parse_args()
     return args
@@ -671,9 +674,10 @@ def main():
         target_modules=["to_k", "to_q", "to_v", "to_out.0"],
     )
     audio_unet.add_adapter(lora_config)
-    teacher_audio_unet = load_accelerator_ckpt(audio_unet, args.audio_lora_ckpt_path)
 
-    for param in teacher_audio_unet.parameters():
+    # teacher_audio_unet = load_accelerator_ckpt(audio_unet, args.audio_lora_ckpt_path)
+
+    for param in audio_unet.parameters():
         param.requires_grad = False
 
     if not os.path.isdir(args.audio_model_name):
@@ -743,9 +747,9 @@ def main():
     video_model.to(device=device,dtype=dtype)
     video_unet = video_model.model.diffusion_model.eval()
     
-    teacher_video_unet = load_accelerator_ckpt(video_unet, args.video_lora_ckpt_path)
+    # teacher_video_unet = load_accelerator_ckpt(video_unet, args.video_lora_ckpt_path)
     
-    for param in teacher_video_unet.parameters():
+    for param in video_unet.parameters():
         param.requires_grad = False
 
     ## audio lora 및 video lora 불러오기 / cmt 제외 freeze 혹은 lora까지 freeze
@@ -756,7 +760,7 @@ def main():
         'device': device
     }
 
-    model = CrossModalCoupledUNet(teacher_audio_unet, teacher_video_unet, cross_modal_config)
+    model = CrossModalCoupledUNet(audio_unet, video_unet, cross_modal_config)
     ### cmcu_path = os.path.join(args.cross_modal_checkpoint_path, "model.safetensors")
     ### model = load_accelerator_ckpt(model, cmcu_path)
 
@@ -769,7 +773,7 @@ def main():
         print(f"Trainable params: {trainable_params}")
 
     optimizer = optim.AdamW(filter(lambda p: p.requires_grad, model.parameters()), lr=args.learning_rate)
-    model, optimizer, dataloader, teacher_audio_unet, teacher_video_unet = accelerator.prepare(model, optimizer, dataloader, teacher_audio_unet, teacher_video_unet)
+    model, optimizer, dataloader, audio_unet, video_unet = accelerator.prepare(model, optimizer, dataloader, audio_unet, video_unet)
 
     # audio_vae, audio_image_processor, audio_text_encoder_list, audio_adapter_list, 
 
@@ -809,7 +813,13 @@ def main():
 
     full_batch_size = args.num_gpu * args.gradient_accumulation * args.train_batch_size
 
+    # TensorBoard SummaryWriter (main process 에서만 실행)
+    writer = None
     if accelerator.is_main_process:
+        writer = SummaryWriter(log_dir=args.tensorboard_log_dir)
+
+    if accelerator.is_main_process:
+        os.environ["WANDB_MODE"] = "offline"
         wandb.init(project="MMG_Distillation_auffusion_videocrafter", name=f"{args.date}_lr_{args.learning_rate}_batch_{full_batch_size}")
     else:
         os.environ["WANDB_MODE"] = "offline"
@@ -932,14 +942,14 @@ def main():
                     )
 
 
-                    teacher_audio_output = teacher_audio_unet(
+                    teacher_audio_output = audio_unet(
                         ta_noised_audio_latents,
                         timesteps,
                         encoder_hidden_states=ta_audio_text_embed,
                         return_dict=False,
                     )[0]
 
-                    teacher_video_output = teacher_video_unet(
+                    teacher_video_output = video_unet(
                         tv_noised_video_latents,
                         timesteps,
                         context=tv_video_text_embed,
@@ -974,13 +984,16 @@ def main():
                         avg_losses_audio = sum(losses_audio) / len(losses_audio)
                         avg_losses_distill_audio = sum(losses_distill_audio) / len(losses_distill_audio)
                         avg_losses_distill_video = sum(losses_distill_video) / len(losses_distill_video)
+                    
                         
-                        losses = []
-                        losses_video = []
-                        losses_audio = []
-                        losses_distill_audio = []
-                        losses_distill_video = []
-                        
+                        # 텐서보드에 로그
+                        if writer is not None:
+                            writer.add_scalar("train/loss", avg_losses, global_step)
+                            writer.add_scalar("train/loss_audio", avg_losses_audio, global_step)
+                            writer.add_scalar("train/loss_video", avg_losses_video, global_step)
+                            writer.add_scalar("train/loss_ta_distill_audio", avg_losses_distill_audio, global_step)
+                            writer.add_scalar("train/loss_tv_distill_video", avg_losses_distill_video, global_step)
+                            writer.add_scalar("epoch", epoch, global_step)
 
                         wandb.log({
                             "train/loss": avg_losses,
@@ -991,6 +1004,13 @@ def main():
                             "epoch": epoch,
                             "step": global_step
                         })
+                        
+                        losses = []
+                        losses_video = []
+                        losses_audio = []
+                        losses_distill_audio = []
+                        losses_distill_video = []
+
 
                 # Save & Evaluate Checkpoints (step)
                 if (global_step+1) % args.eval_every == 0:
@@ -1027,6 +1047,14 @@ def main():
                             "step": global_step
                         })
 
+                    if accelerator.is_main_process and writer is not None:
+                        writer.add_scalar("eval/vgg_fad", vgg_fad, global_step)
+                        writer.add_scalar("eval/vgg_clap_avg", vgg_clap_avg, global_step)
+                        writer.add_scalar("eval/vgg_fvd", vgg_fvd, global_step)
+                        writer.add_scalar("eval/vgg_clip_avg", vgg_clip_avg, global_step)
+                        writer.add_scalar("eval/vgg_imagebind_score", vgg_imagebind_score, global_step)
+                        writer.add_scalar("eval/vgg_av_align", vgg_av_align, global_step)
+
 
             # # Save & Evaluate Checkpoints (epoch)
             # if (epoch+1) % args.eval_every == 0:
@@ -1062,6 +1090,9 @@ def main():
             #             "eval/vgg_av_align": vgg_av_align,
             #             "step": global_step
             #         })
+            
+    if accelerator.is_main_process and writer is not None:
+        writer.close()
 
     print("Training Done.")
 

@@ -1,14 +1,18 @@
 #!/bin/bash
 
 # ========================= 기본값 설정 =========================
-DATE="0322"
+DATE="0325_distill"
+LOG_NAME="test_HJ"
+
 LEARNING_RATE=1e-4
 NUM_EPOCHS=100
-NUM_GPU=1
+NUM_GPU=4
 TRAIN_BATCH_SIZE=2 # 2
-GRADIENT_ACCUMULATION=1 # 256
+GRADIENT_ACCUMULATION=64 # 256
 INFERENCE_BATCH_SIZE=4
-EVAL_EVERY=16000
+EVAL_EVERY=10000
+
+TENSORBOARD_LOG_DIR="tensorboard/${DATE}_${LEARNING_RATE}_${LOG_NAME}"
 
 NUM_INFERENCE_STEPS=25
 DTYPE="bf16"
@@ -24,17 +28,17 @@ FRAMES=40
 FPS=12.5
 AUDIO_LOSS_WEIGHT=1.0
 VIDEO_LOSS_WEIGHT=1.0
-TA_AUDIO_LOSS_WEIGHT=1.0
-TV_VIDEO_LOSS_WEIGHT=1.0
+TA_AUDIO_LOSS_WEIGHT=100.0
+TV_VIDEO_LOSS_WEIGHT=100.0
 
-CSV_PATH="/workspace/vggsound_processing/New_VGGSound_0311.csv" #"/workspace/processed_vggsound_sparse_0218/processed_vggsound_sparse_mmg.csv"
-SPECTROGRAM_DIR="/workspace/data/preprocessed_VGGSound_train_spec_0310" #"/workspace/processed_vggsound_sparse_0218/spec"
-VIDEO_DIR="/workspace/data/preprocessed_VGGSound_train_videos_0313" #"/workspace/processed_vggsound_sparse_0218/video"
+CSV_PATH="/home/work/kby_hgh/workspace/data/preprocessed_VGGSound_train_dataset_0318/New_VGGSound_0311.csv" #"/workspace/processed_vggsound_sparse_0218/processed_vggsound_sparse_mmg.csv"
+SPECTROGRAM_DIR="/home/work/kby_hgh/workspace/data/preprocessed_VGGSound_train_dataset_0318/preprocessed_VGGSound_train_spec_0310" #"/workspace/processed_vggsound_sparse_0218/spec"
+VIDEO_DIR="/home/work/kby_hgh/workspace/data/preprocessed_VGGSound_train_dataset_0318/preprocessed_VGGSound_train_videos_0313" #"/workspace/processed_vggsound_sparse_0218/video"
 
-TA_CSV_PATH="/workspace/data/MMG_TA_dataset_audiocaps_wavcaps/MMG_TA_dataset_filtered_0321.csv" #"/workspace/processed_vggsound_sparse_0218/processed_vggsound_sparse_mmg.csv"
-TA_SPECTROGRAM_DIR="/workspace/data/MMG_TA_dataset_audiocaps_wavcaps_spec_0320" #"/workspace/processed_vggsound_sparse_0218/spec"
-TV_CSV_PATH="/workspace/processed_OpenVid_0321.csv"   #"/workspace/processed_vggsound_sparse_0218/processed_vggsound_sparse_mmg.csv"
-TV_VIDEO_DIR="/workspace/data/preprocessed_openvid_videos_train_0318" #"/workspace/processed_vggsound_sparse_0218/video"
+TA_CSV_PATH="/home/work/kby_hgh/workspace/data/preprocessed_VGGSound_train_dataset_0318/New_VGGSound_0311.csv" #"/workspace/processed_vggsound_sparse_0218/processed_vggsound_sparse_mmg.csv"
+TA_SPECTROGRAM_DIR="/home/work/kby_hgh/workspace/data/preprocessed_VGGSound_train_dataset_0318/preprocessed_VGGSound_train_spec_0310" #"/workspace/processed_vggsound_sparse_0218/spec"
+TV_CSV_PATH="/home/work/kby_hgh/workspace/data/preprocessed_VGGSound_train_dataset_0318/New_VGGSound_0311.csv"   #"/workspace/processed_vggsound_sparse_0218/processed_vggsound_sparse_mmg.csv"
+TV_VIDEO_DIR="/home/work/kby_hgh/workspace/data/preprocessed_VGGSound_train_dataset_0318/preprocessed_VGGSound_train_videos_0313"
 
 
 SAMPLING_RATE=16000
@@ -80,6 +84,7 @@ mkdir -p "$INFERENCE_SAVE_PATH"
 
 # ========================= 로깅(파라미터 확인) =========================
 echo "======================= Training Configuration ======================="
+echo "TENSORBOARD_LOG_DIR: $TENSORBOARD_LOG_DIR" 
 echo "Seed: $SEED"
 echo "Duration: $DURATION"
 echo "VideoCrafter Config: $VIDEOCRAFTER_CONFIG"
@@ -175,6 +180,7 @@ accelerate launch mmg_training/train_MMG_Model_0322_MMG_LoRA_distillation.py \
     --vgg_gt_test_path "$VGG_GT_TEST_PATH" \
     --avsync_csv_path "$AVSYNC_CSV_PATH" \
     --avsync_gt_test_path "$AVSYNC_GT_TEST_PATH" \
+    --tensorboard_log_dir "$TENSORBOARD_LOG_DIR" \
     --cross_modal_checkpoint_path "$CROSS_MODAL_CHECKPOINT_PATH"
 
 # ========================= 종료 메시지 =========================
