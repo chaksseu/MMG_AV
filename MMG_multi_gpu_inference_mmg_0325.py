@@ -733,6 +733,7 @@ def run_inference(
         video_pipeline.eval()
         video_unet = video_pipeline.model.diffusion_model.to(device, dtype)
 
+
         # Model directory
         model_dir = args.audio_model_name
         if not os.path.isdir(model_dir):
@@ -752,6 +753,7 @@ def run_inference(
             target_modules=["to_k", "to_q", "to_v", "to_out.0"],
         )
         audio_unet.add_adapter(lora_config)
+
 
 
         # Load MMG components
@@ -790,17 +792,16 @@ def run_inference(
         else:
             pbar = None
 
+
+
         for batch_idx in range(num_batches):
             start_idx = batch_idx * args.inference_batch_size
             end_idx = min(start_idx + args.inference_batch_size, total_prompts)
             current_batch_size = end_idx - start_idx
             current_prompts = prompt_sublist[start_idx:end_idx]
 
-
-            # print("################################################################")
             # for i in range(len(current_prompts)):
             #     print(current_prompts[i])
-            # print("################################################################")
 
 
             video_noise_shape = [current_batch_size, channels, frames, latent_h, latent_w]
@@ -835,11 +836,15 @@ def run_inference(
             audio_scheduler.set_timesteps(args.num_inference_steps, device=device)
             audio_timesteps = audio_scheduler.timesteps
 
+
+
+
+
             # Encode audio prompts
             audio_prompt_embeds = encode_audio_prompt(
                 text_encoders, tokenizers, adapters,
                 max_length=77,
-                dtype=dtype,
+                dtype=video_latents.dtype,
                 prompt=current_prompts,
                 device=device,
                 do_classifier_free_guidance=do_audio_cfg
@@ -847,7 +852,7 @@ def run_inference(
 
             # Initialize audio latents
             audio_latent_shape = (current_batch_size, 4, 32, latent_time)
-            audio_latents = randn_tensor(audio_latent_shape, generator=generator, device=device, dtype=dtype)
+            audio_latents = randn_tensor(audio_latent_shape, generator=generator, device=device, dtype=video_latents.dtype)
             audio_latents *= audio_scheduler.init_noise_sigma
 
             extra_step_kwargs = prepare_extra_step_kwargs(audio_scheduler, generator, args.audio_ddim_eta)
@@ -855,17 +860,18 @@ def run_inference(
             total_steps = timesteps.shape[0]
             time_range = np.flip(timesteps)
 
+
             # Denoising loop
             for step_idx, (video_step, audio_step) in enumerate(zip(time_range, audio_timesteps)):
                 index = total_steps - step_idx - 1
-                video_ts = torch.full((current_batch_size,), video_step, device=device, dtype=dtype)
+                video_ts = torch.full((current_batch_size,), video_step, device=device, dtype=video_latents.dtype)
 
                 audio_latents
 
 
                 # CFG for audio/video
                 if do_audio_cfg or do_video_cfg:
-                    neg_audio_prompt_embeds = torch.zeros_like(audio_prompt_embeds, dtype=dtype, device=device)
+                    neg_audio_prompt_embeds = torch.zeros_like(audio_prompt_embeds, dtype=video_latents.dtype, device=device)
                     audio_uncond_input = audio_scheduler.scale_model_input(audio_latents, audio_step)
                     audio_out_uncond, video_out_uncond = cross_modal_model(
                         audio_latents=audio_uncond_input,
@@ -925,6 +931,7 @@ def run_inference(
                     video_latents = a_prev.sqrt() * pred_x0 + dir_xt + noise
 
             # Decode audio
+
             audio_recon_image = vae.decode(audio_latents / vae.config.scaling_factor, return_dict=False)[0]
             do_denormalize = [True] * audio_recon_image.shape[0]
             audio_recon_image = image_processor.postprocess(audio_recon_image, output_type="pt", do_denormalize=do_denormalize)
@@ -934,7 +941,7 @@ def run_inference(
                 spectrogram = denormalize_spectrogram(img)
                 audio_waveform = vocoder.inference(spectrogram, lengths=audio_length)[0]
                 audios.append(audio_waveform)
-
+            
             # Decode video
             video_frames = video_pipeline.decode_first_stage_2DAE(video_latents)
 

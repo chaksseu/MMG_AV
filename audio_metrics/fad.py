@@ -14,6 +14,8 @@ from tqdm import tqdm
 from multiprocessing.dummy import Pool as ThreadPool
 from utils.load_mel import WaveDataset
 from torch.utils.data import DataLoader
+from audio_metrics.torchvggish.vggish import VGGish
+
 
 class FrechetAudioDistance:
     def __init__(
@@ -36,11 +38,27 @@ class FrechetAudioDistance:
         Load the VGGish model from torch hub.
         """
         # map_location을 self.device로 설정해 모델이 CPU 또는 GPU 원하는 곳으로 로드되도록 함
-        self.model = torch.hub.load(
-            "harritaylor/torchvggish",
-            "vggish",
-            device=self.device
-        )
+        # self.model = torch.hub.load(
+        #     "harritaylor/torchvggish",
+        #     "vggish",
+        #     device=self.device
+        # )
+
+
+
+        dependencies = ['torch', 'numpy', 'resampy', 'soundfile']
+
+
+        model_urls = {
+            'vggish': 'https://github.com/harritaylor/torchvggish/'
+                    'releases/download/v0.1/vggish-10086976.pth',
+            'pca': 'https://github.com/harritaylor/torchvggish/'
+                'releases/download/v0.1/vggish_pca_params-970ea276.pth'
+        }
+
+        self.model = VGGish(urls=model_urls)
+
+
         if not use_pca:
             self.model.postprocess = False
 

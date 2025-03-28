@@ -53,7 +53,7 @@ from mmg_inference.auffusion_pipe_functions_copy_0123 import (
     import_model_class_from_model_name_or_path,
     retrieve_latents
 )
-from MMG_multi_gpu_inference_mmg_0223 import run_inference
+from MMG_multi_gpu_inference_mmg_0325 import run_inference
 from run_audio_eval import evaluate_audio_metrics
 from run_video_eval import evaluate_video_metrics
 from run_imagebind_score import evaluate_imagebind_score
@@ -1014,7 +1014,7 @@ def main():
 
                 # Save & Evaluate Checkpoints (step)
                 if (global_step+1) % args.eval_every == 0:
-                    ckpt_dir = os.path.join(args.ckpt_save_path, f"checkpint_{args.date}/checkpoint-step-{global_step}")
+                    ckpt_dir = os.path.join(args.ckpt_save_path, f"checkpint_{args.tensorboard_log_dir}/checkpoint-step-{global_step}")
                     # save checkpoint
                     if accelerator.is_main_process:
                         accelerator.save_state(ckpt_dir)
@@ -1032,7 +1032,7 @@ def main():
                         accelerator=accelerator,
                         target_csv_files=args.vgg_csv_path,
                         target_path=args.vgg_gt_test_path,
-                        eval_id=f"{args.date}_step_{global_step}_vggsound_sparse",
+                        eval_id=f"{args.tensorboard_log_dir}_step_{global_step}_vggsound_sparse",
                         ckpt_dir=safetensor_path
                     )
 
@@ -1090,7 +1090,7 @@ def main():
             #             "eval/vgg_av_align": vgg_av_align,
             #             "step": global_step
             #         })
-            
+
     if accelerator.is_main_process and writer is not None:
         writer.close()
 

@@ -4,7 +4,7 @@ from tensorboard.backend.event_processing.event_accumulator import EventAccumula
 import matplotlib.pyplot as plt
 
 # 로그 경로 설정
-log_dir = 'tensorboard/0325_1e4_1e-4_test_HJ'
+log_dir = 'tensorboard/0325_MMG_1e-5_HJ_8gpu'
 
 # 이벤트 로딩
 event_acc = EventAccumulator(log_dir)

@@ -2,6 +2,7 @@ import os
 import sys
 sys.path.append(os.path.join(os.path.dirname(__file__), '../'))
 
+
 import argparse
 import json
 import random
@@ -53,7 +54,7 @@ from mmg_inference.auffusion_pipe_functions_copy_0123 import (
     import_model_class_from_model_name_or_path,
     retrieve_latents
 )
-from MMG_multi_gpu_inference_mmg_0223 import run_inference
+from MMG_multi_gpu_inference_mmg_0325 import run_inference
 from run_audio_eval import evaluate_audio_metrics
 from run_video_eval import evaluate_video_metrics
 from run_imagebind_score import evaluate_imagebind_score
@@ -166,6 +167,7 @@ def evaluate_model(args, accelerator, target_csv_files, eval_id, target_path, ck
     video_target_path = os.path.join(target_path, "video")
 
     inference_save_path = os.path.join(args.inference_save_path, eval_id)
+
     audio_inference_path = os.path.join(inference_save_path, "audio")
     video_inference_path = os.path.join(inference_save_path, "video")
 
@@ -193,41 +195,41 @@ def evaluate_model(args, accelerator, target_csv_files, eval_id, target_path, ck
     # MMG_EVAL
     with torch.no_grad():
         accelerator.wait_for_everyone()
-        fad, clap_avg, fvd, clip_avg= 0.0, 0.0, 0.0, 0.0
+        fad, clap_avg, fvd, clip_avg, imagebind_score, av_align= 0.0, 0.0, 0.0, 0.0, 0.0, 0.0
 
-        if accelerator.is_main_process:
-            fad, clap_avg, _ = evaluate_audio_metrics(
-                preds_folder=audio_inference_path,
-                target_folder=audio_target_path,
-                metrics=['FAD','CLAP'],
-                clap_model=1,
-                device=accelerator.device
-            )
-        accelerator.wait_for_everyone()
+        # if accelerator.is_main_process:
+        #     fad, clap_avg, _ = evaluate_audio_metrics(
+        #         preds_folder=audio_inference_path,
+        #         target_folder=audio_target_path,
+        #         metrics=['FAD','CLAP'],
+        #         clap_model=1,
+        #         device=accelerator.device
+        #     )
+        # accelerator.wait_for_everyone()
 
-        if accelerator.is_main_process:
-            fvd, clip_avg = evaluate_video_metrics(
-                preds_folder=video_inference_path,
-                target_folder=video_target_path,
-                metrics=['fvd','clip'],
-                device=accelerator.device,
-                num_frames=args.frames
-            )
-        accelerator.wait_for_everyone()
+        # if accelerator.is_main_process:
+        #     fvd, clip_avg = evaluate_video_metrics(
+        #         preds_folder=video_inference_path,
+        #         target_folder=video_target_path,
+        #         metrics=['fvd','clip'],
+        #         device=accelerator.device,
+        #         num_frames=args.frames
+        #     )
+        # accelerator.wait_for_everyone()
 
-        if accelerator.is_main_process:
-            imagebind_score = evaluate_imagebind_score(
-                inference_save_path=inference_save_path,
-                device=accelerator.device
-            )
-        accelerator.wait_for_everyone()
+        # if accelerator.is_main_process:
+        #     imagebind_score = evaluate_imagebind_score(
+        #         inference_save_path=inference_save_path,
+        #         device=accelerator.device
+        #     )
+        # accelerator.wait_for_everyone()
 
-        if accelerator.is_main_process:
-            av_align = evaluate_av_align_score(
-                audio_inference_path=audio_inference_path,
-                video_inference_path=video_inference_path
-            )
-        accelerator.wait_for_everyone()
+        # if accelerator.is_main_process:
+        #     av_align = evaluate_av_align_score(
+        #         audio_inference_path=audio_inference_path,
+        #         video_inference_path=video_inference_path
+        #     )
+        # accelerator.wait_for_everyone()
 
         # CAM_SCORE
         # if accelerator.is_main_process:
@@ -766,22 +768,23 @@ def main():
     # ====== 체크포인트에서 resume하는 부분 추가 ======
     start_epoch = 0
     global_step = 0
-    # resume_batch_idx = 0
-    # if args.cross_modal_checkpoint_path is not None:
-    #     # accelerator가 저장했던 전체 상태를 로드합니다.
-    #     accelerator.load_state(args.cross_modal_checkpoint_path)
-    #     training_state_path = os.path.join(args.cross_modal_checkpoint_path, "training_state.json")
-    #     if os.path.exists(training_state_path):
-    #         with open(training_state_path, "r") as f:
-    #             training_state = json.load(f)
-    #         global_step = training_state.get("global_step", 0)
-    #         global_step -= 16
-    #         # 마지막 저장된 에폭 이후부터 재개하도록 (+1)
-    #         start_epoch = training_state.get("epoch", 0) + 1
-    #         resume_batch_idx = global_step
-    #         print(f"체크포인트로부터 학습 재개: 에폭 {start_epoch}부터, 글로벌 스텝 {global_step}")
-    #     else:
-    #         print("체크포인트 내 training_state.json 파일을 찾을 수 없어, 새롭게 시작합니다.")
+
+    resume_batch_idx = 0
+    if args.cross_modal_checkpoint_path is not None:
+        # accelerator가 저장했던 전체 상태를 로드합니다.
+        accelerator.load_state(args.cross_modal_checkpoint_path)
+        training_state_path = os.path.join(args.cross_modal_checkpoint_path, "training_state.json")
+        if os.path.exists(training_state_path):
+            with open(training_state_path, "r") as f:
+                training_state = json.load(f)
+            global_step = training_state.get("global_step", 0)
+            global_step -= 16
+            # 마지막 저장된 에폭 이후부터 재개하도록 (+1)
+            start_epoch = training_state.get("epoch", 0) + 1
+            resume_batch_idx = global_step
+            print(f"체크포인트로부터 학습 재개: 에폭 {start_epoch}부터, 글로벌 스텝 {global_step}")
+        else:
+            print("체크포인트 내 training_state.json 파일을 찾을 수 없어, 새롭게 시작합니다.")
     # =================================================
 
 
@@ -917,7 +920,7 @@ def main():
 
                 # Save & Evaluate Checkpoints (step)
                 if (global_step+1) % args.eval_every == 0:
-                    ckpt_dir = os.path.join(args.ckpt_save_path, f"checkpint_{args.date}/checkpoint-step-{global_step}")
+                    ckpt_dir = os.path.join(args.ckpt_save_path, f"checkpint_{args.tensorboard_log_dir}/checkpoint-step-{global_step}")
                     # save checkpoint
                     if accelerator.is_main_process:
                         accelerator.save_state(ckpt_dir)
@@ -930,32 +933,32 @@ def main():
 
                     safetensor_path = os.path.join(ckpt_dir, "model.safetensors")
                     # evaluate model
-                    # vgg_fad, vgg_clap_avg, vgg_fvd, vgg_clip_avg, vgg_imagebind_score, vgg_av_align = evaluate_model(
-                    #     args=args,
-                    #     accelerator=accelerator,
-                    #     target_csv_files=args.vgg_csv_path,
-                    #     target_path=args.vgg_gt_test_path,
-                    #     eval_id=f"{args.date}_step_{global_step}_vggsound_sparse",
-                    #     ckpt_dir=safetensor_path
-                    # )
+                    vgg_fad, vgg_clap_avg, vgg_fvd, vgg_clip_avg, vgg_imagebind_score, vgg_av_align = evaluate_model(
+                        args=args,
+                        accelerator=accelerator,
+                        target_csv_files=args.vgg_csv_path,
+                        target_path=args.vgg_gt_test_path,
+                        eval_id=f"{args.tensorboard_log_dir}_step_{global_step}_vggsound_sparse",
+                        ckpt_dir=safetensor_path
+                    )
 
-                    # if accelerator.is_main_process:
-                    #     wandb.log({
-                    #         "eval/vgg_fad": vgg_fad,
-                    #         "eval/vgg_clap_avg": vgg_clap_avg,
-                    #         "eval/vgg_fvd": vgg_fvd,
-                    #         "eval/vgg_clip_avg": vgg_clip_avg,
-                    #         "eval/vgg_imagebind_score": vgg_imagebind_score,
-                    #         "eval/vgg_av_align": vgg_av_align,
-                    #         "step": global_step
-                    #     })
-                    # if accelerator.is_main_process and writer is not None:
-                    #     writer.add_scalar("eval/vgg_fad", vgg_fad, global_step)
-                    #     writer.add_scalar("eval/vgg_clap_avg", vgg_clap_avg, global_step)
-                    #     writer.add_scalar("eval/vgg_fvd", vgg_fvd, global_step)
-                    #     writer.add_scalar("eval/vgg_clip_avg", vgg_clip_avg, global_step)
-                    #     writer.add_scalar("eval/vgg_imagebind_score", vgg_imagebind_score, global_step)
-                    #     writer.add_scalar("eval/vgg_av_align", vgg_av_align, global_step)
+                    if accelerator.is_main_process:
+                        wandb.log({
+                            "eval/vgg_fad": vgg_fad,
+                            "eval/vgg_clap_avg": vgg_clap_avg,
+                            "eval/vgg_fvd": vgg_fvd,
+                            "eval/vgg_clip_avg": vgg_clip_avg,
+                            "eval/vgg_imagebind_score": vgg_imagebind_score,
+                            "eval/vgg_av_align": vgg_av_align,
+                            "step": global_step
+                        })
+                    if accelerator.is_main_process and writer is not None:
+                        writer.add_scalar("eval/vgg_fad", vgg_fad, global_step)
+                        writer.add_scalar("eval/vgg_clap_avg", vgg_clap_avg, global_step)
+                        writer.add_scalar("eval/vgg_fvd", vgg_fvd, global_step)
+                        writer.add_scalar("eval/vgg_clip_avg", vgg_clip_avg, global_step)
+                        writer.add_scalar("eval/vgg_imagebind_score", vgg_imagebind_score, global_step)
+                        writer.add_scalar("eval/vgg_av_align", vgg_av_align, global_step)
 
             # # Save & Evaluate Checkpoints (epoch)
             # if (epoch+1) % args.eval_every == 0:

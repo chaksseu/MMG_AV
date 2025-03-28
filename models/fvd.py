@@ -119,6 +119,7 @@ import numpy as np
 def compute_stats(feats: np.ndarray) -> Tuple[np.ndarray, np.ndarray]:
     mu = feats.mean(axis=0) # [d]
     sigma = np.cov(feats, rowvar=False) # [d, d]
+
     return mu, sigma
 
 

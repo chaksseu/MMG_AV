@@ -54,6 +54,7 @@ def calculate_fvd(videos1, videos2, calculate_per_frame, calculate_final, device
 
     feats1 = get_fvd_feats(videos1, i3d=i3d, device=device)
     feats2 = get_fvd_feats(videos2, i3d=i3d, device=device)
+
     fvd_results[f'final'] = frechet_distance(feats1, feats2)
 
     result = {

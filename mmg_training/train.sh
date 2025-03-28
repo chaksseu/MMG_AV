@@ -1,16 +1,16 @@
 #!/bin/bash
 
 # ========================= 기본값 설정 =========================
-DATE="0325_MMG"
-LOG_NAME="test_HJ"
+DATE="0326_MMG"
+LOG_NAME="HJ_8gpu_continue"
 
 
-LEARNING_RATE=1e-4
+LEARNING_RATE=1e-5
 NUM_EPOCHS=128
-NUM_GPU=4
+NUM_GPU=8
 TRAIN_BATCH_SIZE=2 # 2
-GRADIENT_ACCUMULATION=64 # 256
-INFERENCE_BATCH_SIZE=4
+GRADIENT_ACCUMULATION=32 # 256
+INFERENCE_BATCH_SIZE=2
 
 EVAL_EVERY=10000
 
@@ -38,7 +38,7 @@ SAMPLING_RATE=16000
 HOP_SIZE=160
 NUM_WORKERS=4
 
-# CROSS_MODAL_CHECKPOINT_PATH="/workspace/MMG_CHECKPOINT/checkpint_0319/checkpoint-step-111999"
+CROSS_MODAL_CHECKPOINT_PATH="/home/work/kby_hgh/MMG_CHECKPOINT/checkpint_tensorboard/0325_MMG_1e-5_HJ_8gpu/checkpoint-step-19999"
 VIDEO_LORA_CKPT_PATH="/home/work/kby_hgh/video_lora_training_checkpoints_0213/checkpoint-step-16384/model.safetensors"
 AUDIO_LORA_CKPT_PATH="/home/work/kby_hgh/GCP_BACKUP_0213/checkpoint-step-6400/model.safetensors"
 INFERENCE_SAVE_PATH="/home/work/kby_hgh/MMG_Inferencce_folder"
@@ -102,7 +102,7 @@ echo "Number of Workers: $NUM_WORKERS"
 echo "Date: $DATE"
 echo "Number of GPU: $NUM_GPU"
 echo "Data Type: $DTYPE"
-# echo "Cross Modal Checkpoint Path: $CROSS_MODAL_CHECKPOINT_PATH"
+echo "Cross Modal Checkpoint Path: $CROSS_MODAL_CHECKPOINT_PATH"
 echo "Video LORA Checkpoint Path: $VIDEO_LORA_CKPT_PATH"
 echo "Audio LORA Checkpoint Path: $AUDIO_LORA_CKPT_PATH"
 echo "Inference Save Path: $INFERENCE_SAVE_PATH"
@@ -162,8 +162,8 @@ accelerate launch mmg_training/train_MMG_Model_0223_MMG_LoRA.py \
     --vgg_gt_test_path "$VGG_GT_TEST_PATH" \
     --avsync_csv_path "$AVSYNC_CSV_PATH" \
     --tensorboard_log_dir "$TENSORBOARD_LOG_DIR" \
-    --avsync_gt_test_path "$AVSYNC_GT_TEST_PATH" #\
-#    --cross_modal_checkpoint_path "$CROSS_MODAL_CHECKPOINT_PATH"
+    --avsync_gt_test_path "$AVSYNC_GT_TEST_PATH" \
+   --cross_modal_checkpoint_path "$CROSS_MODAL_CHECKPOINT_PATH"
 
 # ========================= 종료 메시지 =========================
 if [ $? -eq 0 ]; then

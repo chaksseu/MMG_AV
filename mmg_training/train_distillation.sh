@@ -2,7 +2,7 @@
 
 # ========================= 기본값 설정 =========================
 DATE="0325_distill"
-LOG_NAME="test_HJ"
+LOG_NAME="test_HJ_1013"
 
 LEARNING_RATE=1e-4
 NUM_EPOCHS=100
@@ -10,7 +10,7 @@ NUM_GPU=4
 TRAIN_BATCH_SIZE=2 # 2
 GRADIENT_ACCUMULATION=64 # 256
 INFERENCE_BATCH_SIZE=4
-EVAL_EVERY=10000
+EVAL_EVERY=32
 
 TENSORBOARD_LOG_DIR="tensorboard/${DATE}_${LEARNING_RATE}_${LOG_NAME}"
 
@@ -45,19 +45,25 @@ SAMPLING_RATE=16000
 HOP_SIZE=160
 NUM_WORKERS=4
 
+VIDEO_LORA_CKPT_PATH="/home/work/kby_hgh/video_lora_training_checkpoints_0213/checkpoint-step-16384/model.safetensors"
+AUDIO_LORA_CKPT_PATH="/home/work/kby_hgh/GCP_BACKUP_0213/checkpoint-step-6400/model.safetensors"
+INFERENCE_SAVE_PATH="/home/work/kby_hgh/MMG_Inferencce_folder"
+CKPT_SAVE_PATH="/home/work/kby_hgh/MMG_CHECKPOINT"
+
+
 CROSS_MODAL_CHECKPOINT_PATH="/workspace/MMG_CHECKPOINT/checkpint_0313/checkpoint-step-79999"
-VIDEO_LORA_CKPT_PATH="/workspace/video_lora_training_checkpoints_0213/checkpoint-step-16384/model.safetensors"
-AUDIO_LORA_CKPT_PATH="/workspace/GCP_BACKUP_0213/checkpoint-step-6400/model.safetensors"
-INFERENCE_SAVE_PATH="/workspace/MMG_Inferencce_folder"
-CKPT_SAVE_PATH="/workspace/MMG_CHECKPOINT"
+VIDEO_LORA_CKPT_PATH="/home/work/kby_hgh/video_lora_training_checkpoints_0213/checkpoint-step-16384/model.safetensors"
+AUDIO_LORA_CKPT_PATH="/home/work/kby_hgh/GCP_BACKUP_0213/checkpoint-step-6400/model.safetensors"
+INFERENCE_SAVE_PATH="/home/work/kby_hgh/MMG_Inferencce_folder"
+CKPT_SAVE_PATH="/home/work/kby_hgh/MMG_CHECKPOINT"
 AUDIO_DDIM_ETA=0.0
 VIDEO_DDIM_ETA=0.0
 AUDIO_GUIDANCE_SCALE=7.5
 VIDEO_UNCONDITIONAL_GUIDANCE_SCALE=12.0
-VGG_CSV_PATH="/workspace/vggsound_sparse_curated_292.csv"
-VGG_GT_TEST_PATH="/workspace/vggsound_sparse_test_curated_final"
-AVSYNC_CSV_PATH="/workspace/processed_vggsound_sparse_0218/avsync_test"
-AVSYNC_GT_TEST_PATH="/workspace/processed_vggsound_sparse_0218/avsync_gt_test.csv"
+VGG_CSV_PATH="/home/work/kby_hgh/vggsound_sparse_test_curated_final_0320/vggsound_sparse_curated_292.csv"
+VGG_GT_TEST_PATH="/home/work/kby_hgh/vggsound_sparse_test_curated_final_0320"
+AVSYNC_CSV_PATH="/home/work/kby_hgh/processed_vggsound_sparse_0218/avsync_test"
+AVSYNC_GT_TEST_PATH="/home/work/kby_hgh/processed_vggsound_sparse_0218/avsync_gt_test.csv"
 
 # ========================= 디렉토리 확인 및 생성 =========================
 # CSV 파일 체크
