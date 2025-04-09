@@ -1,0 +1,274 @@
+[W409 02:56:34.034982551 socket.cpp:204] [c10d] The hostname of the client socket cannot be retrieved. err=-3
+[W409 02:56:34.038192208 socket.cpp:204] [c10d] The hostname of the client socket cannot be retrieved. err=-3
+[W409 02:56:43.996745513 socket.cpp:204] [c10d] The hostname of the client socket cannot be retrieved. err=-3
+[W409 02:56:43.004775733 socket.cpp:204] [c10d] The hostname of the client socket cannot be retrieved. err=-3
+[W409 02:56:45.330916460 socket.cpp:204] [c10d] The hostname of the client socket cannot be retrieved. err=-3
+[W409 02:56:45.334114705 socket.cpp:204] [c10d] The hostname of the client socket cannot be retrieved. err=-3
+[W409 02:56:45.691666198 socket.cpp:204] [c10d] The hostname of the client socket cannot be retrieved. err=-3
+[W409 02:56:45.694473882 socket.cpp:204] [c10d] The hostname of the client socket cannot be retrieved. err=-3
+[W409 02:56:45.919825139 socket.cpp:204] [c10d] The hostname of the client socket cannot be retrieved. err=-3
+[W409 02:56:45.926644037 socket.cpp:204] [c10d] The hostname of the client socket cannot be retrieved. err=-3
+[W409 02:56:45.017977212 socket.cpp:204] [c10d] The hostname of the client socket cannot be retrieved. err=-3
+[W409 02:56:45.020901280 socket.cpp:204] [c10d] The hostname of the client socket cannot be retrieved. err=-3
+[W409 02:56:45.030044640 socket.cpp:204] [c10d] The hostname of the client socket cannot be retrieved. err=-3
+[W409 02:56:45.033438000 socket.cpp:204] [c10d] The hostname of the client socket cannot be retrieved. err=-3
+[W409 02:56:45.048768837 socket.cpp:204] [c10d] The hostname of the client socket cannot be retrieved. err=-3
+[W409 02:56:45.051935527 socket.cpp:204] [c10d] The hostname of the client socket cannot be retrieved. err=-3
+[W409 02:56:45.053517961 socket.cpp:204] [c10d] The hostname of the client socket cannot be retrieved. err=-3
+[W409 02:56:45.057060498 socket.cpp:204] [c10d] The hostname of the client socket cannot be retrieved. err=-3
+[rank: 6] Seed set to 42
+Start Inference
+[rank: 6] Seed set to 48
+[rank: 2] Seed set to 42
+Start Inference
+[rank: 2] Seed set to 44
+[rank: 0] Seed set to 42
+Start Inference
+[rank: 0] Seed set to 42
+[rank: 7] Seed set to 42
+Start Inference
+[rank: 7] Seed set to 49
+[rank: 3] Seed set to 42
+Start Inference
+[rank: 3] Seed set to 45
+[rank: 5] Seed set to 42
+Start Inference
+[rank: 4] Seed set to 42
+[rank: 5] Seed set to 47
+Start Inference
+[rank: 4] Seed set to 46
+[rank: 1] Seed set to 42
+Start Inference
+[rank: 1] Seed set to 43
+AE working on z of shape (1, 4, 64, 64) = 16384 dimensions.
+AE working on z of shape (1, 4, 64, 64) = 16384 dimensions.
+WARNING:py.warnings:/home/work/miniconda3/envs/mmg/lib/python3.10/site-packages/timm/models/layers/__init__.py:48: FutureWarning: Importing from timm.models.layers is deprecated, please import via timm.layers
+  warnings.warn(f"Importing from {__name__} is deprecated, please import via timm.layers", FutureWarning)
+
+INFO:root:Loaded ViT-H-14 model config.
+AE working on z of shape (1, 4, 64, 64) = 16384 dimensions.
+AE working on z of shape (1, 4, 64, 64) = 16384 dimensions.
+WARNING:py.warnings:/home/work/miniconda3/envs/mmg/lib/python3.10/site-packages/timm/models/layers/__init__.py:48: FutureWarning: Importing from timm.models.layers is deprecated, please import via timm.layers
+  warnings.warn(f"Importing from {__name__} is deprecated, please import via timm.layers", FutureWarning)
+
+AE working on z of shape (1, 4, 64, 64) = 16384 dimensions.
+AE working on z of shape (1, 4, 64, 64) = 16384 dimensions.
+INFO:root:Loaded ViT-H-14 model config.
+WARNING:py.warnings:/home/work/miniconda3/envs/mmg/lib/python3.10/site-packages/timm/models/layers/__init__.py:48: FutureWarning: Importing from timm.models.layers is deprecated, please import via timm.layers
+  warnings.warn(f"Importing from {__name__} is deprecated, please import via timm.layers", FutureWarning)
+
+AE working on z of shape (1, 4, 64, 64) = 16384 dimensions.
+INFO:root:Loaded ViT-H-14 model config.
+WARNING:py.warnings:/home/work/miniconda3/envs/mmg/lib/python3.10/site-packages/timm/models/layers/__init__.py:48: FutureWarning: Importing from timm.models.layers is deprecated, please import via timm.layers
+  warnings.warn(f"Importing from {__name__} is deprecated, please import via timm.layers", FutureWarning)
+
+INFO:root:Loaded ViT-H-14 model config.
+WARNING:py.warnings:/home/work/miniconda3/envs/mmg/lib/python3.10/site-packages/timm/models/layers/__init__.py:48: FutureWarning: Importing from timm.models.layers is deprecated, please import via timm.layers
+  warnings.warn(f"Importing from {__name__} is deprecated, please import via timm.layers", FutureWarning)
+
+WARNING:py.warnings:/home/work/miniconda3/envs/mmg/lib/python3.10/site-packages/timm/models/layers/__init__.py:48: FutureWarning: Importing from timm.models.layers is deprecated, please import via timm.layers
+  warnings.warn(f"Importing from {__name__} is deprecated, please import via timm.layers", FutureWarning)
+
+WARNING:py.warnings:/home/work/miniconda3/envs/mmg/lib/python3.10/site-packages/timm/models/layers/__init__.py:48: FutureWarning: Importing from timm.models.layers is deprecated, please import via timm.layers
+  warnings.warn(f"Importing from {__name__} is deprecated, please import via timm.layers", FutureWarning)
+
+INFO:root:Loaded ViT-H-14 model config.
+INFO:root:Loaded ViT-H-14 model config.
+INFO:root:Loaded ViT-H-14 model config.
+AE working on z of shape (1, 4, 64, 64) = 16384 dimensions.
+WARNING:py.warnings:/home/work/miniconda3/envs/mmg/lib/python3.10/site-packages/timm/models/layers/__init__.py:48: FutureWarning: Importing from timm.models.layers is deprecated, please import via timm.layers
+  warnings.warn(f"Importing from {__name__} is deprecated, please import via timm.layers", FutureWarning)
+
+INFO:root:Loaded ViT-H-14 model config.
+>>> model checkpoint loaded.
+>>> model checkpoint loaded.
+>>> model checkpoint loaded.
+Fetching 19 files:   0%|          | 0/19 [00:00<?, ?it/s]Fetching 19 files: 100%|██████████| 19/19 [00:00<00:00, 116679.03it/s]
+WARNING:py.warnings:/home/work/miniconda3/envs/mmg/lib/python3.10/site-packages/torch/nn/utils/weight_norm.py:143: FutureWarning: `torch.nn.utils.weight_norm` is deprecated in favor of `torch.nn.utils.parametrizations.weight_norm`.
+  WeightNorm.apply(module, name, dim)
+
+Fetching 19 files:   0%|          | 0/19 [00:00<?, ?it/s]Fetching 19 files: 100%|██████████| 19/19 [00:00<00:00, 177883.43it/s]
+WARNING:py.warnings:/home/work/miniconda3/envs/mmg/lib/python3.10/site-packages/torch/nn/utils/weight_norm.py:143: FutureWarning: `torch.nn.utils.weight_norm` is deprecated in favor of `torch.nn.utils.parametrizations.weight_norm`.
+  WeightNorm.apply(module, name, dim)
+
+Fetching 19 files:   0%|          | 0/19 [00:00<?, ?it/s]Fetching 19 files: 100%|██████████| 19/19 [00:00<00:00, 48711.35it/s]
+WARNING:py.warnings:/home/work/miniconda3/envs/mmg/lib/python3.10/site-packages/torch/nn/utils/weight_norm.py:143: FutureWarning: `torch.nn.utils.weight_norm` is deprecated in favor of `torch.nn.utils.parametrizations.weight_norm`.
+  WeightNorm.apply(module, name, dim)
+
+>>> model checkpoint loaded.
+>>> model checkpoint loaded.
+Fetching 19 files:   0%|          | 0/19 [00:00<?, ?it/s]Fetching 19 files: 100%|██████████| 19/19 [00:00<00:00, 166024.53it/s]
+WARNING:py.warnings:/home/work/miniconda3/envs/mmg/lib/python3.10/site-packages/torch/nn/utils/weight_norm.py:143: FutureWarning: `torch.nn.utils.weight_norm` is deprecated in favor of `torch.nn.utils.parametrizations.weight_norm`.
+  WeightNorm.apply(module, name, dim)
+
+Fetching 19 files:   0%|          | 0/19 [00:00<?, ?it/s]Fetching 19 files: 100%|██████████| 19/19 [00:00<00:00, 29713.56it/s]
+WARNING:py.warnings:/home/work/miniconda3/envs/mmg/lib/python3.10/site-packages/torch/nn/utils/weight_norm.py:143: FutureWarning: `torch.nn.utils.weight_norm` is deprecated in favor of `torch.nn.utils.parametrizations.weight_norm`.
+  WeightNorm.apply(module, name, dim)
+
+>>> model checkpoint loaded.
+Fetching 19 files:   0%|          | 0/19 [00:00<?, ?it/s]Fetching 19 files: 100%|██████████| 19/19 [00:00<00:00, 120017.73it/s]
+WARNING:py.warnings:/home/work/miniconda3/envs/mmg/lib/python3.10/site-packages/torch/nn/utils/weight_norm.py:143: FutureWarning: `torch.nn.utils.weight_norm` is deprecated in favor of `torch.nn.utils.parametrizations.weight_norm`.
+  WeightNorm.apply(module, name, dim)
+
+Removing weight norm...
+An error occurred while trying to fetch /home/work/.cache/huggingface/hub/models--auffusion--auffusion-full/snapshots/db5169f1890d4e5d926ac4c5524da0cc3d4b9a5b: Error no file named diffusion_pytorch_model.safetensors found in directory /home/work/.cache/huggingface/hub/models--auffusion--auffusion-full/snapshots/db5169f1890d4e5d926ac4c5524da0cc3d4b9a5b.
+Defaulting to unsafe serialization. Pass `allow_pickle=False` to raise an error instead.
+Removing weight norm...
+An error occurred while trying to fetch /home/work/.cache/huggingface/hub/models--auffusion--auffusion-full/snapshots/db5169f1890d4e5d926ac4c5524da0cc3d4b9a5b: Error no file named diffusion_pytorch_model.safetensors found in directory /home/work/.cache/huggingface/hub/models--auffusion--auffusion-full/snapshots/db5169f1890d4e5d926ac4c5524da0cc3d4b9a5b.
+Defaulting to unsafe serialization. Pass `allow_pickle=False` to raise an error instead.
+Removing weight norm...Removing weight norm...
+
+You are using a model of type clip_text_model to instantiate a model of type . This is not supported for all configurations of models and can yield errors.
+An error occurred while trying to fetch /home/work/.cache/huggingface/hub/models--auffusion--auffusion-full/snapshots/db5169f1890d4e5d926ac4c5524da0cc3d4b9a5b: Error no file named diffusion_pytorch_model.safetensors found in directory /home/work/.cache/huggingface/hub/models--auffusion--auffusion-full/snapshots/db5169f1890d4e5d926ac4c5524da0cc3d4b9a5b.
+Defaulting to unsafe serialization. Pass `allow_pickle=False` to raise an error instead.
+Removing weight norm...
+An error occurred while trying to fetch /home/work/.cache/huggingface/hub/models--auffusion--auffusion-full/snapshots/db5169f1890d4e5d926ac4c5524da0cc3d4b9a5b: Error no file named diffusion_pytorch_model.safetensors found in directory /home/work/.cache/huggingface/hub/models--auffusion--auffusion-full/snapshots/db5169f1890d4e5d926ac4c5524da0cc3d4b9a5b.
+Defaulting to unsafe serialization. Pass `allow_pickle=False` to raise an error instead.
+An error occurred while trying to fetch /home/work/.cache/huggingface/hub/models--auffusion--auffusion-full/snapshots/db5169f1890d4e5d926ac4c5524da0cc3d4b9a5b: Error no file named diffusion_pytorch_model.safetensors found in directory /home/work/.cache/huggingface/hub/models--auffusion--auffusion-full/snapshots/db5169f1890d4e5d926ac4c5524da0cc3d4b9a5b.
+Defaulting to unsafe serialization. Pass `allow_pickle=False` to raise an error instead.
+Removing weight norm...
+An error occurred while trying to fetch /home/work/.cache/huggingface/hub/models--auffusion--auffusion-full/snapshots/db5169f1890d4e5d926ac4c5524da0cc3d4b9a5b: Error no file named diffusion_pytorch_model.safetensors found in directory /home/work/.cache/huggingface/hub/models--auffusion--auffusion-full/snapshots/db5169f1890d4e5d926ac4c5524da0cc3d4b9a5b.
+Defaulting to unsafe serialization. Pass `allow_pickle=False` to raise an error instead.
+INITIATED: ConditionAdapter: {'text_encoder_name': 'text_encoder_0', 'condition_adapter_name': 'condition_adapter_0', 'condition_type': 'clip-vit-large-patch14_text', 'pretrained_model_name_or_path': 'openai/clip-vit-large-patch14', 'condition_max_length': 77, 'condition_dim': 768, 'cross_attention_dim': 768}
+LOADED: ConditionAdapter from /home/work/.cache/huggingface/hub/models--auffusion--auffusion-full/snapshots/db5169f1890d4e5d926ac4c5524da0cc3d4b9a5b/condition_adapter_0
+An error occurred while trying to fetch /home/work/.cache/huggingface/hub/models--auffusion--auffusion-full/snapshots/db5169f1890d4e5d926ac4c5524da0cc3d4b9a5b: Error no file named diffusion_pytorch_model.safetensors found in directory /home/work/.cache/huggingface/hub/models--auffusion--auffusion-full/snapshots/db5169f1890d4e5d926ac4c5524da0cc3d4b9a5b.
+Defaulting to unsafe serialization. Pass `allow_pickle=False` to raise an error instead.
+The config attributes {'decay': 0.9999, 'inv_gamma': 1.0, 'min_decay': 0.0, 'optimization_step': 100000, 'power': 0.6666666666666666, 'update_after_step': 0, 'use_ema_warmup': False} were passed to UNet2DConditionModel, but are not expected and will be ignored. Please verify your config.json configuration file.
+You are using a model of type clip_text_model to instantiate a model of type . This is not supported for all configurations of models and can yield errors.
+You are using a model of type clip_text_model to instantiate a model of type . This is not supported for all configurations of models and can yield errors.
+You are using a model of type clip_text_model to instantiate a model of type . This is not supported for all configurations of models and can yield errors.
+You are using a model of type clip_text_model to instantiate a model of type . This is not supported for all configurations of models and can yield errors.
+You are using a model of type clip_text_model to instantiate a model of type . This is not supported for all configurations of models and can yield errors.
+INITIATED: ConditionAdapter: {'text_encoder_name': 'text_encoder_0', 'condition_adapter_name': 'condition_adapter_0', 'condition_type': 'clip-vit-large-patch14_text', 'pretrained_model_name_or_path': 'openai/clip-vit-large-patch14', 'condition_max_length': 77, 'condition_dim': 768, 'cross_attention_dim': 768}
+LOADED: ConditionAdapter from /home/work/.cache/huggingface/hub/models--auffusion--auffusion-full/snapshots/db5169f1890d4e5d926ac4c5524da0cc3d4b9a5b/condition_adapter_0
+An error occurred while trying to fetch /home/work/.cache/huggingface/hub/models--auffusion--auffusion-full/snapshots/db5169f1890d4e5d926ac4c5524da0cc3d4b9a5b: Error no file named diffusion_pytorch_model.safetensors found in directory /home/work/.cache/huggingface/hub/models--auffusion--auffusion-full/snapshots/db5169f1890d4e5d926ac4c5524da0cc3d4b9a5b.
+Defaulting to unsafe serialization. Pass `allow_pickle=False` to raise an error instead.
+The config attributes {'decay': 0.9999, 'inv_gamma': 1.0, 'min_decay': 0.0, 'optimization_step': 100000, 'power': 0.6666666666666666, 'update_after_step': 0, 'use_ema_warmup': False} were passed to UNet2DConditionModel, but are not expected and will be ignored. Please verify your config.json configuration file.
+INITIATED: ConditionAdapter: {'text_encoder_name': 'text_encoder_0', 'condition_adapter_name': 'condition_adapter_0', 'condition_type': 'clip-vit-large-patch14_text', 'pretrained_model_name_or_path': 'openai/clip-vit-large-patch14', 'condition_max_length': 77, 'condition_dim': 768, 'cross_attention_dim': 768}
+LOADED: ConditionAdapter from /home/work/.cache/huggingface/hub/models--auffusion--auffusion-full/snapshots/db5169f1890d4e5d926ac4c5524da0cc3d4b9a5b/condition_adapter_0
+An error occurred while trying to fetch /home/work/.cache/huggingface/hub/models--auffusion--auffusion-full/snapshots/db5169f1890d4e5d926ac4c5524da0cc3d4b9a5b: Error no file named diffusion_pytorch_model.safetensors found in directory /home/work/.cache/huggingface/hub/models--auffusion--auffusion-full/snapshots/db5169f1890d4e5d926ac4c5524da0cc3d4b9a5b.
+Defaulting to unsafe serialization. Pass `allow_pickle=False` to raise an error instead.
+The config attributes {'decay': 0.9999, 'inv_gamma': 1.0, 'min_decay': 0.0, 'optimization_step': 100000, 'power': 0.6666666666666666, 'update_after_step': 0, 'use_ema_warmup': False} were passed to UNet2DConditionModel, but are not expected and will be ignored. Please verify your config.json configuration file.
+INITIATED: ConditionAdapter: {'text_encoder_name': 'text_encoder_0', 'condition_adapter_name': 'condition_adapter_0', 'condition_type': 'clip-vit-large-patch14_text', 'pretrained_model_name_or_path': 'openai/clip-vit-large-patch14', 'condition_max_length': 77, 'condition_dim': 768, 'cross_attention_dim': 768}
+LOADED: ConditionAdapter from /home/work/.cache/huggingface/hub/models--auffusion--auffusion-full/snapshots/db5169f1890d4e5d926ac4c5524da0cc3d4b9a5b/condition_adapter_0
+An error occurred while trying to fetch /home/work/.cache/huggingface/hub/models--auffusion--auffusion-full/snapshots/db5169f1890d4e5d926ac4c5524da0cc3d4b9a5b: Error no file named diffusion_pytorch_model.safetensors found in directory /home/work/.cache/huggingface/hub/models--auffusion--auffusion-full/snapshots/db5169f1890d4e5d926ac4c5524da0cc3d4b9a5b.
+Defaulting to unsafe serialization. Pass `allow_pickle=False` to raise an error instead.
+The config attributes {'decay': 0.9999, 'inv_gamma': 1.0, 'min_decay': 0.0, 'optimization_step': 100000, 'power': 0.6666666666666666, 'update_after_step': 0, 'use_ema_warmup': False} were passed to UNet2DConditionModel, but are not expected and will be ignored. Please verify your config.json configuration file.
+INITIATED: ConditionAdapter: {'text_encoder_name': 'text_encoder_0', 'condition_adapter_name': 'condition_adapter_0', 'condition_type': 'clip-vit-large-patch14_text', 'pretrained_model_name_or_path': 'openai/clip-vit-large-patch14', 'condition_max_length': 77, 'condition_dim': 768, 'cross_attention_dim': 768}
+LOADED: ConditionAdapter from /home/work/.cache/huggingface/hub/models--auffusion--auffusion-full/snapshots/db5169f1890d4e5d926ac4c5524da0cc3d4b9a5b/condition_adapter_0
+An error occurred while trying to fetch /home/work/.cache/huggingface/hub/models--auffusion--auffusion-full/snapshots/db5169f1890d4e5d926ac4c5524da0cc3d4b9a5b: Error no file named diffusion_pytorch_model.safetensors found in directory /home/work/.cache/huggingface/hub/models--auffusion--auffusion-full/snapshots/db5169f1890d4e5d926ac4c5524da0cc3d4b9a5b.
+Defaulting to unsafe serialization. Pass `allow_pickle=False` to raise an error instead.
+The config attributes {'decay': 0.9999, 'inv_gamma': 1.0, 'min_decay': 0.0, 'optimization_step': 100000, 'power': 0.6666666666666666, 'update_after_step': 0, 'use_ema_warmup': False} were passed to UNet2DConditionModel, but are not expected and will be ignored. Please verify your config.json configuration file.
+INITIATED: ConditionAdapter: {'text_encoder_name': 'text_encoder_0', 'condition_adapter_name': 'condition_adapter_0', 'condition_type': 'clip-vit-large-patch14_text', 'pretrained_model_name_or_path': 'openai/clip-vit-large-patch14', 'condition_max_length': 77, 'condition_dim': 768, 'cross_attention_dim': 768}
+LOADED: ConditionAdapter from /home/work/.cache/huggingface/hub/models--auffusion--auffusion-full/snapshots/db5169f1890d4e5d926ac4c5524da0cc3d4b9a5b/condition_adapter_0
+An error occurred while trying to fetch /home/work/.cache/huggingface/hub/models--auffusion--auffusion-full/snapshots/db5169f1890d4e5d926ac4c5524da0cc3d4b9a5b: Error no file named diffusion_pytorch_model.safetensors found in directory /home/work/.cache/huggingface/hub/models--auffusion--auffusion-full/snapshots/db5169f1890d4e5d926ac4c5524da0cc3d4b9a5b.
+Defaulting to unsafe serialization. Pass `allow_pickle=False` to raise an error instead.
+The config attributes {'decay': 0.9999, 'inv_gamma': 1.0, 'min_decay': 0.0, 'optimization_step': 100000, 'power': 0.6666666666666666, 'update_after_step': 0, 'use_ema_warmup': False} were passed to UNet2DConditionModel, but are not expected and will be ignored. Please verify your config.json configuration file.
+>>> model checkpoint loaded.
+Fetching 19 files:   0%|          | 0/19 [00:00<?, ?it/s]Fetching 19 files: 100%|██████████| 19/19 [00:00<00:00, 111457.03it/s]
+WARNING:py.warnings:/home/work/miniconda3/envs/mmg/lib/python3.10/site-packages/torch/nn/utils/weight_norm.py:143: FutureWarning: `torch.nn.utils.weight_norm` is deprecated in favor of `torch.nn.utils.parametrizations.weight_norm`.
+  WeightNorm.apply(module, name, dim)
+
+Removing weight norm...
+An error occurred while trying to fetch /home/work/.cache/huggingface/hub/models--auffusion--auffusion-full/snapshots/db5169f1890d4e5d926ac4c5524da0cc3d4b9a5b: Error no file named diffusion_pytorch_model.safetensors found in directory /home/work/.cache/huggingface/hub/models--auffusion--auffusion-full/snapshots/db5169f1890d4e5d926ac4c5524da0cc3d4b9a5b.
+Defaulting to unsafe serialization. Pass `allow_pickle=False` to raise an error instead.
+You are using a model of type clip_text_model to instantiate a model of type . This is not supported for all configurations of models and can yield errors.
+INITIATED: ConditionAdapter: {'text_encoder_name': 'text_encoder_0', 'condition_adapter_name': 'condition_adapter_0', 'condition_type': 'clip-vit-large-patch14_text', 'pretrained_model_name_or_path': 'openai/clip-vit-large-patch14', 'condition_max_length': 77, 'condition_dim': 768, 'cross_attention_dim': 768}
+LOADED: ConditionAdapter from /home/work/.cache/huggingface/hub/models--auffusion--auffusion-full/snapshots/db5169f1890d4e5d926ac4c5524da0cc3d4b9a5b/condition_adapter_0
+An error occurred while trying to fetch /home/work/.cache/huggingface/hub/models--auffusion--auffusion-full/snapshots/db5169f1890d4e5d926ac4c5524da0cc3d4b9a5b: Error no file named diffusion_pytorch_model.safetensors found in directory /home/work/.cache/huggingface/hub/models--auffusion--auffusion-full/snapshots/db5169f1890d4e5d926ac4c5524da0cc3d4b9a5b.
+Defaulting to unsafe serialization. Pass `allow_pickle=False` to raise an error instead.
+The config attributes {'decay': 0.9999, 'inv_gamma': 1.0, 'min_decay': 0.0, 'optimization_step': 100000, 'power': 0.6666666666666666, 'update_after_step': 0, 'use_ema_warmup': False} were passed to UNet2DConditionModel, but are not expected and will be ignored. Please verify your config.json configuration file.
+>>> model checkpoint loaded.
+Fetching 19 files:   0%|          | 0/19 [00:00<?, ?it/s]Fetching 19 files: 100%|██████████| 19/19 [00:00<00:00, 107546.26it/s]
+WARNING:py.warnings:/home/work/miniconda3/envs/mmg/lib/python3.10/site-packages/torch/nn/utils/weight_norm.py:143: FutureWarning: `torch.nn.utils.weight_norm` is deprecated in favor of `torch.nn.utils.parametrizations.weight_norm`.
+  WeightNorm.apply(module, name, dim)
+
+Removing weight norm...
+An error occurred while trying to fetch /home/work/.cache/huggingface/hub/models--auffusion--auffusion-full/snapshots/db5169f1890d4e5d926ac4c5524da0cc3d4b9a5b: Error no file named diffusion_pytorch_model.safetensors found in directory /home/work/.cache/huggingface/hub/models--auffusion--auffusion-full/snapshots/db5169f1890d4e5d926ac4c5524da0cc3d4b9a5b.
+Defaulting to unsafe serialization. Pass `allow_pickle=False` to raise an error instead.
+You are using a model of type clip_text_model to instantiate a model of type . This is not supported for all configurations of models and can yield errors.
+INITIATED: ConditionAdapter: {'text_encoder_name': 'text_encoder_0', 'condition_adapter_name': 'condition_adapter_0', 'condition_type': 'clip-vit-large-patch14_text', 'pretrained_model_name_or_path': 'openai/clip-vit-large-patch14', 'condition_max_length': 77, 'condition_dim': 768, 'cross_attention_dim': 768}
+LOADED: ConditionAdapter from /home/work/.cache/huggingface/hub/models--auffusion--auffusion-full/snapshots/db5169f1890d4e5d926ac4c5524da0cc3d4b9a5b/condition_adapter_0
+An error occurred while trying to fetch /home/work/.cache/huggingface/hub/models--auffusion--auffusion-full/snapshots/db5169f1890d4e5d926ac4c5524da0cc3d4b9a5b: Error no file named diffusion_pytorch_model.safetensors found in directory /home/work/.cache/huggingface/hub/models--auffusion--auffusion-full/snapshots/db5169f1890d4e5d926ac4c5524da0cc3d4b9a5b.
+Defaulting to unsafe serialization. Pass `allow_pickle=False` to raise an error instead.
+The config attributes {'decay': 0.9999, 'inv_gamma': 1.0, 'min_decay': 0.0, 'optimization_step': 100000, 'power': 0.6666666666666666, 'update_after_step': 0, 'use_ema_warmup': False} were passed to UNet2DConditionModel, but are not expected and will be ignored. Please verify your config.json configuration file.
+[rank1]:[W409 02:57:22.264749624 ProcessGroupNCCL.cpp:4561] [PG ID 0 PG GUID 0 Rank 1]  using GPU 1 to perform barrier as devices used by this process are currently unknown. This can potentially cause a hang if this rank to GPU mapping is incorrect. Specify device_ids in barrier() to force use of a particular device, or call init_process_group() with a device_id.
+[rank3]:[W409 02:57:23.178475101 ProcessGroupNCCL.cpp:4561] [PG ID 0 PG GUID 0 Rank 3]  using GPU 3 to perform barrier as devices used by this process are currently unknown. This can potentially cause a hang if this rank to GPU mapping is incorrect. Specify device_ids in barrier() to force use of a particular device, or call init_process_group() with a device_id.
+[rank5]:[W409 02:57:24.181214815 ProcessGroupNCCL.cpp:4561] [PG ID 0 PG GUID 0 Rank 5]  using GPU 5 to perform barrier as devices used by this process are currently unknown. This can potentially cause a hang if this rank to GPU mapping is incorrect. Specify device_ids in barrier() to force use of a particular device, or call init_process_group() with a device_id.
+[rank6]:[W409 02:57:24.186112563 ProcessGroupNCCL.cpp:4561] [PG ID 0 PG GUID 0 Rank 6]  using GPU 6 to perform barrier as devices used by this process are currently unknown. This can potentially cause a hang if this rank to GPU mapping is incorrect. Specify device_ids in barrier() to force use of a particular device, or call init_process_group() with a device_id.
+[rank2]:[W409 02:57:24.268305654 ProcessGroupNCCL.cpp:4561] [PG ID 0 PG GUID 0 Rank 2]  using GPU 2 to perform barrier as devices used by this process are currently unknown. This can potentially cause a hang if this rank to GPU mapping is incorrect. Specify device_ids in barrier() to force use of a particular device, or call init_process_group() with a device_id.
+[rank7]:[W409 02:57:26.374340526 ProcessGroupNCCL.cpp:4561] [PG ID 0 PG GUID 0 Rank 7]  using GPU 7 to perform barrier as devices used by this process are currently unknown. This can potentially cause a hang if this rank to GPU mapping is incorrect. Specify device_ids in barrier() to force use of a particular device, or call init_process_group() with a device_id.
+[rank0]:[W409 02:57:28.328201762 ProcessGroupNCCL.cpp:4561] [PG ID 0 PG GUID 0 Rank 0]  using GPU 0 to perform barrier as devices used by this process are currently unknown. This can potentially cause a hang if this rank to GPU mapping is incorrect. Specify device_ids in barrier() to force use of a particular device, or call init_process_group() with a device_id.
+[rank4]:[W409 02:57:30.504380549 ProcessGroupNCCL.cpp:4561] [PG ID 0 PG GUID 0 Rank 4]  using GPU 4 to perform barrier as devices used by this process are currently unknown. This can potentially cause a hang if this rank to GPU mapping is incorrect. Specify device_ids in barrier() to force use of a particular device, or call init_process_group() with a device_id.
+Generating:   0%|          | 0/103 [00:00<?, ?it/s]Generating:   1%|          | 1/103 [00:46<1:19:13, 46.61s/it]Generating:   2%|▏         | 2/103 [01:31<1:16:26, 45.41s/it]Generating:   3%|▎         | 3/103 [02:16<1:15:15, 45.15s/it]Generating:   4%|▍         | 4/103 [03:00<1:14:04, 44.90s/it]Generating:   5%|▍         | 5/103 [03:45<1:13:11, 44.82s/it]Generating:   6%|▌         | 6/103 [04:29<1:12:17, 44.72s/it]Generating:   7%|▋         | 7/103 [05:14<1:11:33, 44.73s/it]Generating:   8%|▊         | 8/103 [05:59<1:10:47, 44.71s/it]Generating:   9%|▊         | 9/103 [06:44<1:10:34, 45.05s/it]Generating:  10%|▉         | 10/103 [07:35<1:12:18, 46.65s/it]Generating:  11%|█         | 11/103 [08:21<1:11:26, 46.59s/it]Generating:  12%|█▏        | 12/103 [09:06<1:09:40, 45.94s/it]Generating:  13%|█▎        | 13/103 [09:50<1:08:12, 45.47s/it]Generating:  14%|█▎        | 14/103 [10:34<1:07:00, 45.17s/it]Generating:  15%|█▍        | 15/103 [11:19<1:05:54, 44.94s/it]Generating:  16%|█▌        | 16/103 [12:03<1:04:57, 44.80s/it]Generating:  17%|█▋        | 17/103 [12:48<1:04:00, 44.66s/it]Generating:  17%|█▋        | 18/103 [13:33<1:03:33, 44.87s/it]Generating:  18%|█▊        | 19/103 [14:21<1:03:58, 45.70s/it]Generating:  19%|█▉        | 20/103 [15:05<1:02:39, 45.30s/it]Generating:  20%|██        | 21/103 [15:50<1:01:36, 45.08s/it]Generating:  21%|██▏       | 22/103 [16:34<1:00:36, 44.89s/it]Generating:  22%|██▏       | 23/103 [17:18<59:39, 44.74s/it]  Generating:  23%|██▎       | 24/103 [18:03<58:54, 44.74s/it]Generating:  24%|██▍       | 25/103 [18:52<59:43, 45.94s/it]Generating:  25%|██▌       | 26/103 [19:36<58:21, 45.47s/it]Generating:  26%|██▌       | 27/103 [20:21<57:11, 45.15s/it]Generating:  27%|██▋       | 28/103 [21:05<56:07, 44.90s/it]Generating:  28%|██▊       | 29/103 [21:50<55:14, 44.79s/it]Generating:  29%|██▉       | 30/103 [22:34<54:24, 44.72s/it]Generating:  30%|███       | 31/103 [23:18<53:30, 44.59s/it]Generating:  31%|███       | 32/103 [24:03<52:44, 44.57s/it]Generating:  32%|███▏      | 33/103 [24:48<52:06, 44.67s/it]Generating:  33%|███▎      | 34/103 [25:32<51:19, 44.64s/it]Generating:  34%|███▍      | 35/103 [26:17<50:30, 44.56s/it]Generating:  35%|███▍      | 36/103 [27:01<49:43, 44.53s/it]Traceback (most recent call last):
+  File "/home/work/kby_hgh/MMG_01/MMG_multi_gpu_inference_mmg_0325.py", line 986, in run_inference
+    write(audio_filepath, 16000, audios[i])
+  File "/home/work/miniconda3/envs/mmg/lib/python3.10/site-packages/scipy/io/wavfile.py", line 767, in write
+    fid = open(filename, 'wb')
+OSError: [Errno 36] File name too long: '/home/work/kby_hgh/MMG_Inferencce_folder/panda70m_0404_MMG_1e-4_1e-4_8gpu_abl_videollama_checkpoint-step-9599/audio/A_person_is_using_their_fingers_to_fill_balloons_with_leftover_at_the_end_starting_with_a_balloon_for_the_stem_they_then_twist_their_design_at_the_nozzle_end_of_the_balloon_and_push_the_nozzle_inside_the_balloon_with_their_index_finger_batch_72_proc_3_batch.wav'
+Generating:  36%|███▌      | 37/103 [27:46<48:54, 44.46s/it]Generating:  37%|███▋      | 38/103 [28:30<48:12, 44.50s/it]Generating:  38%|███▊      | 39/103 [29:18<48:23, 45.37s/it]Generating:  39%|███▉      | 40/103 [30:07<48:57, 46.63s/it]Generating:  40%|███▉      | 41/103 [30:55<48:42, 47.14s/it]Generating:  41%|████      | 42/103 [31:44<48:17, 47.51s/it]Generating:  42%|████▏     | 43/103 [32:33<47:58, 47.98s/it]Generating:  43%|████▎     | 44/103 [33:21<47:12, 48.02s/it]Generating:  44%|████▎     | 45/103 [34:11<46:55, 48.55s/it]Process 0: Encountered an error.
+Traceback (most recent call last):
+  File "/home/work/kby_hgh/MMG_01/MMG_multi_gpu_inference_mmg_0325.py", line 986, in run_inference
+    write(audio_filepath, 16000, audios[i])
+  File "/home/work/miniconda3/envs/mmg/lib/python3.10/site-packages/scipy/io/wavfile.py", line 767, in write
+    fid = open(filename, 'wb')
+OSError: [Errno 36] File name too long: '/home/work/kby_hgh/MMG_Inferencce_folder/panda70m_0404_MMG_1e-4_1e-4_8gpu_abl_videollama_checkpoint-step-9599/audio/The_recipe_involves_combining_three_eggs_with_a_quarter_cup_of_minced_fresh_parsley_leaves_and_two_cups_of_chicken_or_turkey_broth_and_then_whisking_it_all_together_to_keep_the_eggs_from_setting_as_they_are_added_to_the_hot_sausage_mixture_batch_90_proc_0_batch.wav'
+Generating:  44%|████▎     | 45/103 [34:56<45:02, 46.59s/it]
+[rank3]:[E409 03:35:16.894815854 ProcessGroupNCCL.cpp:629] [Rank 3] Watchdog caught collective operation timeout: WorkNCCL(SeqNum=2, OpType=ALLREDUCE, NumelIn=1, NumelOut=1, Timeout(ms)=600000) ran for 600007 milliseconds before timing out.
+[rank3]:[E409 03:35:16.895149957 ProcessGroupNCCL.cpp:2168] [PG ID 0 PG GUID 0(default_pg) Rank 3]  failure detected by watchdog at work sequence id: 2 PG status: last enqueued work: 2, last completed work: 1
+[rank3]:[E409 03:35:16.895169318 ProcessGroupNCCL.cpp:667] Stack trace of the failed collective not found, potentially because FlightRecorder is disabled. You can enable it by setting TORCH_NCCL_TRACE_BUFFER_SIZE to a non-zero value.
+[rank: 3] Seed set to 42
+Start Inference
+[rank: 3] Seed set to 45
+INFO:mainlogger:LatentDiffusion: Running in eps-prediction mode
+[rank3]:[E409 03:35:17.460552544 ProcessGroupNCCL.cpp:681] [Rank 3] Some NCCL operations have failed or timed out. Due to the asynchronous nature of CUDA kernels, subsequent GPU operations might run on corrupted/incomplete data.
+[rank3]:[E409 03:35:17.460594977 ProcessGroupNCCL.cpp:695] [Rank 3] To avoid data inconsistency, we are taking the entire process down.
+[rank3]:[E409 03:35:17.461826995 ProcessGroupNCCL.cpp:1895] [PG ID 0 PG GUID 0(default_pg) Rank 3] Process group watchdog thread terminated with exception: [Rank 3] Watchdog caught collective operation timeout: WorkNCCL(SeqNum=2, OpType=ALLREDUCE, NumelIn=1, NumelOut=1, Timeout(ms)=600000) ran for 600007 milliseconds before timing out.
+Exception raised from checkTimeout at /pytorch/torch/csrc/distributed/c10d/ProcessGroupNCCL.cpp:632 (most recent call first):
+frame #0: c10::Error::Error(c10::SourceLocation, std::string) + 0x96 (0x7f96ff36c1b6 in /home/work/miniconda3/envs/mmg/lib/python3.10/site-packages/torch/lib/libc10.so)
+frame #1: c10d::ProcessGroupNCCL::WorkNCCL::checkTimeout(std::optional<std::chrono::duration<long, std::ratio<1l, 1000l> > >) + 0x2b4 (0x7f96ada29c74 in /home/work/miniconda3/envs/mmg/lib/python3.10/site-packages/torch/lib/libtorch_cuda.so)
+frame #2: c10d::ProcessGroupNCCL::watchdogHandler() + 0x890 (0x7f96ada2b7d0 in /home/work/miniconda3/envs/mmg/lib/python3.10/site-packages/torch/lib/libtorch_cuda.so)
+frame #3: c10d::ProcessGroupNCCL::ncclCommWatchdog() + 0x14d (0x7f96ada2c6ed in /home/work/miniconda3/envs/mmg/lib/python3.10/site-packages/torch/lib/libtorch_cuda.so)
+frame #4: <unknown function> + 0x145c0 (0x7f96ffb075c0 in /home/work/miniconda3/envs/mmg/lib/python3.10/site-packages/torch/lib/libtorch.so)
+frame #5: <unknown function> + 0x94ac3 (0x7f9712c6bac3 in /lib/x86_64-linux-gnu/libc.so.6)
+frame #6: clone + 0x44 (0x7f9712cfca04 in /lib/x86_64-linux-gnu/libc.so.6)
+
+W0409 03:35:18.035000 130966 site-packages/torch/distributed/elastic/multiprocessing/api.py:897] Sending process 131066 closing signal SIGTERM
+W0409 03:35:18.037000 130966 site-packages/torch/distributed/elastic/multiprocessing/api.py:897] Sending process 131067 closing signal SIGTERM
+W0409 03:35:18.042000 130966 site-packages/torch/distributed/elastic/multiprocessing/api.py:897] Sending process 131068 closing signal SIGTERM
+W0409 03:35:18.042000 130966 site-packages/torch/distributed/elastic/multiprocessing/api.py:897] Sending process 131070 closing signal SIGTERM
+W0409 03:35:18.043000 130966 site-packages/torch/distributed/elastic/multiprocessing/api.py:897] Sending process 131071 closing signal SIGTERM
+W0409 03:35:18.043000 130966 site-packages/torch/distributed/elastic/multiprocessing/api.py:897] Sending process 131072 closing signal SIGTERM
+W0409 03:35:18.043000 130966 site-packages/torch/distributed/elastic/multiprocessing/api.py:897] Sending process 131073 closing signal SIGTERM
+E0409 03:35:20.810000 130966 site-packages/torch/distributed/elastic/multiprocessing/api.py:869] failed (exitcode: -6) local_rank: 3 (pid: 131069) of binary: /home/work/miniconda3/envs/mmg/bin/python
+Traceback (most recent call last):
+  File "/home/work/miniconda3/envs/mmg/bin/accelerate", line 8, in <module>
+    sys.exit(main())
+  File "/home/work/miniconda3/envs/mmg/lib/python3.10/site-packages/accelerate/commands/accelerate_cli.py", line 48, in main
+    args.func(args)
+  File "/home/work/miniconda3/envs/mmg/lib/python3.10/site-packages/accelerate/commands/launch.py", line 1185, in launch_command
+    multi_gpu_launcher(args)
+  File "/home/work/miniconda3/envs/mmg/lib/python3.10/site-packages/accelerate/commands/launch.py", line 810, in multi_gpu_launcher
+    distrib_run.run(args)
+  File "/home/work/miniconda3/envs/mmg/lib/python3.10/site-packages/torch/distributed/run.py", line 909, in run
+    elastic_launch(
+  File "/home/work/miniconda3/envs/mmg/lib/python3.10/site-packages/torch/distributed/launcher/api.py", line 138, in __call__
+    return launch_agent(self._config, self._entrypoint, list(args))
+  File "/home/work/miniconda3/envs/mmg/lib/python3.10/site-packages/torch/distributed/launcher/api.py", line 269, in launch_agent
+    raise ChildFailedError(
+torch.distributed.elastic.multiprocessing.errors.ChildFailedError: 
+=======================================================
+MMG_multi_gpu_inference_mmg_0325.py FAILED
+-------------------------------------------------------
+Failures:
+  <NO_OTHER_FAILURES>
+-------------------------------------------------------
+Root Cause (first observed failure):
+[0]:
+  time      : 2025-04-09_03:35:18
+  host      : main1
+  rank      : 3 (local_rank: 3)
+  exitcode  : -6 (pid: 131069)
+  error_file: <N/A>
+  traceback : Signal 6 (SIGABRT) received by PID 131069
+=======================================================

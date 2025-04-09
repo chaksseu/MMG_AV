@@ -769,22 +769,22 @@ def main():
     start_epoch = 0
     global_step = 0
 
-    resume_batch_idx = 0
-    if args.cross_modal_checkpoint_path is not None:
-        # accelerator가 저장했던 전체 상태를 로드합니다.
-        accelerator.load_state(args.cross_modal_checkpoint_path)
-        training_state_path = os.path.join(args.cross_modal_checkpoint_path, "training_state.json")
-        if os.path.exists(training_state_path):
-            with open(training_state_path, "r") as f:
-                training_state = json.load(f)
-            global_step = training_state.get("global_step", 0)
-            global_step -= 16
-            # 마지막 저장된 에폭 이후부터 재개하도록 (+1)
-            start_epoch = training_state.get("epoch", 0) + 1
-            resume_batch_idx = global_step
-            print(f"체크포인트로부터 학습 재개: 에폭 {start_epoch}부터, 글로벌 스텝 {global_step}")
-        else:
-            print("체크포인트 내 training_state.json 파일을 찾을 수 없어, 새롭게 시작합니다.")
+    # resume_batch_idx = 0
+    # if args.cross_modal_checkpoint_path is not None:
+    #     # accelerator가 저장했던 전체 상태를 로드합니다.
+    #     accelerator.load_state(args.cross_modal_checkpoint_path)
+    #     training_state_path = os.path.join(args.cross_modal_checkpoint_path, "training_state.json")
+    #     if os.path.exists(training_state_path):
+    #         with open(training_state_path, "r") as f:
+    #             training_state = json.load(f)
+    #         global_step = training_state.get("global_step", 0)
+    #         global_step -= 16
+    #         # 마지막 저장된 에폭 이후부터 재개하도록 (+1)
+    #         start_epoch = training_state.get("epoch", 0) + 1
+    #         resume_batch_idx = global_step
+    #         print(f"체크포인트로부터 학습 재개: 에폭 {start_epoch}부터, 글로벌 스텝 {global_step}")
+    #     else:
+    #         print("체크포인트 내 training_state.json 파일을 찾을 수 없어, 새롭게 시작합니다.")
     # =================================================
 
 

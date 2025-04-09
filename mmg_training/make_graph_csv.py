@@ -3,7 +3,7 @@ import matplotlib.pyplot as plt
 import ast
 
 # 파일 경로
-csv_path = '/home/work/kby_hgh/MMG_01/eval_results.csv'
+csv_path = '/home/work/kby_hgh/MMG_01/mmg_training/eval_results.csv'
 output_path = '/home/work/kby_hgh/MMG_01/metric_plot_separated.png'
 
 # CSV 불러오기

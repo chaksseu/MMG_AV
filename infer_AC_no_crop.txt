@@ -1,0 +1,762 @@
+[W408 07:04:06.553127406 socket.cpp:204] [c10d] The hostname of the client socket cannot be retrieved. err=-3
+[W408 07:04:06.556140953 socket.cpp:204] [c10d] The hostname of the client socket cannot be retrieved. err=-3
+[W408 07:04:18.341646337 socket.cpp:204] [c10d] The hostname of the client socket cannot be retrieved. err=-3
+[W408 07:04:18.344988021 socket.cpp:204] [c10d] The hostname of the client socket cannot be retrieved. err=-3
+[W408 07:04:18.519004759 socket.cpp:204] [c10d] The hostname of the client socket cannot be retrieved. err=-3
+[W408 07:04:18.522670990 socket.cpp:204] [c10d] The hostname of the client socket cannot be retrieved. err=-3
+[W408 07:04:18.769589538 socket.cpp:204] [c10d] The hostname of the client socket cannot be retrieved. err=-3
+[W408 07:04:18.773911235 socket.cpp:204] [c10d] The hostname of the client socket cannot be retrieved. err=-3
+[W408 07:04:18.775359122 socket.cpp:204] [c10d] The hostname of the client socket cannot be retrieved. err=-3
+[W408 07:04:18.776053863 socket.cpp:204] [c10d] The hostname of the client socket cannot be retrieved. err=-3
+[W408 07:04:18.778690256 socket.cpp:204] [c10d] The hostname of the client socket cannot be retrieved. err=-3
+[W408 07:04:18.784668915 socket.cpp:204] [c10d] The hostname of the client socket cannot be retrieved. err=-3
+[W408 07:04:18.795674804 socket.cpp:204] [c10d] The hostname of the client socket cannot be retrieved. err=-3
+[W408 07:04:18.836865223 socket.cpp:204] [c10d] The hostname of the client socket cannot be retrieved. err=-3
+[W408 07:04:18.839256682 socket.cpp:204] [c10d] The hostname of the client socket cannot be retrieved. err=-3
+[W408 07:04:18.842945029 socket.cpp:204] [c10d] The hostname of the client socket cannot be retrieved. err=-3
+[W408 07:04:18.893216763 socket.cpp:204] [c10d] The hostname of the client socket cannot be retrieved. err=-3
+[W408 07:04:18.899295047 socket.cpp:204] [c10d] The hostname of the client socket cannot be retrieved. err=-3
+[rank: 6] Seed set to 42
+Start Inference
+[rank: 6] Seed set to 48
+[rank: 0] Seed set to 42
+Start Inference
+[rank: 0] Seed set to 42
+[rank: 3] Seed set to 42
+Start Inference
+[rank: 3] Seed set to 45
+[rank: 7] Seed set to 42
+Start Inference
+[rank: 7] Seed set to 49
+[rank: 2] Seed set to 42
+Start Inference
+[rank: 2] Seed set to 44
+[rank: 5] Seed set to 42
+Start Inference
+[rank: 5] Seed set to 47
+[rank: 1] Seed set to 42
+[rank: 4] Seed set to 42
+Start Inference
+[rank: 1] Seed set to 43
+Start Inference
+[rank: 4] Seed set to 46
+AE working on z of shape (1, 4, 64, 64) = 16384 dimensions.
+WARNING:py.warnings:/home/work/miniconda3/envs/mmg/lib/python3.10/site-packages/timm/models/layers/__init__.py:48: FutureWarning: Importing from timm.models.layers is deprecated, please import via timm.layers
+  warnings.warn(f"Importing from {__name__} is deprecated, please import via timm.layers", FutureWarning)
+
+AE working on z of shape (1, 4, 64, 64) = 16384 dimensions.
+INFO:root:Loaded ViT-H-14 model config.
+AE working on z of shape (1, 4, 64, 64) = 16384 dimensions.
+AE working on z of shape (1, 4, 64, 64) = 16384 dimensions.
+AE working on z of shape (1, 4, 64, 64) = 16384 dimensions.
+WARNING:py.warnings:/home/work/miniconda3/envs/mmg/lib/python3.10/site-packages/timm/models/layers/__init__.py:48: FutureWarning: Importing from timm.models.layers is deprecated, please import via timm.layers
+  warnings.warn(f"Importing from {__name__} is deprecated, please import via timm.layers", FutureWarning)
+
+AE working on z of shape (1, 4, 64, 64) = 16384 dimensions.
+AE working on z of shape (1, 4, 64, 64) = 16384 dimensions.
+AE working on z of shape (1, 4, 64, 64) = 16384 dimensions.
+INFO:root:Loaded ViT-H-14 model config.
+WARNING:py.warnings:/home/work/miniconda3/envs/mmg/lib/python3.10/site-packages/timm/models/layers/__init__.py:48: FutureWarning: Importing from timm.models.layers is deprecated, please import via timm.layers
+  warnings.warn(f"Importing from {__name__} is deprecated, please import via timm.layers", FutureWarning)
+
+WARNING:py.warnings:/home/work/miniconda3/envs/mmg/lib/python3.10/site-packages/timm/models/layers/__init__.py:48: FutureWarning: Importing from timm.models.layers is deprecated, please import via timm.layers
+  warnings.warn(f"Importing from {__name__} is deprecated, please import via timm.layers", FutureWarning)
+
+WARNING:py.warnings:/home/work/miniconda3/envs/mmg/lib/python3.10/site-packages/timm/models/layers/__init__.py:48: FutureWarning: Importing from timm.models.layers is deprecated, please import via timm.layers
+  warnings.warn(f"Importing from {__name__} is deprecated, please import via timm.layers", FutureWarning)
+
+WARNING:py.warnings:/home/work/miniconda3/envs/mmg/lib/python3.10/site-packages/timm/models/layers/__init__.py:48: FutureWarning: Importing from timm.models.layers is deprecated, please import via timm.layers
+  warnings.warn(f"Importing from {__name__} is deprecated, please import via timm.layers", FutureWarning)
+
+WARNING:py.warnings:/home/work/miniconda3/envs/mmg/lib/python3.10/site-packages/timm/models/layers/__init__.py:48: FutureWarning: Importing from timm.models.layers is deprecated, please import via timm.layers
+  warnings.warn(f"Importing from {__name__} is deprecated, please import via timm.layers", FutureWarning)
+
+INFO:root:Loaded ViT-H-14 model config.
+WARNING:py.warnings:/home/work/miniconda3/envs/mmg/lib/python3.10/site-packages/timm/models/layers/__init__.py:48: FutureWarning: Importing from timm.models.layers is deprecated, please import via timm.layers
+  warnings.warn(f"Importing from {__name__} is deprecated, please import via timm.layers", FutureWarning)
+
+INFO:root:Loaded ViT-H-14 model config.
+INFO:root:Loaded ViT-H-14 model config.
+INFO:root:Loaded ViT-H-14 model config.
+INFO:root:Loaded ViT-H-14 model config.
+INFO:root:Loaded ViT-H-14 model config.
+>>> model checkpoint loaded.
+>>> model checkpoint loaded.
+>>> model checkpoint loaded.
+>>> model checkpoint loaded.
+Fetching 19 files:   0%|          | 0/19 [00:00<?, ?it/s]Fetching 19 files: 100%|██████████| 19/19 [00:00<00:00, 113682.99it/s]
+WARNING:py.warnings:/home/work/miniconda3/envs/mmg/lib/python3.10/site-packages/torch/nn/utils/weight_norm.py:143: FutureWarning: `torch.nn.utils.weight_norm` is deprecated in favor of `torch.nn.utils.parametrizations.weight_norm`.
+  WeightNorm.apply(module, name, dim)
+
+Fetching 19 files:   0%|          | 0/19 [00:00<?, ?it/s]Fetching 19 files: 100%|██████████| 19/19 [00:00<00:00, 195322.98it/s]
+WARNING:py.warnings:/home/work/miniconda3/envs/mmg/lib/python3.10/site-packages/torch/nn/utils/weight_norm.py:143: FutureWarning: `torch.nn.utils.weight_norm` is deprecated in favor of `torch.nn.utils.parametrizations.weight_norm`.
+  WeightNorm.apply(module, name, dim)
+
+>>> model checkpoint loaded.
+>>> model checkpoint loaded.
+>>> model checkpoint loaded.
+Removing weight norm...
+Fetching 19 files:   0%|          | 0/19 [00:00<?, ?it/s]Fetching 19 files: 100%|██████████| 19/19 [00:00<00:00, 184471.70it/s]
+WARNING:py.warnings:/home/work/miniconda3/envs/mmg/lib/python3.10/site-packages/torch/nn/utils/weight_norm.py:143: FutureWarning: `torch.nn.utils.weight_norm` is deprecated in favor of `torch.nn.utils.parametrizations.weight_norm`.
+  WeightNorm.apply(module, name, dim)
+
+An error occurred while trying to fetch /home/work/.cache/huggingface/hub/models--auffusion--auffusion-full/snapshots/db5169f1890d4e5d926ac4c5524da0cc3d4b9a5b: Error no file named diffusion_pytorch_model.safetensors found in directory /home/work/.cache/huggingface/hub/models--auffusion--auffusion-full/snapshots/db5169f1890d4e5d926ac4c5524da0cc3d4b9a5b.
+Defaulting to unsafe serialization. Pass `allow_pickle=False` to raise an error instead.
+Fetching 19 files:   0%|          | 0/19 [00:00<?, ?it/s]Fetching 19 files: 100%|██████████| 19/19 [00:00<00:00, 72911.05it/s]
+Removing weight norm...
+WARNING:py.warnings:/home/work/miniconda3/envs/mmg/lib/python3.10/site-packages/torch/nn/utils/weight_norm.py:143: FutureWarning: `torch.nn.utils.weight_norm` is deprecated in favor of `torch.nn.utils.parametrizations.weight_norm`.
+  WeightNorm.apply(module, name, dim)
+
+Fetching 19 files:   0%|          | 0/19 [00:00<?, ?it/s]Fetching 19 files: 100%|██████████| 19/19 [00:00<00:00, 215966.87it/s]
+WARNING:py.warnings:/home/work/miniconda3/envs/mmg/lib/python3.10/site-packages/torch/nn/utils/weight_norm.py:143: FutureWarning: `torch.nn.utils.weight_norm` is deprecated in favor of `torch.nn.utils.parametrizations.weight_norm`.
+  WeightNorm.apply(module, name, dim)
+
+An error occurred while trying to fetch /home/work/.cache/huggingface/hub/models--auffusion--auffusion-full/snapshots/db5169f1890d4e5d926ac4c5524da0cc3d4b9a5b: Error no file named diffusion_pytorch_model.safetensors found in directory /home/work/.cache/huggingface/hub/models--auffusion--auffusion-full/snapshots/db5169f1890d4e5d926ac4c5524da0cc3d4b9a5b.
+Defaulting to unsafe serialization. Pass `allow_pickle=False` to raise an error instead.
+Fetching 19 files:   0%|          | 0/19 [00:00<?, ?it/s]Fetching 19 files: 100%|██████████| 19/19 [00:00<00:00, 159383.55it/s]
+WARNING:py.warnings:/home/work/miniconda3/envs/mmg/lib/python3.10/site-packages/torch/nn/utils/weight_norm.py:143: FutureWarning: `torch.nn.utils.weight_norm` is deprecated in favor of `torch.nn.utils.parametrizations.weight_norm`.
+  WeightNorm.apply(module, name, dim)
+
+>>> model checkpoint loaded.
+Fetching 19 files:   0%|          | 0/19 [00:00<?, ?it/s]Fetching 19 files: 100%|██████████| 19/19 [00:00<00:00, 115662.96it/s]
+WARNING:py.warnings:/home/work/miniconda3/envs/mmg/lib/python3.10/site-packages/torch/nn/utils/weight_norm.py:143: FutureWarning: `torch.nn.utils.weight_norm` is deprecated in favor of `torch.nn.utils.parametrizations.weight_norm`.
+  WeightNorm.apply(module, name, dim)
+
+Fetching 19 files:   0%|          | 0/19 [00:00<?, ?it/s]Fetching 19 files: 100%|██████████| 19/19 [00:00<00:00, 157805.50it/s]
+You are using a model of type clip_text_model to instantiate a model of type . This is not supported for all configurations of models and can yield errors.
+WARNING:py.warnings:/home/work/miniconda3/envs/mmg/lib/python3.10/site-packages/torch/nn/utils/weight_norm.py:143: FutureWarning: `torch.nn.utils.weight_norm` is deprecated in favor of `torch.nn.utils.parametrizations.weight_norm`.
+  WeightNorm.apply(module, name, dim)
+
+You are using a model of type clip_text_model to instantiate a model of type . This is not supported for all configurations of models and can yield errors.
+Removing weight norm...
+An error occurred while trying to fetch /home/work/.cache/huggingface/hub/models--auffusion--auffusion-full/snapshots/db5169f1890d4e5d926ac4c5524da0cc3d4b9a5b: Error no file named diffusion_pytorch_model.safetensors found in directory /home/work/.cache/huggingface/hub/models--auffusion--auffusion-full/snapshots/db5169f1890d4e5d926ac4c5524da0cc3d4b9a5b.
+Defaulting to unsafe serialization. Pass `allow_pickle=False` to raise an error instead.
+INITIATED: ConditionAdapter: {'text_encoder_name': 'text_encoder_0', 'condition_adapter_name': 'condition_adapter_0', 'condition_type': 'clip-vit-large-patch14_text', 'pretrained_model_name_or_path': 'openai/clip-vit-large-patch14', 'condition_max_length': 77, 'condition_dim': 768, 'cross_attention_dim': 768}
+LOADED: ConditionAdapter from /home/work/.cache/huggingface/hub/models--auffusion--auffusion-full/snapshots/db5169f1890d4e5d926ac4c5524da0cc3d4b9a5b/condition_adapter_0
+An error occurred while trying to fetch /home/work/.cache/huggingface/hub/models--auffusion--auffusion-full/snapshots/db5169f1890d4e5d926ac4c5524da0cc3d4b9a5b: Error no file named diffusion_pytorch_model.safetensors found in directory /home/work/.cache/huggingface/hub/models--auffusion--auffusion-full/snapshots/db5169f1890d4e5d926ac4c5524da0cc3d4b9a5b.
+Defaulting to unsafe serialization. Pass `allow_pickle=False` to raise an error instead.
+The config attributes {'decay': 0.9999, 'inv_gamma': 1.0, 'min_decay': 0.0, 'optimization_step': 100000, 'power': 0.6666666666666666, 'update_after_step': 0, 'use_ema_warmup': False} were passed to UNet2DConditionModel, but are not expected and will be ignored. Please verify your config.json configuration file.
+INITIATED: ConditionAdapter: {'text_encoder_name': 'text_encoder_0', 'condition_adapter_name': 'condition_adapter_0', 'condition_type': 'clip-vit-large-patch14_text', 'pretrained_model_name_or_path': 'openai/clip-vit-large-patch14', 'condition_max_length': 77, 'condition_dim': 768, 'cross_attention_dim': 768}
+LOADED: ConditionAdapter from /home/work/.cache/huggingface/hub/models--auffusion--auffusion-full/snapshots/db5169f1890d4e5d926ac4c5524da0cc3d4b9a5b/condition_adapter_0
+An error occurred while trying to fetch /home/work/.cache/huggingface/hub/models--auffusion--auffusion-full/snapshots/db5169f1890d4e5d926ac4c5524da0cc3d4b9a5b: Error no file named diffusion_pytorch_model.safetensors found in directory /home/work/.cache/huggingface/hub/models--auffusion--auffusion-full/snapshots/db5169f1890d4e5d926ac4c5524da0cc3d4b9a5b.
+Defaulting to unsafe serialization. Pass `allow_pickle=False` to raise an error instead.
+The config attributes {'decay': 0.9999, 'inv_gamma': 1.0, 'min_decay': 0.0, 'optimization_step': 100000, 'power': 0.6666666666666666, 'update_after_step': 0, 'use_ema_warmup': False} were passed to UNet2DConditionModel, but are not expected and will be ignored. Please verify your config.json configuration file.
+Removing weight norm...
+An error occurred while trying to fetch /home/work/.cache/huggingface/hub/models--auffusion--auffusion-full/snapshots/db5169f1890d4e5d926ac4c5524da0cc3d4b9a5b: Error no file named diffusion_pytorch_model.safetensors found in directory /home/work/.cache/huggingface/hub/models--auffusion--auffusion-full/snapshots/db5169f1890d4e5d926ac4c5524da0cc3d4b9a5b.
+Defaulting to unsafe serialization. Pass `allow_pickle=False` to raise an error instead.
+Removing weight norm...
+Removing weight norm...
+Removing weight norm...
+An error occurred while trying to fetch /home/work/.cache/huggingface/hub/models--auffusion--auffusion-full/snapshots/db5169f1890d4e5d926ac4c5524da0cc3d4b9a5b: Error no file named diffusion_pytorch_model.safetensors found in directory /home/work/.cache/huggingface/hub/models--auffusion--auffusion-full/snapshots/db5169f1890d4e5d926ac4c5524da0cc3d4b9a5b.
+Defaulting to unsafe serialization. Pass `allow_pickle=False` to raise an error instead.
+An error occurred while trying to fetch /home/work/.cache/huggingface/hub/models--auffusion--auffusion-full/snapshots/db5169f1890d4e5d926ac4c5524da0cc3d4b9a5b: Error no file named diffusion_pytorch_model.safetensors found in directory /home/work/.cache/huggingface/hub/models--auffusion--auffusion-full/snapshots/db5169f1890d4e5d926ac4c5524da0cc3d4b9a5b.
+Defaulting to unsafe serialization. Pass `allow_pickle=False` to raise an error instead.
+Removing weight norm...
+An error occurred while trying to fetch /home/work/.cache/huggingface/hub/models--auffusion--auffusion-full/snapshots/db5169f1890d4e5d926ac4c5524da0cc3d4b9a5b: Error no file named diffusion_pytorch_model.safetensors found in directory /home/work/.cache/huggingface/hub/models--auffusion--auffusion-full/snapshots/db5169f1890d4e5d926ac4c5524da0cc3d4b9a5b.
+Defaulting to unsafe serialization. Pass `allow_pickle=False` to raise an error instead.
+An error occurred while trying to fetch /home/work/.cache/huggingface/hub/models--auffusion--auffusion-full/snapshots/db5169f1890d4e5d926ac4c5524da0cc3d4b9a5b: Error no file named diffusion_pytorch_model.safetensors found in directory /home/work/.cache/huggingface/hub/models--auffusion--auffusion-full/snapshots/db5169f1890d4e5d926ac4c5524da0cc3d4b9a5b.
+Defaulting to unsafe serialization. Pass `allow_pickle=False` to raise an error instead.
+You are using a model of type clip_text_model to instantiate a model of type . This is not supported for all configurations of models and can yield errors.
+You are using a model of type clip_text_model to instantiate a model of type . This is not supported for all configurations of models and can yield errors.
+You are using a model of type clip_text_model to instantiate a model of type . This is not supported for all configurations of models and can yield errors.
+You are using a model of type clip_text_model to instantiate a model of type . This is not supported for all configurations of models and can yield errors.
+You are using a model of type clip_text_model to instantiate a model of type . This is not supported for all configurations of models and can yield errors.
+You are using a model of type clip_text_model to instantiate a model of type . This is not supported for all configurations of models and can yield errors.
+INITIATED: ConditionAdapter: {'text_encoder_name': 'text_encoder_0', 'condition_adapter_name': 'condition_adapter_0', 'condition_type': 'clip-vit-large-patch14_text', 'pretrained_model_name_or_path': 'openai/clip-vit-large-patch14', 'condition_max_length': 77, 'condition_dim': 768, 'cross_attention_dim': 768}
+LOADED: ConditionAdapter from /home/work/.cache/huggingface/hub/models--auffusion--auffusion-full/snapshots/db5169f1890d4e5d926ac4c5524da0cc3d4b9a5b/condition_adapter_0
+An error occurred while trying to fetch /home/work/.cache/huggingface/hub/models--auffusion--auffusion-full/snapshots/db5169f1890d4e5d926ac4c5524da0cc3d4b9a5b: Error no file named diffusion_pytorch_model.safetensors found in directory /home/work/.cache/huggingface/hub/models--auffusion--auffusion-full/snapshots/db5169f1890d4e5d926ac4c5524da0cc3d4b9a5b.
+Defaulting to unsafe serialization. Pass `allow_pickle=False` to raise an error instead.
+The config attributes {'decay': 0.9999, 'inv_gamma': 1.0, 'min_decay': 0.0, 'optimization_step': 100000, 'power': 0.6666666666666666, 'update_after_step': 0, 'use_ema_warmup': False} were passed to UNet2DConditionModel, but are not expected and will be ignored. Please verify your config.json configuration file.
+INITIATED: ConditionAdapter: {'text_encoder_name': 'text_encoder_0', 'condition_adapter_name': 'condition_adapter_0', 'condition_type': 'clip-vit-large-patch14_text', 'pretrained_model_name_or_path': 'openai/clip-vit-large-patch14', 'condition_max_length': 77, 'condition_dim': 768, 'cross_attention_dim': 768}
+LOADED: ConditionAdapter from /home/work/.cache/huggingface/hub/models--auffusion--auffusion-full/snapshots/db5169f1890d4e5d926ac4c5524da0cc3d4b9a5b/condition_adapter_0
+An error occurred while trying to fetch /home/work/.cache/huggingface/hub/models--auffusion--auffusion-full/snapshots/db5169f1890d4e5d926ac4c5524da0cc3d4b9a5b: Error no file named diffusion_pytorch_model.safetensors found in directory /home/work/.cache/huggingface/hub/models--auffusion--auffusion-full/snapshots/db5169f1890d4e5d926ac4c5524da0cc3d4b9a5b.
+Defaulting to unsafe serialization. Pass `allow_pickle=False` to raise an error instead.
+The config attributes {'decay': 0.9999, 'inv_gamma': 1.0, 'min_decay': 0.0, 'optimization_step': 100000, 'power': 0.6666666666666666, 'update_after_step': 0, 'use_ema_warmup': False} were passed to UNet2DConditionModel, but are not expected and will be ignored. Please verify your config.json configuration file.
+INITIATED: ConditionAdapter: {'text_encoder_name': 'text_encoder_0', 'condition_adapter_name': 'condition_adapter_0', 'condition_type': 'clip-vit-large-patch14_text', 'pretrained_model_name_or_path': 'openai/clip-vit-large-patch14', 'condition_max_length': 77, 'condition_dim': 768, 'cross_attention_dim': 768}
+LOADED: ConditionAdapter from /home/work/.cache/huggingface/hub/models--auffusion--auffusion-full/snapshots/db5169f1890d4e5d926ac4c5524da0cc3d4b9a5b/condition_adapter_0
+An error occurred while trying to fetch /home/work/.cache/huggingface/hub/models--auffusion--auffusion-full/snapshots/db5169f1890d4e5d926ac4c5524da0cc3d4b9a5b: Error no file named diffusion_pytorch_model.safetensors found in directory /home/work/.cache/huggingface/hub/models--auffusion--auffusion-full/snapshots/db5169f1890d4e5d926ac4c5524da0cc3d4b9a5b.
+Defaulting to unsafe serialization. Pass `allow_pickle=False` to raise an error instead.
+The config attributes {'decay': 0.9999, 'inv_gamma': 1.0, 'min_decay': 0.0, 'optimization_step': 100000, 'power': 0.6666666666666666, 'update_after_step': 0, 'use_ema_warmup': False} were passed to UNet2DConditionModel, but are not expected and will be ignored. Please verify your config.json configuration file.
+INITIATED: ConditionAdapter: {'text_encoder_name': 'text_encoder_0', 'condition_adapter_name': 'condition_adapter_0', 'condition_type': 'clip-vit-large-patch14_text', 'pretrained_model_name_or_path': 'openai/clip-vit-large-patch14', 'condition_max_length': 77, 'condition_dim': 768, 'cross_attention_dim': 768}
+LOADED: ConditionAdapter from /home/work/.cache/huggingface/hub/models--auffusion--auffusion-full/snapshots/db5169f1890d4e5d926ac4c5524da0cc3d4b9a5b/condition_adapter_0
+An error occurred while trying to fetch /home/work/.cache/huggingface/hub/models--auffusion--auffusion-full/snapshots/db5169f1890d4e5d926ac4c5524da0cc3d4b9a5b: Error no file named diffusion_pytorch_model.safetensors found in directory /home/work/.cache/huggingface/hub/models--auffusion--auffusion-full/snapshots/db5169f1890d4e5d926ac4c5524da0cc3d4b9a5b.
+Defaulting to unsafe serialization. Pass `allow_pickle=False` to raise an error instead.
+The config attributes {'decay': 0.9999, 'inv_gamma': 1.0, 'min_decay': 0.0, 'optimization_step': 100000, 'power': 0.6666666666666666, 'update_after_step': 0, 'use_ema_warmup': False} were passed to UNet2DConditionModel, but are not expected and will be ignored. Please verify your config.json configuration file.
+INITIATED: ConditionAdapter: {'text_encoder_name': 'text_encoder_0', 'condition_adapter_name': 'condition_adapter_0', 'condition_type': 'clip-vit-large-patch14_text', 'pretrained_model_name_or_path': 'openai/clip-vit-large-patch14', 'condition_max_length': 77, 'condition_dim': 768, 'cross_attention_dim': 768}
+LOADED: ConditionAdapter from /home/work/.cache/huggingface/hub/models--auffusion--auffusion-full/snapshots/db5169f1890d4e5d926ac4c5524da0cc3d4b9a5b/condition_adapter_0
+An error occurred while trying to fetch /home/work/.cache/huggingface/hub/models--auffusion--auffusion-full/snapshots/db5169f1890d4e5d926ac4c5524da0cc3d4b9a5b: Error no file named diffusion_pytorch_model.safetensors found in directory /home/work/.cache/huggingface/hub/models--auffusion--auffusion-full/snapshots/db5169f1890d4e5d926ac4c5524da0cc3d4b9a5b.
+Defaulting to unsafe serialization. Pass `allow_pickle=False` to raise an error instead.
+The config attributes {'decay': 0.9999, 'inv_gamma': 1.0, 'min_decay': 0.0, 'optimization_step': 100000, 'power': 0.6666666666666666, 'update_after_step': 0, 'use_ema_warmup': False} were passed to UNet2DConditionModel, but are not expected and will be ignored. Please verify your config.json configuration file.
+INITIATED: ConditionAdapter: {'text_encoder_name': 'text_encoder_0', 'condition_adapter_name': 'condition_adapter_0', 'condition_type': 'clip-vit-large-patch14_text', 'pretrained_model_name_or_path': 'openai/clip-vit-large-patch14', 'condition_max_length': 77, 'condition_dim': 768, 'cross_attention_dim': 768}
+LOADED: ConditionAdapter from /home/work/.cache/huggingface/hub/models--auffusion--auffusion-full/snapshots/db5169f1890d4e5d926ac4c5524da0cc3d4b9a5b/condition_adapter_0
+An error occurred while trying to fetch /home/work/.cache/huggingface/hub/models--auffusion--auffusion-full/snapshots/db5169f1890d4e5d926ac4c5524da0cc3d4b9a5b: Error no file named diffusion_pytorch_model.safetensors found in directory /home/work/.cache/huggingface/hub/models--auffusion--auffusion-full/snapshots/db5169f1890d4e5d926ac4c5524da0cc3d4b9a5b.
+Defaulting to unsafe serialization. Pass `allow_pickle=False` to raise an error instead.
+The config attributes {'decay': 0.9999, 'inv_gamma': 1.0, 'min_decay': 0.0, 'optimization_step': 100000, 'power': 0.6666666666666666, 'update_after_step': 0, 'use_ema_warmup': False} were passed to UNet2DConditionModel, but are not expected and will be ignored. Please verify your config.json configuration file.
+[rank4]:[W408 07:04:51.212272970 ProcessGroupNCCL.cpp:4561] [PG ID 0 PG GUID 0 Rank 4]  using GPU 4 to perform barrier as devices used by this process are currently unknown. This can potentially cause a hang if this rank to GPU mapping is incorrect. Specify device_ids in barrier() to force use of a particular device, or call init_process_group() with a device_id.
+[rank2]:[W408 07:04:51.293684909 ProcessGroupNCCL.cpp:4561] [PG ID 0 PG GUID 0 Rank 2]  using GPU 2 to perform barrier as devices used by this process are currently unknown. This can potentially cause a hang if this rank to GPU mapping is incorrect. Specify device_ids in barrier() to force use of a particular device, or call init_process_group() with a device_id.
+[rank5]:[W408 07:04:52.021424998 ProcessGroupNCCL.cpp:4561] [PG ID 0 PG GUID 0 Rank 5]  using GPU 5 to perform barrier as devices used by this process are currently unknown. This can potentially cause a hang if this rank to GPU mapping is incorrect. Specify device_ids in barrier() to force use of a particular device, or call init_process_group() with a device_id.
+[rank7]:[W408 07:04:53.179650730 ProcessGroupNCCL.cpp:4561] [PG ID 0 PG GUID 0 Rank 7]  using GPU 7 to perform barrier as devices used by this process are currently unknown. This can potentially cause a hang if this rank to GPU mapping is incorrect. Specify device_ids in barrier() to force use of a particular device, or call init_process_group() with a device_id.
+[rank1]:[W408 07:04:53.497255479 ProcessGroupNCCL.cpp:4561] [PG ID 0 PG GUID 0 Rank 1]  using GPU 1 to perform barrier as devices used by this process are currently unknown. This can potentially cause a hang if this rank to GPU mapping is incorrect. Specify device_ids in barrier() to force use of a particular device, or call init_process_group() with a device_id.
+[rank3]:[W408 07:04:53.509967511 ProcessGroupNCCL.cpp:4561] [PG ID 0 PG GUID 0 Rank 3]  using GPU 3 to perform barrier as devices used by this process are currently unknown. This can potentially cause a hang if this rank to GPU mapping is incorrect. Specify device_ids in barrier() to force use of a particular device, or call init_process_group() with a device_id.
+[rank6]:[W408 07:04:54.397681435 ProcessGroupNCCL.cpp:4561] [PG ID 0 PG GUID 0 Rank 6]  using GPU 6 to perform barrier as devices used by this process are currently unknown. This can potentially cause a hang if this rank to GPU mapping is incorrect. Specify device_ids in barrier() to force use of a particular device, or call init_process_group() with a device_id.
+[rank0]:[W408 07:04:55.713737091 ProcessGroupNCCL.cpp:4561] [PG ID 0 PG GUID 0 Rank 0]  using GPU 0 to perform barrier as devices used by this process are currently unknown. This can potentially cause a hang if this rank to GPU mapping is incorrect. Specify device_ids in barrier() to force use of a particular device, or call init_process_group() with a device_id.
+Generating:   0%|          | 0/61 [00:00<?, ?it/s]Generating:   2%|▏         | 1/61 [00:46<46:48, 46.81s/it]Generating:   3%|▎         | 2/61 [01:31<44:54, 45.66s/it]Generating:   5%|▍         | 3/61 [02:16<43:42, 45.22s/it]Generating:   7%|▋         | 4/61 [03:01<42:45, 45.01s/it]Generating:   8%|▊         | 5/61 [03:45<41:53, 44.88s/it]Generating:  10%|▉         | 6/61 [04:30<41:05, 44.82s/it]Generating:  11%|█▏        | 7/61 [05:15<40:17, 44.77s/it]Generating:  13%|█▎        | 8/61 [05:59<39:31, 44.74s/it]Generating:  15%|█▍        | 9/61 [06:44<38:48, 44.78s/it]Generating:  16%|█▋        | 10/61 [07:29<38:00, 44.72s/it]Generating:  18%|█▊        | 11/61 [08:13<37:13, 44.67s/it]Generating:  20%|█▉        | 12/61 [08:58<36:28, 44.66s/it]Generating:  21%|██▏       | 13/61 [09:43<35:43, 44.66s/it]Generating:  23%|██▎       | 14/61 [10:27<34:58, 44.65s/it]Generating:  25%|██▍       | 15/61 [11:12<34:13, 44.63s/it]Generating:  26%|██▌       | 16/61 [11:56<33:28, 44.62s/it]Generating:  28%|██▊       | 17/61 [12:41<32:41, 44.59s/it]Generating:  30%|██▉       | 18/61 [13:25<31:57, 44.59s/it]Generating:  31%|███       | 19/61 [14:10<31:13, 44.61s/it]Generating:  33%|███▎      | 20/61 [14:55<30:26, 44.56s/it]Generating:  34%|███▍      | 21/61 [15:39<29:43, 44.59s/it]Generating:  36%|███▌      | 22/61 [16:24<28:59, 44.60s/it]Generating:  38%|███▊      | 23/61 [17:08<28:15, 44.61s/it]Generating:  39%|███▉      | 24/61 [17:53<27:29, 44.57s/it]Generating:  41%|████      | 25/61 [18:38<26:44, 44.56s/it]Generating:  43%|████▎     | 26/61 [19:22<25:59, 44.57s/it]Generating:  44%|████▍     | 27/61 [20:07<25:16, 44.60s/it]Generating:  46%|████▌     | 28/61 [20:51<24:31, 44.59s/it]Generating:  48%|████▊     | 29/61 [21:36<23:47, 44.62s/it]Generating:  49%|████▉     | 30/61 [22:21<23:03, 44.63s/it]Generating:  51%|█████     | 31/61 [23:05<22:18, 44.61s/it]Generating:  52%|█████▏    | 32/61 [23:50<21:33, 44.60s/it]Generating:  54%|█████▍    | 33/61 [24:34<20:48, 44.61s/it]Generating:  56%|█████▌    | 34/61 [25:19<20:05, 44.65s/it]Generating:  57%|█████▋    | 35/61 [26:04<19:20, 44.62s/it]Generating:  59%|█████▉    | 36/61 [26:48<18:35, 44.62s/it]Generating:  61%|██████    | 37/61 [27:33<17:50, 44.60s/it]Generating:  62%|██████▏   | 38/61 [28:17<17:05, 44.59s/it]Generating:  64%|██████▍   | 39/61 [29:02<16:21, 44.59s/it]Generating:  66%|██████▌   | 40/61 [29:47<15:35, 44.57s/it]Generating:  67%|██████▋   | 41/61 [30:31<14:52, 44.61s/it]Generating:  69%|██████▉   | 42/61 [31:16<14:07, 44.59s/it]Generating:  70%|███████   | 43/61 [32:00<13:22, 44.60s/it]Generating:  72%|███████▏  | 44/61 [32:45<12:37, 44.54s/it]Generating:  74%|███████▍  | 45/61 [33:29<11:52, 44.56s/it]Generating:  75%|███████▌  | 46/61 [34:14<11:08, 44.59s/it]Generating:  77%|███████▋  | 47/61 [34:59<10:24, 44.58s/it]Generating:  79%|███████▊  | 48/61 [35:43<09:39, 44.55s/it]Generating:  80%|████████  | 49/61 [36:28<08:54, 44.57s/it]Generating:  82%|████████▏ | 50/61 [37:12<08:10, 44.58s/it]Generating:  84%|████████▎ | 51/61 [37:57<07:25, 44.55s/it]Generating:  85%|████████▌ | 52/61 [38:42<06:41, 44.59s/it]Generating:  87%|████████▋ | 53/61 [39:26<05:56, 44.56s/it]Generating:  89%|████████▊ | 54/61 [40:11<05:12, 44.58s/it]Generating:  90%|█████████ | 55/61 [40:55<04:27, 44.57s/it]Generating:  92%|█████████▏| 56/61 [41:40<03:42, 44.59s/it]Generating:  93%|█████████▎| 57/61 [42:24<02:58, 44.55s/it]Generating:  95%|█████████▌| 58/61 [43:09<02:13, 44.56s/it]Generating:  97%|█████████▋| 59/61 [43:54<01:29, 44.58s/it]Generating:  98%|█████████▊| 60/61 [44:38<00:44, 44.58s/it]Generating: 100%|██████████| 61/61 [45:03<00:00, 38.70s/it]Generating: 100%|██████████| 61/61 [45:03<00:00, 44.32s/it]
+Process 0: Completed inference. Results saved in /home/work/kby_hgh/MMG_Inferencce_folder/0406_MMG_1e-4_1e-4_8gpu_abl_combined_no_crop_checkpoint-step-9599.
+Inference finished!
+[rank: 6] Seed set to 42
+[rank: 5] Seed set to 42
+[rank: 3] Seed set to 42
+[rank: 0] Seed set to 42
+[rank: 4] Seed set to 42
+Start Inference
+[rank: 0] Seed set to 42
+Start Inference
+Start Inference
+Start Inference[rank: 4] Seed set to 46
+
+[rank: 6] Seed set to 48
+[rank: 5] Seed set to 47
+[rank: 2] Seed set to 42
+[rank: 1] Seed set to 42
+Start Inference
+[rank: 3] Seed set to 45
+Start Inference
+[rank: 7] Seed set to 42
+[rank: 2] Seed set to 44
+Start Inference
+[rank: 1] Seed set to 43
+INFO:mainlogger:LatentDiffusion: Running in eps-prediction mode
+Start Inference
+[rank: 7] Seed set to 49
+INFO:mainlogger:LatentDiffusion: Running in eps-prediction mode
+INFO:mainlogger:LatentDiffusion: Running in eps-prediction mode
+INFO:mainlogger:LatentDiffusion: Running in eps-prediction mode
+INFO:mainlogger:LatentDiffusion: Running in eps-prediction mode
+INFO:mainlogger:LatentDiffusion: Running in eps-prediction mode
+INFO:mainlogger:LatentDiffusion: Running in eps-prediction mode
+INFO:mainlogger:LatentDiffusion: Running in eps-prediction mode
+AE working on z of shape (1, 4, 64, 64) = 16384 dimensions.
+AE working on z of shape (1, 4, 64, 64) = 16384 dimensions.
+AE working on z of shape (1, 4, 64, 64) = 16384 dimensions.
+INFO:root:Loaded ViT-H-14 model config.
+INFO:root:Loaded ViT-H-14 model config.
+INFO:root:Loaded ViT-H-14 model config.
+AE working on z of shape (1, 4, 64, 64) = 16384 dimensions.
+AE working on z of shape (1, 4, 64, 64) = 16384 dimensions.
+AE working on z of shape (1, 4, 64, 64) = 16384 dimensions.
+INFO:root:Loaded ViT-H-14 model config.
+INFO:root:Loaded ViT-H-14 model config.
+INFO:root:Loaded ViT-H-14 model config.
+AE working on z of shape (1, 4, 64, 64) = 16384 dimensions.
+INFO:root:Loaded ViT-H-14 model config.
+AE working on z of shape (1, 4, 64, 64) = 16384 dimensions.
+INFO:root:Loaded ViT-H-14 model config.
+>>> model checkpoint loaded.
+>>> model checkpoint loaded.
+>>> model checkpoint loaded.
+>>> model checkpoint loaded.
+>>> model checkpoint loaded.
+Fetching 19 files:   0%|          | 0/19 [00:00<?, ?it/s]Fetching 19 files: 100%|██████████| 19/19 [00:00<00:00, 28209.48it/s]
+Fetching 19 files:   0%|          | 0/19 [00:00<?, ?it/s]Fetching 19 files: 100%|██████████| 19/19 [00:00<00:00, 30686.09it/s]
+Fetching 19 files:   0%|          | 0/19 [00:00<?, ?it/s]Fetching 19 files: 100%|██████████| 19/19 [00:00<00:00, 215383.18it/s]
+Fetching 19 files:   0%|          | 0/19 [00:00<?, ?it/s]Fetching 19 files: 100%|██████████| 19/19 [00:00<00:00, 20709.92it/s]
+Removing weight norm...
+Fetching 19 files:   0%|          | 0/19 [00:00<?, ?it/s]Fetching 19 files: 100%|██████████| 19/19 [00:00<00:00, 56841.50it/s]
+An error occurred while trying to fetch /home/work/.cache/huggingface/hub/models--auffusion--auffusion-full/snapshots/db5169f1890d4e5d926ac4c5524da0cc3d4b9a5b: Error no file named diffusion_pytorch_model.safetensors found in directory /home/work/.cache/huggingface/hub/models--auffusion--auffusion-full/snapshots/db5169f1890d4e5d926ac4c5524da0cc3d4b9a5b.
+Defaulting to unsafe serialization. Pass `allow_pickle=False` to raise an error instead.
+Removing weight norm...
+Removing weight norm...
+An error occurred while trying to fetch /home/work/.cache/huggingface/hub/models--auffusion--auffusion-full/snapshots/db5169f1890d4e5d926ac4c5524da0cc3d4b9a5b: Error no file named diffusion_pytorch_model.safetensors found in directory /home/work/.cache/huggingface/hub/models--auffusion--auffusion-full/snapshots/db5169f1890d4e5d926ac4c5524da0cc3d4b9a5b.
+Defaulting to unsafe serialization. Pass `allow_pickle=False` to raise an error instead.
+An error occurred while trying to fetch /home/work/.cache/huggingface/hub/models--auffusion--auffusion-full/snapshots/db5169f1890d4e5d926ac4c5524da0cc3d4b9a5b: Error no file named diffusion_pytorch_model.safetensors found in directory /home/work/.cache/huggingface/hub/models--auffusion--auffusion-full/snapshots/db5169f1890d4e5d926ac4c5524da0cc3d4b9a5b.
+Defaulting to unsafe serialization. Pass `allow_pickle=False` to raise an error instead.
+Removing weight norm...
+An error occurred while trying to fetch /home/work/.cache/huggingface/hub/models--auffusion--auffusion-full/snapshots/db5169f1890d4e5d926ac4c5524da0cc3d4b9a5b: Error no file named diffusion_pytorch_model.safetensors found in directory /home/work/.cache/huggingface/hub/models--auffusion--auffusion-full/snapshots/db5169f1890d4e5d926ac4c5524da0cc3d4b9a5b.
+Defaulting to unsafe serialization. Pass `allow_pickle=False` to raise an error instead.
+>>> model checkpoint loaded.
+Removing weight norm...
+An error occurred while trying to fetch /home/work/.cache/huggingface/hub/models--auffusion--auffusion-full/snapshots/db5169f1890d4e5d926ac4c5524da0cc3d4b9a5b: Error no file named diffusion_pytorch_model.safetensors found in directory /home/work/.cache/huggingface/hub/models--auffusion--auffusion-full/snapshots/db5169f1890d4e5d926ac4c5524da0cc3d4b9a5b.
+Defaulting to unsafe serialization. Pass `allow_pickle=False` to raise an error instead.
+You are using a model of type clip_text_model to instantiate a model of type . This is not supported for all configurations of models and can yield errors.
+You are using a model of type clip_text_model to instantiate a model of type . This is not supported for all configurations of models and can yield errors.
+You are using a model of type clip_text_model to instantiate a model of type . This is not supported for all configurations of models and can yield errors.
+You are using a model of type clip_text_model to instantiate a model of type . This is not supported for all configurations of models and can yield errors.
+You are using a model of type clip_text_model to instantiate a model of type . This is not supported for all configurations of models and can yield errors.
+INITIATED: ConditionAdapter: {'text_encoder_name': 'text_encoder_0', 'condition_adapter_name': 'condition_adapter_0', 'condition_type': 'clip-vit-large-patch14_text', 'pretrained_model_name_or_path': 'openai/clip-vit-large-patch14', 'condition_max_length': 77, 'condition_dim': 768, 'cross_attention_dim': 768}INITIATED: ConditionAdapter: {'text_encoder_name': 'text_encoder_0', 'condition_adapter_name': 'condition_adapter_0', 'condition_type': 'clip-vit-large-patch14_text', 'pretrained_model_name_or_path': 'openai/clip-vit-large-patch14', 'condition_max_length': 77, 'condition_dim': 768, 'cross_attention_dim': 768}INITIATED: ConditionAdapter: {'text_encoder_name': 'text_encoder_0', 'condition_adapter_name': 'condition_adapter_0', 'condition_type': 'clip-vit-large-patch14_text', 'pretrained_model_name_or_path': 'openai/clip-vit-large-patch14', 'condition_max_length': 77, 'condition_dim': 768, 'cross_attention_dim': 768}
+
+
+LOADED: ConditionAdapter from /home/work/.cache/huggingface/hub/models--auffusion--auffusion-full/snapshots/db5169f1890d4e5d926ac4c5524da0cc3d4b9a5b/condition_adapter_0
+LOADED: ConditionAdapter from /home/work/.cache/huggingface/hub/models--auffusion--auffusion-full/snapshots/db5169f1890d4e5d926ac4c5524da0cc3d4b9a5b/condition_adapter_0
+LOADED: ConditionAdapter from /home/work/.cache/huggingface/hub/models--auffusion--auffusion-full/snapshots/db5169f1890d4e5d926ac4c5524da0cc3d4b9a5b/condition_adapter_0
+An error occurred while trying to fetch /home/work/.cache/huggingface/hub/models--auffusion--auffusion-full/snapshots/db5169f1890d4e5d926ac4c5524da0cc3d4b9a5b: Error no file named diffusion_pytorch_model.safetensors found in directory /home/work/.cache/huggingface/hub/models--auffusion--auffusion-full/snapshots/db5169f1890d4e5d926ac4c5524da0cc3d4b9a5b.
+An error occurred while trying to fetch /home/work/.cache/huggingface/hub/models--auffusion--auffusion-full/snapshots/db5169f1890d4e5d926ac4c5524da0cc3d4b9a5b: Error no file named diffusion_pytorch_model.safetensors found in directory /home/work/.cache/huggingface/hub/models--auffusion--auffusion-full/snapshots/db5169f1890d4e5d926ac4c5524da0cc3d4b9a5b.
+An error occurred while trying to fetch /home/work/.cache/huggingface/hub/models--auffusion--auffusion-full/snapshots/db5169f1890d4e5d926ac4c5524da0cc3d4b9a5b: Error no file named diffusion_pytorch_model.safetensors found in directory /home/work/.cache/huggingface/hub/models--auffusion--auffusion-full/snapshots/db5169f1890d4e5d926ac4c5524da0cc3d4b9a5b.
+Defaulting to unsafe serialization. Pass `allow_pickle=False` to raise an error instead.
+Defaulting to unsafe serialization. Pass `allow_pickle=False` to raise an error instead.
+Defaulting to unsafe serialization. Pass `allow_pickle=False` to raise an error instead.
+The config attributes {'decay': 0.9999, 'inv_gamma': 1.0, 'min_decay': 0.0, 'optimization_step': 100000, 'power': 0.6666666666666666, 'update_after_step': 0, 'use_ema_warmup': False} were passed to UNet2DConditionModel, but are not expected and will be ignored. Please verify your config.json configuration file.
+The config attributes {'decay': 0.9999, 'inv_gamma': 1.0, 'min_decay': 0.0, 'optimization_step': 100000, 'power': 0.6666666666666666, 'update_after_step': 0, 'use_ema_warmup': False} were passed to UNet2DConditionModel, but are not expected and will be ignored. Please verify your config.json configuration file.
+The config attributes {'decay': 0.9999, 'inv_gamma': 1.0, 'min_decay': 0.0, 'optimization_step': 100000, 'power': 0.6666666666666666, 'update_after_step': 0, 'use_ema_warmup': False} were passed to UNet2DConditionModel, but are not expected and will be ignored. Please verify your config.json configuration file.
+INITIATED: ConditionAdapter: {'text_encoder_name': 'text_encoder_0', 'condition_adapter_name': 'condition_adapter_0', 'condition_type': 'clip-vit-large-patch14_text', 'pretrained_model_name_or_path': 'openai/clip-vit-large-patch14', 'condition_max_length': 77, 'condition_dim': 768, 'cross_attention_dim': 768}
+LOADED: ConditionAdapter from /home/work/.cache/huggingface/hub/models--auffusion--auffusion-full/snapshots/db5169f1890d4e5d926ac4c5524da0cc3d4b9a5b/condition_adapter_0
+An error occurred while trying to fetch /home/work/.cache/huggingface/hub/models--auffusion--auffusion-full/snapshots/db5169f1890d4e5d926ac4c5524da0cc3d4b9a5b: Error no file named diffusion_pytorch_model.safetensors found in directory /home/work/.cache/huggingface/hub/models--auffusion--auffusion-full/snapshots/db5169f1890d4e5d926ac4c5524da0cc3d4b9a5b.
+Defaulting to unsafe serialization. Pass `allow_pickle=False` to raise an error instead.
+The config attributes {'decay': 0.9999, 'inv_gamma': 1.0, 'min_decay': 0.0, 'optimization_step': 100000, 'power': 0.6666666666666666, 'update_after_step': 0, 'use_ema_warmup': False} were passed to UNet2DConditionModel, but are not expected and will be ignored. Please verify your config.json configuration file.
+INITIATED: ConditionAdapter: {'text_encoder_name': 'text_encoder_0', 'condition_adapter_name': 'condition_adapter_0', 'condition_type': 'clip-vit-large-patch14_text', 'pretrained_model_name_or_path': 'openai/clip-vit-large-patch14', 'condition_max_length': 77, 'condition_dim': 768, 'cross_attention_dim': 768}
+LOADED: ConditionAdapter from /home/work/.cache/huggingface/hub/models--auffusion--auffusion-full/snapshots/db5169f1890d4e5d926ac4c5524da0cc3d4b9a5b/condition_adapter_0
+An error occurred while trying to fetch /home/work/.cache/huggingface/hub/models--auffusion--auffusion-full/snapshots/db5169f1890d4e5d926ac4c5524da0cc3d4b9a5b: Error no file named diffusion_pytorch_model.safetensors found in directory /home/work/.cache/huggingface/hub/models--auffusion--auffusion-full/snapshots/db5169f1890d4e5d926ac4c5524da0cc3d4b9a5b.
+Defaulting to unsafe serialization. Pass `allow_pickle=False` to raise an error instead.
+The config attributes {'decay': 0.9999, 'inv_gamma': 1.0, 'min_decay': 0.0, 'optimization_step': 100000, 'power': 0.6666666666666666, 'update_after_step': 0, 'use_ema_warmup': False} were passed to UNet2DConditionModel, but are not expected and will be ignored. Please verify your config.json configuration file.
+>>> model checkpoint loaded.
+>>> model checkpoint loaded.
+Fetching 19 files:   0%|          | 0/19 [00:00<?, ?it/s]Fetching 19 files: 100%|██████████| 19/19 [00:00<00:00, 15534.46it/s]
+Fetching 19 files:   0%|          | 0/19 [00:00<?, ?it/s]Fetching 19 files: 100%|██████████| 19/19 [00:00<00:00, 63047.29it/s]
+Removing weight norm...
+Fetching 19 files:   0%|          | 0/19 [00:00<?, ?it/s]Fetching 19 files: 100%|██████████| 19/19 [00:00<00:00, 188843.07it/s]
+An error occurred while trying to fetch /home/work/.cache/huggingface/hub/models--auffusion--auffusion-full/snapshots/db5169f1890d4e5d926ac4c5524da0cc3d4b9a5b: Error no file named diffusion_pytorch_model.safetensors found in directory /home/work/.cache/huggingface/hub/models--auffusion--auffusion-full/snapshots/db5169f1890d4e5d926ac4c5524da0cc3d4b9a5b.
+Defaulting to unsafe serialization. Pass `allow_pickle=False` to raise an error instead.
+Removing weight norm...
+Removing weight norm...
+An error occurred while trying to fetch /home/work/.cache/huggingface/hub/models--auffusion--auffusion-full/snapshots/db5169f1890d4e5d926ac4c5524da0cc3d4b9a5b: Error no file named diffusion_pytorch_model.safetensors found in directory /home/work/.cache/huggingface/hub/models--auffusion--auffusion-full/snapshots/db5169f1890d4e5d926ac4c5524da0cc3d4b9a5b.
+Defaulting to unsafe serialization. Pass `allow_pickle=False` to raise an error instead.
+An error occurred while trying to fetch /home/work/.cache/huggingface/hub/models--auffusion--auffusion-full/snapshots/db5169f1890d4e5d926ac4c5524da0cc3d4b9a5b: Error no file named diffusion_pytorch_model.safetensors found in directory /home/work/.cache/huggingface/hub/models--auffusion--auffusion-full/snapshots/db5169f1890d4e5d926ac4c5524da0cc3d4b9a5b.
+Defaulting to unsafe serialization. Pass `allow_pickle=False` to raise an error instead.
+You are using a model of type clip_text_model to instantiate a model of type . This is not supported for all configurations of models and can yield errors.
+You are using a model of type clip_text_model to instantiate a model of type . This is not supported for all configurations of models and can yield errors.
+You are using a model of type clip_text_model to instantiate a model of type . This is not supported for all configurations of models and can yield errors.
+INITIATED: ConditionAdapter: {'text_encoder_name': 'text_encoder_0', 'condition_adapter_name': 'condition_adapter_0', 'condition_type': 'clip-vit-large-patch14_text', 'pretrained_model_name_or_path': 'openai/clip-vit-large-patch14', 'condition_max_length': 77, 'condition_dim': 768, 'cross_attention_dim': 768}
+LOADED: ConditionAdapter from /home/work/.cache/huggingface/hub/models--auffusion--auffusion-full/snapshots/db5169f1890d4e5d926ac4c5524da0cc3d4b9a5b/condition_adapter_0
+An error occurred while trying to fetch /home/work/.cache/huggingface/hub/models--auffusion--auffusion-full/snapshots/db5169f1890d4e5d926ac4c5524da0cc3d4b9a5b: Error no file named diffusion_pytorch_model.safetensors found in directory /home/work/.cache/huggingface/hub/models--auffusion--auffusion-full/snapshots/db5169f1890d4e5d926ac4c5524da0cc3d4b9a5b.
+Defaulting to unsafe serialization. Pass `allow_pickle=False` to raise an error instead.
+The config attributes {'decay': 0.9999, 'inv_gamma': 1.0, 'min_decay': 0.0, 'optimization_step': 100000, 'power': 0.6666666666666666, 'update_after_step': 0, 'use_ema_warmup': False} were passed to UNet2DConditionModel, but are not expected and will be ignored. Please verify your config.json configuration file.
+INITIATED: ConditionAdapter: {'text_encoder_name': 'text_encoder_0', 'condition_adapter_name': 'condition_adapter_0', 'condition_type': 'clip-vit-large-patch14_text', 'pretrained_model_name_or_path': 'openai/clip-vit-large-patch14', 'condition_max_length': 77, 'condition_dim': 768, 'cross_attention_dim': 768}
+INITIATED: ConditionAdapter: {'text_encoder_name': 'text_encoder_0', 'condition_adapter_name': 'condition_adapter_0', 'condition_type': 'clip-vit-large-patch14_text', 'pretrained_model_name_or_path': 'openai/clip-vit-large-patch14', 'condition_max_length': 77, 'condition_dim': 768, 'cross_attention_dim': 768}
+LOADED: ConditionAdapter from /home/work/.cache/huggingface/hub/models--auffusion--auffusion-full/snapshots/db5169f1890d4e5d926ac4c5524da0cc3d4b9a5b/condition_adapter_0LOADED: ConditionAdapter from /home/work/.cache/huggingface/hub/models--auffusion--auffusion-full/snapshots/db5169f1890d4e5d926ac4c5524da0cc3d4b9a5b/condition_adapter_0
+
+An error occurred while trying to fetch /home/work/.cache/huggingface/hub/models--auffusion--auffusion-full/snapshots/db5169f1890d4e5d926ac4c5524da0cc3d4b9a5b: Error no file named diffusion_pytorch_model.safetensors found in directory /home/work/.cache/huggingface/hub/models--auffusion--auffusion-full/snapshots/db5169f1890d4e5d926ac4c5524da0cc3d4b9a5b.
+An error occurred while trying to fetch /home/work/.cache/huggingface/hub/models--auffusion--auffusion-full/snapshots/db5169f1890d4e5d926ac4c5524da0cc3d4b9a5b: Error no file named diffusion_pytorch_model.safetensors found in directory /home/work/.cache/huggingface/hub/models--auffusion--auffusion-full/snapshots/db5169f1890d4e5d926ac4c5524da0cc3d4b9a5b.
+Defaulting to unsafe serialization. Pass `allow_pickle=False` to raise an error instead.
+Defaulting to unsafe serialization. Pass `allow_pickle=False` to raise an error instead.
+The config attributes {'decay': 0.9999, 'inv_gamma': 1.0, 'min_decay': 0.0, 'optimization_step': 100000, 'power': 0.6666666666666666, 'update_after_step': 0, 'use_ema_warmup': False} were passed to UNet2DConditionModel, but are not expected and will be ignored. Please verify your config.json configuration file.
+The config attributes {'decay': 0.9999, 'inv_gamma': 1.0, 'min_decay': 0.0, 'optimization_step': 100000, 'power': 0.6666666666666666, 'update_after_step': 0, 'use_ema_warmup': False} were passed to UNet2DConditionModel, but are not expected and will be ignored. Please verify your config.json configuration file.
+Generating:   0%|          | 0/61 [00:00<?, ?it/s]Generating:   2%|▏         | 1/61 [00:44<44:51, 44.86s/it]Generating:   3%|▎         | 2/61 [01:29<44:08, 44.89s/it]Generating:   5%|▍         | 3/61 [02:14<43:20, 44.84s/it]Generating:   7%|▋         | 4/61 [02:59<42:31, 44.76s/it]Generating:   8%|▊         | 5/61 [03:43<41:45, 44.75s/it]Generating:  10%|▉         | 6/61 [04:28<41:02, 44.77s/it]Generating:  11%|█▏        | 7/61 [05:13<40:14, 44.72s/it]Generating:  13%|█▎        | 8/61 [05:57<39:28, 44.68s/it]Generating:  15%|█▍        | 9/61 [06:42<38:45, 44.72s/it]Generating:  16%|█▋        | 10/61 [07:27<37:56, 44.63s/it]Generating:  18%|█▊        | 11/61 [08:11<37:08, 44.57s/it]Generating:  20%|█▉        | 12/61 [08:56<36:23, 44.55s/it]Generating:  21%|██▏       | 13/61 [09:40<35:39, 44.57s/it]Generating:  23%|██▎       | 14/61 [10:25<34:54, 44.57s/it]Generating:  25%|██▍       | 15/61 [11:09<34:10, 44.57s/it]Generating:  26%|██▌       | 16/61 [11:54<33:25, 44.56s/it]Generating:  28%|██▊       | 17/61 [12:38<32:40, 44.55s/it]Generating:  30%|██▉       | 18/61 [13:23<31:55, 44.54s/it]Generating:  31%|███       | 19/61 [14:08<31:13, 44.61s/it]Generating:  33%|███▎      | 20/61 [14:52<30:26, 44.56s/it]Generating:  34%|███▍      | 21/61 [15:37<29:41, 44.53s/it]Generating:  36%|███▌      | 22/61 [16:21<28:55, 44.50s/it]Generating:  38%|███▊      | 23/61 [17:06<28:12, 44.54s/it]Generating:  39%|███▉      | 24/61 [17:50<27:26, 44.50s/it]Generating:  41%|████      | 25/61 [18:35<26:41, 44.49s/it]Generating:  43%|████▎     | 26/61 [19:19<25:57, 44.49s/it]Generating:  44%|████▍     | 27/61 [20:04<25:14, 44.54s/it]Generating:  46%|████▌     | 28/61 [20:48<24:29, 44.53s/it]Generating:  48%|████▊     | 29/61 [21:33<23:45, 44.55s/it]Generating:  49%|████▉     | 30/61 [22:17<23:01, 44.58s/it]Generating:  51%|█████     | 31/61 [23:02<22:16, 44.56s/it]Generating:  52%|█████▏    | 32/61 [23:46<21:31, 44.54s/it]Generating:  54%|█████▍    | 33/61 [24:31<20:47, 44.56s/it]Generating:  56%|█████▌    | 34/61 [25:16<20:04, 44.62s/it]Generating:  57%|█████▋    | 35/61 [26:00<19:19, 44.60s/it]Generating:  59%|█████▉    | 36/61 [26:45<18:34, 44.59s/it]Generating:  61%|██████    | 37/61 [27:30<17:49, 44.58s/it]Generating:  62%|██████▏   | 38/61 [28:14<17:05, 44.58s/it]Generating:  64%|██████▍   | 39/61 [28:59<16:20, 44.57s/it]Generating:  66%|██████▌   | 40/61 [29:43<15:35, 44.55s/it]Generating:  67%|██████▋   | 41/61 [30:28<14:51, 44.57s/it]Generating:  69%|██████▉   | 42/61 [31:12<14:06, 44.56s/it]Generating:  70%|███████   | 43/61 [31:57<13:22, 44.57s/it]Generating:  72%|███████▏  | 44/61 [32:41<12:36, 44.51s/it]Generating:  74%|███████▍  | 45/61 [33:26<11:52, 44.53s/it]Generating:  75%|███████▌  | 46/61 [34:10<11:07, 44.53s/it]Generating:  77%|███████▋  | 47/61 [34:55<10:23, 44.53s/it]Generating:  79%|███████▊  | 48/61 [35:39<09:38, 44.52s/it]Generating:  80%|████████  | 49/61 [36:24<08:54, 44.54s/it]Generating:  82%|████████▏ | 50/61 [37:09<08:09, 44.54s/it]Generating:  84%|████████▎ | 51/61 [37:53<07:25, 44.53s/it]Generating:  85%|████████▌ | 52/61 [38:38<06:41, 44.57s/it]Generating:  87%|████████▋ | 53/61 [39:22<05:56, 44.53s/it]Generating:  89%|████████▊ | 54/61 [40:07<05:11, 44.53s/it]Generating:  90%|█████████ | 55/61 [40:51<04:27, 44.53s/it]Generating:  92%|█████████▏| 56/61 [41:36<03:42, 44.55s/it]Generating:  93%|█████████▎| 57/61 [42:20<02:58, 44.51s/it]Generating:  95%|█████████▌| 58/61 [43:05<02:13, 44.55s/it]Generating:  97%|█████████▋| 59/61 [43:49<01:29, 44.56s/it]Generating:  98%|█████████▊| 60/61 [44:34<00:44, 44.55s/it]Generating: 100%|██████████| 61/61 [44:59<00:00, 38.65s/it]Generating: 100%|██████████| 61/61 [44:59<00:00, 44.25s/it]
+Process 0: Completed inference. Results saved in /home/work/kby_hgh/MMG_Inferencce_folder/0406_MMG_1e-4_1e-4_8gpu_abl_combined_no_crop_checkpoint-step-19199.
+Inference finished!
+[rank: 2] Seed set to 42
+[rank: 1] Seed set to 42
+[rank: 6] Seed set to 42
+[rank: 3] Seed set to 42
+[rank: 0] Seed set to 42
+Start InferenceStart Inference
+Start Inference
+Start Inference
+
+[rank: 2] Seed set to 44
+[rank: 1] Seed set to 43
+[rank: 6] Seed set to 48
+[rank: 3] Seed set to 45
+Start Inference
+[rank: 0] Seed set to 42
+[rank: 7] Seed set to 42
+[rank: 4] Seed set to 42
+Start Inference
+[rank: 7] Seed set to 49
+Start Inference
+[rank: 4] Seed set to 46
+INFO:mainlogger:LatentDiffusion: Running in eps-prediction mode
+[rank: 5] Seed set to 42
+INFO:mainlogger:LatentDiffusion: Running in eps-prediction mode
+INFO:mainlogger:LatentDiffusion: Running in eps-prediction mode
+INFO:mainlogger:LatentDiffusion: Running in eps-prediction mode
+Start Inference
+[rank: 5] Seed set to 47
+INFO:mainlogger:LatentDiffusion: Running in eps-prediction mode
+INFO:mainlogger:LatentDiffusion: Running in eps-prediction mode
+INFO:mainlogger:LatentDiffusion: Running in eps-prediction mode
+INFO:mainlogger:LatentDiffusion: Running in eps-prediction mode
+AE working on z of shape (1, 4, 64, 64) = 16384 dimensions.
+AE working on z of shape (1, 4, 64, 64) = 16384 dimensions.
+INFO:root:Loaded ViT-H-14 model config.
+AE working on z of shape (1, 4, 64, 64) = 16384 dimensions.
+AE working on z of shape (1, 4, 64, 64) = 16384 dimensions.
+AE working on z of shape (1, 4, 64, 64) = 16384 dimensions.
+AE working on z of shape (1, 4, 64, 64) = 16384 dimensions.
+AE working on z of shape (1, 4, 64, 64) = 16384 dimensions.
+INFO:root:Loaded ViT-H-14 model config.
+INFO:root:Loaded ViT-H-14 model config.
+INFO:root:Loaded ViT-H-14 model config.
+INFO:root:Loaded ViT-H-14 model config.
+AE working on z of shape (1, 4, 64, 64) = 16384 dimensions.
+INFO:root:Loaded ViT-H-14 model config.
+INFO:root:Loaded ViT-H-14 model config.
+INFO:root:Loaded ViT-H-14 model config.
+>>> model checkpoint loaded.
+>>> model checkpoint loaded.
+>>> model checkpoint loaded.
+>>> model checkpoint loaded.
+>>> model checkpoint loaded.
+Fetching 19 files:   0%|          | 0/19 [00:00<?, ?it/s]Fetching 19 files: 100%|██████████| 19/19 [00:00<00:00, 58126.75it/s]Fetching 19 files:   0%|          | 0/19 [00:00<?, ?it/s]
+Fetching 19 files:   0%|          | 0/19 [00:00<?, ?it/s]Fetching 19 files: 100%|██████████| 19/19 [00:00<00:00, 188396.63it/s]
+Fetching 19 files: 100%|██████████| 19/19 [00:00<00:00, 192028.38it/s]
+Fetching 19 files:   0%|          | 0/19 [00:00<?, ?it/s]Fetching 19 files: 100%|██████████| 19/19 [00:00<00:00, 74062.99it/s]
+>>> model checkpoint loaded.
+Removing weight norm...
+Removing weight norm...Removing weight norm...
+
+>>> model checkpoint loaded.
+Removing weight norm...
+An error occurred while trying to fetch /home/work/.cache/huggingface/hub/models--auffusion--auffusion-full/snapshots/db5169f1890d4e5d926ac4c5524da0cc3d4b9a5b: Error no file named diffusion_pytorch_model.safetensors found in directory /home/work/.cache/huggingface/hub/models--auffusion--auffusion-full/snapshots/db5169f1890d4e5d926ac4c5524da0cc3d4b9a5b.
+Defaulting to unsafe serialization. Pass `allow_pickle=False` to raise an error instead.
+An error occurred while trying to fetch /home/work/.cache/huggingface/hub/models--auffusion--auffusion-full/snapshots/db5169f1890d4e5d926ac4c5524da0cc3d4b9a5b: Error no file named diffusion_pytorch_model.safetensors found in directory /home/work/.cache/huggingface/hub/models--auffusion--auffusion-full/snapshots/db5169f1890d4e5d926ac4c5524da0cc3d4b9a5b.
+Defaulting to unsafe serialization. Pass `allow_pickle=False` to raise an error instead.
+An error occurred while trying to fetch /home/work/.cache/huggingface/hub/models--auffusion--auffusion-full/snapshots/db5169f1890d4e5d926ac4c5524da0cc3d4b9a5b: Error no file named diffusion_pytorch_model.safetensors found in directory /home/work/.cache/huggingface/hub/models--auffusion--auffusion-full/snapshots/db5169f1890d4e5d926ac4c5524da0cc3d4b9a5b.
+Defaulting to unsafe serialization. Pass `allow_pickle=False` to raise an error instead.
+An error occurred while trying to fetch /home/work/.cache/huggingface/hub/models--auffusion--auffusion-full/snapshots/db5169f1890d4e5d926ac4c5524da0cc3d4b9a5b: Error no file named diffusion_pytorch_model.safetensors found in directory /home/work/.cache/huggingface/hub/models--auffusion--auffusion-full/snapshots/db5169f1890d4e5d926ac4c5524da0cc3d4b9a5b.
+Defaulting to unsafe serialization. Pass `allow_pickle=False` to raise an error instead.
+Fetching 19 files:   0%|          | 0/19 [00:00<?, ?it/s]Fetching 19 files: 100%|██████████| 19/19 [00:00<00:00, 22155.07it/s]
+>>> model checkpoint loaded.
+Removing weight norm...
+Fetching 19 files:   0%|          | 0/19 [00:00<?, ?it/s]Fetching 19 files: 100%|██████████| 19/19 [00:00<00:00, 16177.79it/s]
+An error occurred while trying to fetch /home/work/.cache/huggingface/hub/models--auffusion--auffusion-full/snapshots/db5169f1890d4e5d926ac4c5524da0cc3d4b9a5b: Error no file named diffusion_pytorch_model.safetensors found in directory /home/work/.cache/huggingface/hub/models--auffusion--auffusion-full/snapshots/db5169f1890d4e5d926ac4c5524da0cc3d4b9a5b.
+Defaulting to unsafe serialization. Pass `allow_pickle=False` to raise an error instead.
+You are using a model of type clip_text_model to instantiate a model of type . This is not supported for all configurations of models and can yield errors.
+You are using a model of type clip_text_model to instantiate a model of type . This is not supported for all configurations of models and can yield errors.
+You are using a model of type clip_text_model to instantiate a model of type . This is not supported for all configurations of models and can yield errors.
+You are using a model of type clip_text_model to instantiate a model of type . This is not supported for all configurations of models and can yield errors.
+Fetching 19 files:   0%|          | 0/19 [00:00<?, ?it/s]Fetching 19 files: 100%|██████████| 19/19 [00:00<00:00, 18511.45it/s]
+Removing weight norm...
+An error occurred while trying to fetch /home/work/.cache/huggingface/hub/models--auffusion--auffusion-full/snapshots/db5169f1890d4e5d926ac4c5524da0cc3d4b9a5b: Error no file named diffusion_pytorch_model.safetensors found in directory /home/work/.cache/huggingface/hub/models--auffusion--auffusion-full/snapshots/db5169f1890d4e5d926ac4c5524da0cc3d4b9a5b.
+Defaulting to unsafe serialization. Pass `allow_pickle=False` to raise an error instead.
+You are using a model of type clip_text_model to instantiate a model of type . This is not supported for all configurations of models and can yield errors.
+INITIATED: ConditionAdapter: {'text_encoder_name': 'text_encoder_0', 'condition_adapter_name': 'condition_adapter_0', 'condition_type': 'clip-vit-large-patch14_text', 'pretrained_model_name_or_path': 'openai/clip-vit-large-patch14', 'condition_max_length': 77, 'condition_dim': 768, 'cross_attention_dim': 768}
+INITIATED: ConditionAdapter: {'text_encoder_name': 'text_encoder_0', 'condition_adapter_name': 'condition_adapter_0', 'condition_type': 'clip-vit-large-patch14_text', 'pretrained_model_name_or_path': 'openai/clip-vit-large-patch14', 'condition_max_length': 77, 'condition_dim': 768, 'cross_attention_dim': 768}
+INITIATED: ConditionAdapter: {'text_encoder_name': 'text_encoder_0', 'condition_adapter_name': 'condition_adapter_0', 'condition_type': 'clip-vit-large-patch14_text', 'pretrained_model_name_or_path': 'openai/clip-vit-large-patch14', 'condition_max_length': 77, 'condition_dim': 768, 'cross_attention_dim': 768}INITIATED: ConditionAdapter: {'text_encoder_name': 'text_encoder_0', 'condition_adapter_name': 'condition_adapter_0', 'condition_type': 'clip-vit-large-patch14_text', 'pretrained_model_name_or_path': 'openai/clip-vit-large-patch14', 'condition_max_length': 77, 'condition_dim': 768, 'cross_attention_dim': 768}
+LOADED: ConditionAdapter from /home/work/.cache/huggingface/hub/models--auffusion--auffusion-full/snapshots/db5169f1890d4e5d926ac4c5524da0cc3d4b9a5b/condition_adapter_0
+LOADED: ConditionAdapter from /home/work/.cache/huggingface/hub/models--auffusion--auffusion-full/snapshots/db5169f1890d4e5d926ac4c5524da0cc3d4b9a5b/condition_adapter_0
+
+An error occurred while trying to fetch /home/work/.cache/huggingface/hub/models--auffusion--auffusion-full/snapshots/db5169f1890d4e5d926ac4c5524da0cc3d4b9a5b: Error no file named diffusion_pytorch_model.safetensors found in directory /home/work/.cache/huggingface/hub/models--auffusion--auffusion-full/snapshots/db5169f1890d4e5d926ac4c5524da0cc3d4b9a5b.
+An error occurred while trying to fetch /home/work/.cache/huggingface/hub/models--auffusion--auffusion-full/snapshots/db5169f1890d4e5d926ac4c5524da0cc3d4b9a5b: Error no file named diffusion_pytorch_model.safetensors found in directory /home/work/.cache/huggingface/hub/models--auffusion--auffusion-full/snapshots/db5169f1890d4e5d926ac4c5524da0cc3d4b9a5b.
+Defaulting to unsafe serialization. Pass `allow_pickle=False` to raise an error instead.
+Defaulting to unsafe serialization. Pass `allow_pickle=False` to raise an error instead.
+The config attributes {'decay': 0.9999, 'inv_gamma': 1.0, 'min_decay': 0.0, 'optimization_step': 100000, 'power': 0.6666666666666666, 'update_after_step': 0, 'use_ema_warmup': False} were passed to UNet2DConditionModel, but are not expected and will be ignored. Please verify your config.json configuration file.
+The config attributes {'decay': 0.9999, 'inv_gamma': 1.0, 'min_decay': 0.0, 'optimization_step': 100000, 'power': 0.6666666666666666, 'update_after_step': 0, 'use_ema_warmup': False} were passed to UNet2DConditionModel, but are not expected and will be ignored. Please verify your config.json configuration file.
+LOADED: ConditionAdapter from /home/work/.cache/huggingface/hub/models--auffusion--auffusion-full/snapshots/db5169f1890d4e5d926ac4c5524da0cc3d4b9a5b/condition_adapter_0LOADED: ConditionAdapter from /home/work/.cache/huggingface/hub/models--auffusion--auffusion-full/snapshots/db5169f1890d4e5d926ac4c5524da0cc3d4b9a5b/condition_adapter_0
+
+An error occurred while trying to fetch /home/work/.cache/huggingface/hub/models--auffusion--auffusion-full/snapshots/db5169f1890d4e5d926ac4c5524da0cc3d4b9a5b: Error no file named diffusion_pytorch_model.safetensors found in directory /home/work/.cache/huggingface/hub/models--auffusion--auffusion-full/snapshots/db5169f1890d4e5d926ac4c5524da0cc3d4b9a5b.
+Defaulting to unsafe serialization. Pass `allow_pickle=False` to raise an error instead.
+An error occurred while trying to fetch /home/work/.cache/huggingface/hub/models--auffusion--auffusion-full/snapshots/db5169f1890d4e5d926ac4c5524da0cc3d4b9a5b: Error no file named diffusion_pytorch_model.safetensors found in directory /home/work/.cache/huggingface/hub/models--auffusion--auffusion-full/snapshots/db5169f1890d4e5d926ac4c5524da0cc3d4b9a5b.
+Defaulting to unsafe serialization. Pass `allow_pickle=False` to raise an error instead.
+The config attributes {'decay': 0.9999, 'inv_gamma': 1.0, 'min_decay': 0.0, 'optimization_step': 100000, 'power': 0.6666666666666666, 'update_after_step': 0, 'use_ema_warmup': False} were passed to UNet2DConditionModel, but are not expected and will be ignored. Please verify your config.json configuration file.
+The config attributes {'decay': 0.9999, 'inv_gamma': 1.0, 'min_decay': 0.0, 'optimization_step': 100000, 'power': 0.6666666666666666, 'update_after_step': 0, 'use_ema_warmup': False} were passed to UNet2DConditionModel, but are not expected and will be ignored. Please verify your config.json configuration file.
+Removing weight norm...
+An error occurred while trying to fetch /home/work/.cache/huggingface/hub/models--auffusion--auffusion-full/snapshots/db5169f1890d4e5d926ac4c5524da0cc3d4b9a5b: Error no file named diffusion_pytorch_model.safetensors found in directory /home/work/.cache/huggingface/hub/models--auffusion--auffusion-full/snapshots/db5169f1890d4e5d926ac4c5524da0cc3d4b9a5b.
+Defaulting to unsafe serialization. Pass `allow_pickle=False` to raise an error instead.
+Fetching 19 files:   0%|          | 0/19 [00:00<?, ?it/s]Fetching 19 files: 100%|██████████| 19/19 [00:00<00:00, 100620.93it/s]
+You are using a model of type clip_text_model to instantiate a model of type . This is not supported for all configurations of models and can yield errors.
+INITIATED: ConditionAdapter: {'text_encoder_name': 'text_encoder_0', 'condition_adapter_name': 'condition_adapter_0', 'condition_type': 'clip-vit-large-patch14_text', 'pretrained_model_name_or_path': 'openai/clip-vit-large-patch14', 'condition_max_length': 77, 'condition_dim': 768, 'cross_attention_dim': 768}
+LOADED: ConditionAdapter from /home/work/.cache/huggingface/hub/models--auffusion--auffusion-full/snapshots/db5169f1890d4e5d926ac4c5524da0cc3d4b9a5b/condition_adapter_0
+An error occurred while trying to fetch /home/work/.cache/huggingface/hub/models--auffusion--auffusion-full/snapshots/db5169f1890d4e5d926ac4c5524da0cc3d4b9a5b: Error no file named diffusion_pytorch_model.safetensors found in directory /home/work/.cache/huggingface/hub/models--auffusion--auffusion-full/snapshots/db5169f1890d4e5d926ac4c5524da0cc3d4b9a5b.
+Defaulting to unsafe serialization. Pass `allow_pickle=False` to raise an error instead.
+The config attributes {'decay': 0.9999, 'inv_gamma': 1.0, 'min_decay': 0.0, 'optimization_step': 100000, 'power': 0.6666666666666666, 'update_after_step': 0, 'use_ema_warmup': False} were passed to UNet2DConditionModel, but are not expected and will be ignored. Please verify your config.json configuration file.
+Removing weight norm...
+You are using a model of type clip_text_model to instantiate a model of type . This is not supported for all configurations of models and can yield errors.
+An error occurred while trying to fetch /home/work/.cache/huggingface/hub/models--auffusion--auffusion-full/snapshots/db5169f1890d4e5d926ac4c5524da0cc3d4b9a5b: Error no file named diffusion_pytorch_model.safetensors found in directory /home/work/.cache/huggingface/hub/models--auffusion--auffusion-full/snapshots/db5169f1890d4e5d926ac4c5524da0cc3d4b9a5b.
+Defaulting to unsafe serialization. Pass `allow_pickle=False` to raise an error instead.
+INITIATED: ConditionAdapter: {'text_encoder_name': 'text_encoder_0', 'condition_adapter_name': 'condition_adapter_0', 'condition_type': 'clip-vit-large-patch14_text', 'pretrained_model_name_or_path': 'openai/clip-vit-large-patch14', 'condition_max_length': 77, 'condition_dim': 768, 'cross_attention_dim': 768}
+LOADED: ConditionAdapter from /home/work/.cache/huggingface/hub/models--auffusion--auffusion-full/snapshots/db5169f1890d4e5d926ac4c5524da0cc3d4b9a5b/condition_adapter_0
+An error occurred while trying to fetch /home/work/.cache/huggingface/hub/models--auffusion--auffusion-full/snapshots/db5169f1890d4e5d926ac4c5524da0cc3d4b9a5b: Error no file named diffusion_pytorch_model.safetensors found in directory /home/work/.cache/huggingface/hub/models--auffusion--auffusion-full/snapshots/db5169f1890d4e5d926ac4c5524da0cc3d4b9a5b.
+Defaulting to unsafe serialization. Pass `allow_pickle=False` to raise an error instead.
+The config attributes {'decay': 0.9999, 'inv_gamma': 1.0, 'min_decay': 0.0, 'optimization_step': 100000, 'power': 0.6666666666666666, 'update_after_step': 0, 'use_ema_warmup': False} were passed to UNet2DConditionModel, but are not expected and will be ignored. Please verify your config.json configuration file.
+INITIATED: ConditionAdapter: {'text_encoder_name': 'text_encoder_0', 'condition_adapter_name': 'condition_adapter_0', 'condition_type': 'clip-vit-large-patch14_text', 'pretrained_model_name_or_path': 'openai/clip-vit-large-patch14', 'condition_max_length': 77, 'condition_dim': 768, 'cross_attention_dim': 768}
+LOADED: ConditionAdapter from /home/work/.cache/huggingface/hub/models--auffusion--auffusion-full/snapshots/db5169f1890d4e5d926ac4c5524da0cc3d4b9a5b/condition_adapter_0
+An error occurred while trying to fetch /home/work/.cache/huggingface/hub/models--auffusion--auffusion-full/snapshots/db5169f1890d4e5d926ac4c5524da0cc3d4b9a5b: Error no file named diffusion_pytorch_model.safetensors found in directory /home/work/.cache/huggingface/hub/models--auffusion--auffusion-full/snapshots/db5169f1890d4e5d926ac4c5524da0cc3d4b9a5b.
+Defaulting to unsafe serialization. Pass `allow_pickle=False` to raise an error instead.
+The config attributes {'decay': 0.9999, 'inv_gamma': 1.0, 'min_decay': 0.0, 'optimization_step': 100000, 'power': 0.6666666666666666, 'update_after_step': 0, 'use_ema_warmup': False} were passed to UNet2DConditionModel, but are not expected and will be ignored. Please verify your config.json configuration file.
+You are using a model of type clip_text_model to instantiate a model of type . This is not supported for all configurations of models and can yield errors.
+INITIATED: ConditionAdapter: {'text_encoder_name': 'text_encoder_0', 'condition_adapter_name': 'condition_adapter_0', 'condition_type': 'clip-vit-large-patch14_text', 'pretrained_model_name_or_path': 'openai/clip-vit-large-patch14', 'condition_max_length': 77, 'condition_dim': 768, 'cross_attention_dim': 768}
+LOADED: ConditionAdapter from /home/work/.cache/huggingface/hub/models--auffusion--auffusion-full/snapshots/db5169f1890d4e5d926ac4c5524da0cc3d4b9a5b/condition_adapter_0
+An error occurred while trying to fetch /home/work/.cache/huggingface/hub/models--auffusion--auffusion-full/snapshots/db5169f1890d4e5d926ac4c5524da0cc3d4b9a5b: Error no file named diffusion_pytorch_model.safetensors found in directory /home/work/.cache/huggingface/hub/models--auffusion--auffusion-full/snapshots/db5169f1890d4e5d926ac4c5524da0cc3d4b9a5b.
+Defaulting to unsafe serialization. Pass `allow_pickle=False` to raise an error instead.
+The config attributes {'decay': 0.9999, 'inv_gamma': 1.0, 'min_decay': 0.0, 'optimization_step': 100000, 'power': 0.6666666666666666, 'update_after_step': 0, 'use_ema_warmup': False} were passed to UNet2DConditionModel, but are not expected and will be ignored. Please verify your config.json configuration file.
+Generating:   0%|          | 0/61 [00:00<?, ?it/s]Generating:   2%|▏         | 1/61 [00:44<44:42, 44.70s/it]Generating:   3%|▎         | 2/61 [01:29<43:55, 44.68s/it]Generating:   5%|▍         | 3/61 [02:14<43:11, 44.68s/it]Generating:   7%|▋         | 4/61 [02:58<42:23, 44.62s/it]Generating:   8%|▊         | 5/61 [03:43<41:39, 44.64s/it]Generating:  10%|▉         | 6/61 [04:27<40:54, 44.64s/it]Generating:  11%|█▏        | 7/61 [05:12<40:09, 44.62s/it]Generating:  13%|█▎        | 8/61 [05:57<39:26, 44.64s/it]Generating:  15%|█▍        | 9/61 [06:41<38:44, 44.70s/it]Generating:  16%|█▋        | 10/61 [07:26<37:56, 44.63s/it]Generating:  18%|█▊        | 11/61 [08:10<37:09, 44.60s/it]Generating:  20%|█▉        | 12/61 [08:55<36:25, 44.59s/it]Generating:  21%|██▏       | 13/61 [09:40<35:41, 44.62s/it]Generating:  23%|██▎       | 14/61 [10:24<34:56, 44.61s/it]Generating:  25%|██▍       | 15/61 [11:09<34:10, 44.58s/it]Generating:  26%|██▌       | 16/61 [11:53<33:26, 44.59s/it]Generating:  28%|██▊       | 17/61 [12:38<32:40, 44.56s/it]Generating:  30%|██▉       | 18/61 [13:23<31:56, 44.57s/it]Generating:  31%|███       | 19/61 [14:07<31:13, 44.61s/it]Generating:  33%|███▎      | 20/61 [14:52<30:28, 44.59s/it]Generating:  34%|███▍      | 21/61 [15:36<29:43, 44.58s/it]Generating:  36%|███▌      | 22/61 [16:21<28:57, 44.55s/it]Generating:  38%|███▊      | 23/61 [17:05<28:13, 44.56s/it]Generating:  39%|███▉      | 24/61 [17:50<27:27, 44.52s/it]Generating:  41%|████      | 25/61 [18:34<26:43, 44.53s/it]Generating:  43%|████▎     | 26/61 [19:19<25:58, 44.53s/it]Generating:  44%|████▍     | 27/61 [20:04<25:16, 44.59s/it]Generating:  46%|████▌     | 28/61 [20:48<24:31, 44.60s/it]Generating:  48%|████▊     | 29/61 [21:33<23:47, 44.61s/it]Generating:  49%|████▉     | 30/61 [22:18<23:03, 44.64s/it]Generating:  51%|█████     | 31/61 [23:02<22:17, 44.58s/it]Generating:  52%|█████▏    | 32/61 [23:47<21:32, 44.58s/it]Generating:  54%|█████▍    | 33/61 [24:31<20:48, 44.60s/it]Generating:  56%|█████▌    | 34/61 [25:16<20:05, 44.66s/it]Generating:  57%|█████▋    | 35/61 [26:01<19:20, 44.63s/it]Generating:  59%|█████▉    | 36/61 [26:45<18:35, 44.63s/it]Generating:  61%|██████    | 37/61 [27:30<17:50, 44.60s/it]Generating:  62%|██████▏   | 38/61 [28:14<17:05, 44.57s/it]Generating:  64%|██████▍   | 39/61 [28:59<16:20, 44.57s/it]Generating:  66%|██████▌   | 40/61 [29:43<15:35, 44.55s/it]Generating:  67%|██████▋   | 41/61 [30:28<14:52, 44.60s/it]Generating:  69%|██████▉   | 42/61 [31:13<14:06, 44.57s/it]Generating:  70%|███████   | 43/61 [31:57<13:22, 44.58s/it]Generating:  72%|███████▏  | 44/61 [32:42<12:36, 44.52s/it]Generating:  74%|███████▍  | 45/61 [33:26<11:52, 44.54s/it]Generating:  75%|███████▌  | 46/61 [34:11<11:08, 44.55s/it]Generating:  77%|███████▋  | 47/61 [34:55<10:23, 44.55s/it]Generating:  79%|███████▊  | 48/61 [35:40<09:38, 44.53s/it]Generating:  80%|████████  | 49/61 [36:24<08:54, 44.55s/it]Generating:  82%|████████▏ | 50/61 [37:09<08:09, 44.53s/it]Generating:  84%|████████▎ | 51/61 [37:53<07:25, 44.51s/it]Generating:  85%|████████▌ | 52/61 [38:38<06:41, 44.56s/it]Generating:  87%|████████▋ | 53/61 [39:22<05:56, 44.51s/it]Generating:  89%|████████▊ | 54/61 [40:07<05:11, 44.55s/it]Generating:  90%|█████████ | 55/61 [40:52<04:27, 44.54s/it]Generating:  92%|█████████▏| 56/61 [41:36<03:42, 44.56s/it]Generating:  93%|█████████▎| 57/61 [42:21<02:58, 44.52s/it]Generating:  95%|█████████▌| 58/61 [43:05<02:13, 44.57s/it]Generating:  97%|█████████▋| 59/61 [43:50<01:29, 44.56s/it]Generating:  98%|█████████▊| 60/61 [44:34<00:44, 44.54s/it]Generating: 100%|██████████| 61/61 [44:59<00:00, 38.64s/it]Generating: 100%|██████████| 61/61 [44:59<00:00, 44.26s/it]
+Process 0: Completed inference. Results saved in /home/work/kby_hgh/MMG_Inferencce_folder/0406_MMG_1e-4_1e-4_8gpu_abl_combined_no_crop_checkpoint-step-28799.
+Inference finished!
+[rank: 2] Seed set to 42
+[rank: 3] Seed set to 42
+Start Inference
+[rank: 0] Seed set to 42
+[rank: 6] Seed set to 42
+[rank: 2] Seed set to 44
+Start Inference[rank: 1] Seed set to 42
+
+[rank: 3] Seed set to 45
+Start Inference
+[rank: 0] Seed set to 42
+Start Inference
+[rank: 1] Seed set to 43
+Start Inference
+[rank: 6] Seed set to 48
+[rank: 5] Seed set to 42
+[rank: 7] Seed set to 42
+Start InferenceStart Inference
+
+[rank: 7] Seed set to 49
+[rank: 5] Seed set to 47
+[rank: 4] Seed set to 42
+Start Inference
+[rank: 4] Seed set to 46
+INFO:mainlogger:LatentDiffusion: Running in eps-prediction mode
+INFO:mainlogger:LatentDiffusion: Running in eps-prediction mode
+INFO:mainlogger:LatentDiffusion: Running in eps-prediction mode
+INFO:mainlogger:LatentDiffusion: Running in eps-prediction mode
+INFO:mainlogger:LatentDiffusion: Running in eps-prediction mode
+INFO:mainlogger:LatentDiffusion: Running in eps-prediction mode
+INFO:mainlogger:LatentDiffusion: Running in eps-prediction mode
+INFO:mainlogger:LatentDiffusion: Running in eps-prediction mode
+AE working on z of shape (1, 4, 64, 64) = 16384 dimensions.
+INFO:root:Loaded ViT-H-14 model config.
+AE working on z of shape (1, 4, 64, 64) = 16384 dimensions.
+AE working on z of shape (1, 4, 64, 64) = 16384 dimensions.
+AE working on z of shape (1, 4, 64, 64) = 16384 dimensions.
+AE working on z of shape (1, 4, 64, 64) = 16384 dimensions.
+INFO:root:Loaded ViT-H-14 model config.
+AE working on z of shape (1, 4, 64, 64) = 16384 dimensions.
+AE working on z of shape (1, 4, 64, 64) = 16384 dimensions.
+AE working on z of shape (1, 4, 64, 64) = 16384 dimensions.
+INFO:root:Loaded ViT-H-14 model config.
+INFO:root:Loaded ViT-H-14 model config.
+INFO:root:Loaded ViT-H-14 model config.
+INFO:root:Loaded ViT-H-14 model config.
+INFO:root:Loaded ViT-H-14 model config.
+INFO:root:Loaded ViT-H-14 model config.
+>>> model checkpoint loaded.
+>>> model checkpoint loaded.
+Fetching 19 files:   0%|          | 0/19 [00:00<?, ?it/s]Fetching 19 files: 100%|██████████| 19/19 [00:00<00:00, 26510.90it/s]
+Fetching 19 files:   0%|          | 0/19 [00:00<?, ?it/s]Fetching 19 files: 100%|██████████| 19/19 [00:00<00:00, 25195.00it/s]
+>>> model checkpoint loaded.>>> model checkpoint loaded.
+
+>>> model checkpoint loaded.
+Removing weight norm...
+An error occurred while trying to fetch /home/work/.cache/huggingface/hub/models--auffusion--auffusion-full/snapshots/db5169f1890d4e5d926ac4c5524da0cc3d4b9a5b: Error no file named diffusion_pytorch_model.safetensors found in directory /home/work/.cache/huggingface/hub/models--auffusion--auffusion-full/snapshots/db5169f1890d4e5d926ac4c5524da0cc3d4b9a5b.
+Defaulting to unsafe serialization. Pass `allow_pickle=False` to raise an error instead.
+Removing weight norm...
+An error occurred while trying to fetch /home/work/.cache/huggingface/hub/models--auffusion--auffusion-full/snapshots/db5169f1890d4e5d926ac4c5524da0cc3d4b9a5b: Error no file named diffusion_pytorch_model.safetensors found in directory /home/work/.cache/huggingface/hub/models--auffusion--auffusion-full/snapshots/db5169f1890d4e5d926ac4c5524da0cc3d4b9a5b.
+Defaulting to unsafe serialization. Pass `allow_pickle=False` to raise an error instead.
+Fetching 19 files:   0%|          | 0/19 [00:00<?, ?it/s]Fetching 19 files: 100%|██████████| 19/19 [00:00<00:00, 21509.25it/s]
+Fetching 19 files:   0%|          | 0/19 [00:00<?, ?it/s]Fetching 19 files: 100%|██████████| 19/19 [00:00<00:00, 23577.45it/s]
+>>> model checkpoint loaded.
+Fetching 19 files:   0%|          | 0/19 [00:00<?, ?it/s]Fetching 19 files: 100%|██████████| 19/19 [00:00<00:00, 16794.89it/s]
+>>> model checkpoint loaded.
+>>> model checkpoint loaded.
+Removing weight norm...
+Removing weight norm...
+You are using a model of type clip_text_model to instantiate a model of type . This is not supported for all configurations of models and can yield errors.
+Removing weight norm...
+An error occurred while trying to fetch /home/work/.cache/huggingface/hub/models--auffusion--auffusion-full/snapshots/db5169f1890d4e5d926ac4c5524da0cc3d4b9a5b: Error no file named diffusion_pytorch_model.safetensors found in directory /home/work/.cache/huggingface/hub/models--auffusion--auffusion-full/snapshots/db5169f1890d4e5d926ac4c5524da0cc3d4b9a5b.
+Defaulting to unsafe serialization. Pass `allow_pickle=False` to raise an error instead.
+An error occurred while trying to fetch /home/work/.cache/huggingface/hub/models--auffusion--auffusion-full/snapshots/db5169f1890d4e5d926ac4c5524da0cc3d4b9a5b: Error no file named diffusion_pytorch_model.safetensors found in directory /home/work/.cache/huggingface/hub/models--auffusion--auffusion-full/snapshots/db5169f1890d4e5d926ac4c5524da0cc3d4b9a5b.
+You are using a model of type clip_text_model to instantiate a model of type . This is not supported for all configurations of models and can yield errors.
+Defaulting to unsafe serialization. Pass `allow_pickle=False` to raise an error instead.
+Fetching 19 files:   0%|          | 0/19 [00:00<?, ?it/s]Fetching 19 files: 100%|██████████| 19/19 [00:00<00:00, 107401.32it/s]
+An error occurred while trying to fetch /home/work/.cache/huggingface/hub/models--auffusion--auffusion-full/snapshots/db5169f1890d4e5d926ac4c5524da0cc3d4b9a5b: Error no file named diffusion_pytorch_model.safetensors found in directory /home/work/.cache/huggingface/hub/models--auffusion--auffusion-full/snapshots/db5169f1890d4e5d926ac4c5524da0cc3d4b9a5b.
+Defaulting to unsafe serialization. Pass `allow_pickle=False` to raise an error instead.
+Fetching 19 files:   0%|          | 0/19 [00:00<?, ?it/s]Fetching 19 files: 100%|██████████| 19/19 [00:00<00:00, 15193.86it/s]
+Fetching 19 files:   0%|          | 0/19 [00:00<?, ?it/s]Fetching 19 files: 100%|██████████| 19/19 [00:00<00:00, 12930.68it/s]
+Removing weight norm...
+INITIATED: ConditionAdapter: {'text_encoder_name': 'text_encoder_0', 'condition_adapter_name': 'condition_adapter_0', 'condition_type': 'clip-vit-large-patch14_text', 'pretrained_model_name_or_path': 'openai/clip-vit-large-patch14', 'condition_max_length': 77, 'condition_dim': 768, 'cross_attention_dim': 768}
+LOADED: ConditionAdapter from /home/work/.cache/huggingface/hub/models--auffusion--auffusion-full/snapshots/db5169f1890d4e5d926ac4c5524da0cc3d4b9a5b/condition_adapter_0
+An error occurred while trying to fetch /home/work/.cache/huggingface/hub/models--auffusion--auffusion-full/snapshots/db5169f1890d4e5d926ac4c5524da0cc3d4b9a5b: Error no file named diffusion_pytorch_model.safetensors found in directory /home/work/.cache/huggingface/hub/models--auffusion--auffusion-full/snapshots/db5169f1890d4e5d926ac4c5524da0cc3d4b9a5b.
+Defaulting to unsafe serialization. Pass `allow_pickle=False` to raise an error instead.
+The config attributes {'decay': 0.9999, 'inv_gamma': 1.0, 'min_decay': 0.0, 'optimization_step': 100000, 'power': 0.6666666666666666, 'update_after_step': 0, 'use_ema_warmup': False} were passed to UNet2DConditionModel, but are not expected and will be ignored. Please verify your config.json configuration file.
+INITIATED: ConditionAdapter: {'text_encoder_name': 'text_encoder_0', 'condition_adapter_name': 'condition_adapter_0', 'condition_type': 'clip-vit-large-patch14_text', 'pretrained_model_name_or_path': 'openai/clip-vit-large-patch14', 'condition_max_length': 77, 'condition_dim': 768, 'cross_attention_dim': 768}
+LOADED: ConditionAdapter from /home/work/.cache/huggingface/hub/models--auffusion--auffusion-full/snapshots/db5169f1890d4e5d926ac4c5524da0cc3d4b9a5b/condition_adapter_0
+An error occurred while trying to fetch /home/work/.cache/huggingface/hub/models--auffusion--auffusion-full/snapshots/db5169f1890d4e5d926ac4c5524da0cc3d4b9a5b: Error no file named diffusion_pytorch_model.safetensors found in directory /home/work/.cache/huggingface/hub/models--auffusion--auffusion-full/snapshots/db5169f1890d4e5d926ac4c5524da0cc3d4b9a5b.
+Defaulting to unsafe serialization. Pass `allow_pickle=False` to raise an error instead.
+The config attributes {'decay': 0.9999, 'inv_gamma': 1.0, 'min_decay': 0.0, 'optimization_step': 100000, 'power': 0.6666666666666666, 'update_after_step': 0, 'use_ema_warmup': False} were passed to UNet2DConditionModel, but are not expected and will be ignored. Please verify your config.json configuration file.
+Removing weight norm...
+You are using a model of type clip_text_model to instantiate a model of type . This is not supported for all configurations of models and can yield errors.
+Removing weight norm...
+You are using a model of type clip_text_model to instantiate a model of type . This is not supported for all configurations of models and can yield errors.
+You are using a model of type clip_text_model to instantiate a model of type . This is not supported for all configurations of models and can yield errors.
+An error occurred while trying to fetch /home/work/.cache/huggingface/hub/models--auffusion--auffusion-full/snapshots/db5169f1890d4e5d926ac4c5524da0cc3d4b9a5b: Error no file named diffusion_pytorch_model.safetensors found in directory /home/work/.cache/huggingface/hub/models--auffusion--auffusion-full/snapshots/db5169f1890d4e5d926ac4c5524da0cc3d4b9a5b.
+Defaulting to unsafe serialization. Pass `allow_pickle=False` to raise an error instead.
+An error occurred while trying to fetch /home/work/.cache/huggingface/hub/models--auffusion--auffusion-full/snapshots/db5169f1890d4e5d926ac4c5524da0cc3d4b9a5b: Error no file named diffusion_pytorch_model.safetensors found in directory /home/work/.cache/huggingface/hub/models--auffusion--auffusion-full/snapshots/db5169f1890d4e5d926ac4c5524da0cc3d4b9a5b.
+Defaulting to unsafe serialization. Pass `allow_pickle=False` to raise an error instead.
+An error occurred while trying to fetch /home/work/.cache/huggingface/hub/models--auffusion--auffusion-full/snapshots/db5169f1890d4e5d926ac4c5524da0cc3d4b9a5b: Error no file named diffusion_pytorch_model.safetensors found in directory /home/work/.cache/huggingface/hub/models--auffusion--auffusion-full/snapshots/db5169f1890d4e5d926ac4c5524da0cc3d4b9a5b.
+Defaulting to unsafe serialization. Pass `allow_pickle=False` to raise an error instead.
+INITIATED: ConditionAdapter: {'text_encoder_name': 'text_encoder_0', 'condition_adapter_name': 'condition_adapter_0', 'condition_type': 'clip-vit-large-patch14_text', 'pretrained_model_name_or_path': 'openai/clip-vit-large-patch14', 'condition_max_length': 77, 'condition_dim': 768, 'cross_attention_dim': 768}INITIATED: ConditionAdapter: {'text_encoder_name': 'text_encoder_0', 'condition_adapter_name': 'condition_adapter_0', 'condition_type': 'clip-vit-large-patch14_text', 'pretrained_model_name_or_path': 'openai/clip-vit-large-patch14', 'condition_max_length': 77, 'condition_dim': 768, 'cross_attention_dim': 768}INITIATED: ConditionAdapter: {'text_encoder_name': 'text_encoder_0', 'condition_adapter_name': 'condition_adapter_0', 'condition_type': 'clip-vit-large-patch14_text', 'pretrained_model_name_or_path': 'openai/clip-vit-large-patch14', 'condition_max_length': 77, 'condition_dim': 768, 'cross_attention_dim': 768}
+
+
+LOADED: ConditionAdapter from /home/work/.cache/huggingface/hub/models--auffusion--auffusion-full/snapshots/db5169f1890d4e5d926ac4c5524da0cc3d4b9a5b/condition_adapter_0LOADED: ConditionAdapter from /home/work/.cache/huggingface/hub/models--auffusion--auffusion-full/snapshots/db5169f1890d4e5d926ac4c5524da0cc3d4b9a5b/condition_adapter_0
+LOADED: ConditionAdapter from /home/work/.cache/huggingface/hub/models--auffusion--auffusion-full/snapshots/db5169f1890d4e5d926ac4c5524da0cc3d4b9a5b/condition_adapter_0
+
+An error occurred while trying to fetch /home/work/.cache/huggingface/hub/models--auffusion--auffusion-full/snapshots/db5169f1890d4e5d926ac4c5524da0cc3d4b9a5b: Error no file named diffusion_pytorch_model.safetensors found in directory /home/work/.cache/huggingface/hub/models--auffusion--auffusion-full/snapshots/db5169f1890d4e5d926ac4c5524da0cc3d4b9a5b.
+An error occurred while trying to fetch /home/work/.cache/huggingface/hub/models--auffusion--auffusion-full/snapshots/db5169f1890d4e5d926ac4c5524da0cc3d4b9a5b: Error no file named diffusion_pytorch_model.safetensors found in directory /home/work/.cache/huggingface/hub/models--auffusion--auffusion-full/snapshots/db5169f1890d4e5d926ac4c5524da0cc3d4b9a5b.
+Defaulting to unsafe serialization. Pass `allow_pickle=False` to raise an error instead.
+An error occurred while trying to fetch /home/work/.cache/huggingface/hub/models--auffusion--auffusion-full/snapshots/db5169f1890d4e5d926ac4c5524da0cc3d4b9a5b: Error no file named diffusion_pytorch_model.safetensors found in directory /home/work/.cache/huggingface/hub/models--auffusion--auffusion-full/snapshots/db5169f1890d4e5d926ac4c5524da0cc3d4b9a5b.
+Defaulting to unsafe serialization. Pass `allow_pickle=False` to raise an error instead.
+Defaulting to unsafe serialization. Pass `allow_pickle=False` to raise an error instead.
+The config attributes {'decay': 0.9999, 'inv_gamma': 1.0, 'min_decay': 0.0, 'optimization_step': 100000, 'power': 0.6666666666666666, 'update_after_step': 0, 'use_ema_warmup': False} were passed to UNet2DConditionModel, but are not expected and will be ignored. Please verify your config.json configuration file.
+The config attributes {'decay': 0.9999, 'inv_gamma': 1.0, 'min_decay': 0.0, 'optimization_step': 100000, 'power': 0.6666666666666666, 'update_after_step': 0, 'use_ema_warmup': False} were passed to UNet2DConditionModel, but are not expected and will be ignored. Please verify your config.json configuration file.
+The config attributes {'decay': 0.9999, 'inv_gamma': 1.0, 'min_decay': 0.0, 'optimization_step': 100000, 'power': 0.6666666666666666, 'update_after_step': 0, 'use_ema_warmup': False} were passed to UNet2DConditionModel, but are not expected and will be ignored. Please verify your config.json configuration file.
+You are using a model of type clip_text_model to instantiate a model of type . This is not supported for all configurations of models and can yield errors.
+You are using a model of type clip_text_model to instantiate a model of type . This is not supported for all configurations of models and can yield errors.
+You are using a model of type clip_text_model to instantiate a model of type . This is not supported for all configurations of models and can yield errors.
+INITIATED: ConditionAdapter: {'text_encoder_name': 'text_encoder_0', 'condition_adapter_name': 'condition_adapter_0', 'condition_type': 'clip-vit-large-patch14_text', 'pretrained_model_name_or_path': 'openai/clip-vit-large-patch14', 'condition_max_length': 77, 'condition_dim': 768, 'cross_attention_dim': 768}INITIATED: ConditionAdapter: {'text_encoder_name': 'text_encoder_0', 'condition_adapter_name': 'condition_adapter_0', 'condition_type': 'clip-vit-large-patch14_text', 'pretrained_model_name_or_path': 'openai/clip-vit-large-patch14', 'condition_max_length': 77, 'condition_dim': 768, 'cross_attention_dim': 768}
+
+INITIATED: ConditionAdapter: {'text_encoder_name': 'text_encoder_0', 'condition_adapter_name': 'condition_adapter_0', 'condition_type': 'clip-vit-large-patch14_text', 'pretrained_model_name_or_path': 'openai/clip-vit-large-patch14', 'condition_max_length': 77, 'condition_dim': 768, 'cross_attention_dim': 768}LOADED: ConditionAdapter from /home/work/.cache/huggingface/hub/models--auffusion--auffusion-full/snapshots/db5169f1890d4e5d926ac4c5524da0cc3d4b9a5b/condition_adapter_0
+LOADED: ConditionAdapter from /home/work/.cache/huggingface/hub/models--auffusion--auffusion-full/snapshots/db5169f1890d4e5d926ac4c5524da0cc3d4b9a5b/condition_adapter_0
+
+An error occurred while trying to fetch /home/work/.cache/huggingface/hub/models--auffusion--auffusion-full/snapshots/db5169f1890d4e5d926ac4c5524da0cc3d4b9a5b: Error no file named diffusion_pytorch_model.safetensors found in directory /home/work/.cache/huggingface/hub/models--auffusion--auffusion-full/snapshots/db5169f1890d4e5d926ac4c5524da0cc3d4b9a5b.
+An error occurred while trying to fetch /home/work/.cache/huggingface/hub/models--auffusion--auffusion-full/snapshots/db5169f1890d4e5d926ac4c5524da0cc3d4b9a5b: Error no file named diffusion_pytorch_model.safetensors found in directory /home/work/.cache/huggingface/hub/models--auffusion--auffusion-full/snapshots/db5169f1890d4e5d926ac4c5524da0cc3d4b9a5b.
+Defaulting to unsafe serialization. Pass `allow_pickle=False` to raise an error instead.
+Defaulting to unsafe serialization. Pass `allow_pickle=False` to raise an error instead.
+The config attributes {'decay': 0.9999, 'inv_gamma': 1.0, 'min_decay': 0.0, 'optimization_step': 100000, 'power': 0.6666666666666666, 'update_after_step': 0, 'use_ema_warmup': False} were passed to UNet2DConditionModel, but are not expected and will be ignored. Please verify your config.json configuration file.
+The config attributes {'decay': 0.9999, 'inv_gamma': 1.0, 'min_decay': 0.0, 'optimization_step': 100000, 'power': 0.6666666666666666, 'update_after_step': 0, 'use_ema_warmup': False} were passed to UNet2DConditionModel, but are not expected and will be ignored. Please verify your config.json configuration file.
+LOADED: ConditionAdapter from /home/work/.cache/huggingface/hub/models--auffusion--auffusion-full/snapshots/db5169f1890d4e5d926ac4c5524da0cc3d4b9a5b/condition_adapter_0
+An error occurred while trying to fetch /home/work/.cache/huggingface/hub/models--auffusion--auffusion-full/snapshots/db5169f1890d4e5d926ac4c5524da0cc3d4b9a5b: Error no file named diffusion_pytorch_model.safetensors found in directory /home/work/.cache/huggingface/hub/models--auffusion--auffusion-full/snapshots/db5169f1890d4e5d926ac4c5524da0cc3d4b9a5b.
+Defaulting to unsafe serialization. Pass `allow_pickle=False` to raise an error instead.
+The config attributes {'decay': 0.9999, 'inv_gamma': 1.0, 'min_decay': 0.0, 'optimization_step': 100000, 'power': 0.6666666666666666, 'update_after_step': 0, 'use_ema_warmup': False} were passed to UNet2DConditionModel, but are not expected and will be ignored. Please verify your config.json configuration file.
+Generating:   0%|          | 0/61 [00:00<?, ?it/s]Generating:   2%|▏         | 1/61 [00:44<44:50, 44.85s/it]Generating:   3%|▎         | 2/61 [01:29<44:06, 44.86s/it]Generating:   5%|▍         | 3/61 [02:14<43:17, 44.79s/it]Generating:   7%|▋         | 4/61 [02:59<42:32, 44.77s/it]Generating:   8%|▊         | 5/61 [03:43<41:46, 44.75s/it]Generating:  10%|▉         | 6/61 [04:28<40:58, 44.70s/it]Generating:  11%|█▏        | 7/61 [05:13<40:12, 44.67s/it]Generating:  13%|█▎        | 8/61 [05:57<39:25, 44.63s/it]Generating:  15%|█▍        | 9/61 [06:42<38:42, 44.66s/it]Generating:  16%|█▋        | 10/61 [07:26<37:53, 44.58s/it]Generating:  18%|█▊        | 11/61 [08:11<37:07, 44.55s/it]Generating:  20%|█▉        | 12/61 [08:55<36:21, 44.53s/it]Generating:  21%|██▏       | 13/61 [09:40<35:38, 44.56s/it]Generating:  23%|██▎       | 14/61 [10:24<34:53, 44.55s/it]Generating:  25%|██▍       | 15/61 [11:09<34:08, 44.53s/it]Generating:  26%|██▌       | 16/61 [11:53<33:24, 44.54s/it]Generating:  28%|██▊       | 17/61 [12:38<32:38, 44.51s/it]Generating:  30%|██▉       | 18/61 [13:22<31:55, 44.54s/it]Generating:  31%|███       | 19/61 [14:07<31:11, 44.55s/it]Generating:  33%|███▎      | 20/61 [14:51<30:24, 44.50s/it]Generating:  34%|███▍      | 21/61 [15:36<29:39, 44.50s/it]Generating:  36%|███▌      | 22/61 [16:20<28:54, 44.47s/it]Generating:  38%|███▊      | 23/61 [17:05<28:10, 44.49s/it]Generating:  39%|███▉      | 24/61 [17:49<27:25, 44.47s/it]Generating:  41%|████      | 25/61 [18:34<26:41, 44.49s/it]Generating:  43%|████▎     | 26/61 [19:18<25:56, 44.48s/it]Generating:  44%|████▍     | 27/61 [20:03<25:13, 44.51s/it]Generating:  46%|████▌     | 28/61 [20:47<24:28, 44.51s/it]Generating:  48%|████▊     | 29/61 [21:32<23:44, 44.50s/it]Generating:  49%|████▉     | 30/61 [22:16<22:59, 44.51s/it]Generating:  51%|█████     | 31/61 [23:01<22:14, 44.48s/it]Generating:  52%|█████▏    | 32/61 [23:45<21:30, 44.48s/it]Generating:  54%|█████▍    | 33/61 [24:30<20:45, 44.49s/it]Generating:  56%|█████▌    | 34/61 [25:15<20:03, 44.57s/it]Generating:  57%|█████▋    | 35/61 [25:59<19:18, 44.56s/it]Generating:  59%|█████▉    | 36/61 [26:44<18:33, 44.55s/it]Generating:  61%|██████    | 37/61 [27:28<17:48, 44.54s/it]Generating:  62%|██████▏   | 38/61 [28:13<17:04, 44.53s/it]Generating:  64%|██████▍   | 39/61 [28:57<16:19, 44.52s/it]Generating:  66%|██████▌   | 40/61 [29:42<15:34, 44.51s/it]Generating:  67%|██████▋   | 41/61 [30:26<14:50, 44.55s/it]Generating:  69%|██████▉   | 42/61 [31:11<14:05, 44.53s/it]Generating:  70%|███████   | 43/61 [31:55<13:21, 44.53s/it]Generating:  72%|███████▏  | 44/61 [32:40<12:36, 44.48s/it]Generating:  74%|███████▍  | 45/61 [33:24<11:52, 44.51s/it]Generating:  75%|███████▌  | 46/61 [34:09<11:07, 44.50s/it]Generating:  77%|███████▋  | 47/61 [34:53<10:23, 44.51s/it]Generating:  79%|███████▊  | 48/61 [35:38<09:38, 44.48s/it]Generating:  80%|████████  | 49/61 [36:22<08:54, 44.50s/it]Generating:  82%|████████▏ | 50/61 [37:07<08:09, 44.50s/it]Generating:  84%|████████▎ | 51/61 [37:51<07:24, 44.48s/it]Generating:  85%|████████▌ | 52/61 [38:36<06:40, 44.53s/it]Generating:  87%|████████▋ | 53/61 [39:20<05:55, 44.50s/it]Generating:  89%|████████▊ | 54/61 [40:05<05:11, 44.53s/it]Generating:  90%|█████████ | 55/61 [40:49<04:27, 44.52s/it]Generating:  92%|█████████▏| 56/61 [41:34<03:42, 44.53s/it]Generating:  93%|█████████▎| 57/61 [42:18<02:57, 44.50s/it]Generating:  95%|█████████▌| 58/61 [43:03<02:13, 44.54s/it]Generating:  97%|█████████▋| 59/61 [43:47<01:29, 44.55s/it]Generating:  98%|█████████▊| 60/61 [44:32<00:44, 44.52s/it]Generating: 100%|██████████| 61/61 [44:57<00:00, 38.62s/it]Generating: 100%|██████████| 61/61 [44:57<00:00, 44.22s/it]
+Process 0: Completed inference. Results saved in /home/work/kby_hgh/MMG_Inferencce_folder/0406_MMG_1e-4_1e-4_8gpu_abl_combined_no_crop_checkpoint-step-38399.
+Inference finished!
+[rank: 2] Seed set to 42
+[rank: 1] Seed set to 42
+[rank: 4] Seed set to 42
+[rank: 0] Seed set to 42
+Start Inference
+Start Inference
+[rank: 2] Seed set to 44
+[rank: 0] Seed set to 42
+Start Inference
+[rank: 1] Seed set to 43
+Start Inference
+[rank: 4] Seed set to 46
+[rank: 7] Seed set to 42
+[rank: 3] Seed set to 42
+Start Inference
+[rank: 7] Seed set to 49
+Start Inference
+[rank: 3] Seed set to 45
+INFO:mainlogger:LatentDiffusion: Running in eps-prediction mode
+INFO:mainlogger:LatentDiffusion: Running in eps-prediction mode
+INFO:mainlogger:LatentDiffusion: Running in eps-prediction mode
+INFO:mainlogger:LatentDiffusion: Running in eps-prediction mode
+[rank: 6] Seed set to 42
+[rank: 5] Seed set to 42
+Start Inference
+[rank: 6] Seed set to 48
+Start Inference
+[rank: 5] Seed set to 47
+INFO:mainlogger:LatentDiffusion: Running in eps-prediction mode
+INFO:mainlogger:LatentDiffusion: Running in eps-prediction mode
+INFO:mainlogger:LatentDiffusion: Running in eps-prediction mode
+INFO:mainlogger:LatentDiffusion: Running in eps-prediction mode
+AE working on z of shape (1, 4, 64, 64) = 16384 dimensions.
+INFO:root:Loaded ViT-H-14 model config.
+AE working on z of shape (1, 4, 64, 64) = 16384 dimensions.
+AE working on z of shape (1, 4, 64, 64) = 16384 dimensions.
+AE working on z of shape (1, 4, 64, 64) = 16384 dimensions.
+AE working on z of shape (1, 4, 64, 64) = 16384 dimensions.
+AE working on z of shape (1, 4, 64, 64) = 16384 dimensions.
+AE working on z of shape (1, 4, 64, 64) = 16384 dimensions.
+INFO:root:Loaded ViT-H-14 model config.
+INFO:root:Loaded ViT-H-14 model config.
+INFO:root:Loaded ViT-H-14 model config.
+INFO:root:Loaded ViT-H-14 model config.
+INFO:root:Loaded ViT-H-14 model config.
+INFO:root:Loaded ViT-H-14 model config.
+AE working on z of shape (1, 4, 64, 64) = 16384 dimensions.
+INFO:root:Loaded ViT-H-14 model config.
+>>> model checkpoint loaded.
+>>> model checkpoint loaded.
+Fetching 19 files:   0%|          | 0/19 [00:00<?, ?it/s]Fetching 19 files: 100%|██████████| 19/19 [00:00<00:00, 15164.94it/s]
+Fetching 19 files:   0%|          | 0/19 [00:00<?, ?it/s]Fetching 19 files: 100%|██████████| 19/19 [00:00<00:00, 32355.57it/s]
+Removing weight norm...
+>>> model checkpoint loaded.
+An error occurred while trying to fetch /home/work/.cache/huggingface/hub/models--auffusion--auffusion-full/snapshots/db5169f1890d4e5d926ac4c5524da0cc3d4b9a5b: Error no file named diffusion_pytorch_model.safetensors found in directory /home/work/.cache/huggingface/hub/models--auffusion--auffusion-full/snapshots/db5169f1890d4e5d926ac4c5524da0cc3d4b9a5b.
+Defaulting to unsafe serialization. Pass `allow_pickle=False` to raise an error instead.
+>>> model checkpoint loaded.
+>>> model checkpoint loaded.
+>>> model checkpoint loaded.
+>>> model checkpoint loaded.
+Removing weight norm...
+>>> model checkpoint loaded.
+An error occurred while trying to fetch /home/work/.cache/huggingface/hub/models--auffusion--auffusion-full/snapshots/db5169f1890d4e5d926ac4c5524da0cc3d4b9a5b: Error no file named diffusion_pytorch_model.safetensors found in directory /home/work/.cache/huggingface/hub/models--auffusion--auffusion-full/snapshots/db5169f1890d4e5d926ac4c5524da0cc3d4b9a5b.
+Defaulting to unsafe serialization. Pass `allow_pickle=False` to raise an error instead.
+You are using a model of type clip_text_model to instantiate a model of type . This is not supported for all configurations of models and can yield errors.
+Fetching 19 files:   0%|          | 0/19 [00:00<?, ?it/s]Fetching 19 files: 100%|██████████| 19/19 [00:00<00:00, 25517.70it/s]
+Fetching 19 files:   0%|          | 0/19 [00:00<?, ?it/s]Fetching 19 files: 100%|██████████| 19/19 [00:00<00:00, 153845.13it/s]
+Fetching 19 files:   0%|          | 0/19 [00:00<?, ?it/s]Fetching 19 files: 100%|██████████| 19/19 [00:00<00:00, 19046.79it/s]
+Fetching 19 files:   0%|          | 0/19 [00:00<?, ?it/s]Fetching 19 files: 100%|██████████| 19/19 [00:00<00:00, 171749.52it/s]
+Fetching 19 files:   0%|          | 0/19 [00:00<?, ?it/s]Fetching 19 files: 100%|██████████| 19/19 [00:00<00:00, 18759.83it/s]
+You are using a model of type clip_text_model to instantiate a model of type . This is not supported for all configurations of models and can yield errors.
+Fetching 19 files:   0%|          | 0/19 [00:00<?, ?it/s]Fetching 19 files: 100%|██████████| 19/19 [00:00<00:00, 29702.49it/s]
+Removing weight norm...
+Removing weight norm...
+An error occurred while trying to fetch /home/work/.cache/huggingface/hub/models--auffusion--auffusion-full/snapshots/db5169f1890d4e5d926ac4c5524da0cc3d4b9a5b: Error no file named diffusion_pytorch_model.safetensors found in directory /home/work/.cache/huggingface/hub/models--auffusion--auffusion-full/snapshots/db5169f1890d4e5d926ac4c5524da0cc3d4b9a5b.
+Defaulting to unsafe serialization. Pass `allow_pickle=False` to raise an error instead.
+Removing weight norm...
+An error occurred while trying to fetch /home/work/.cache/huggingface/hub/models--auffusion--auffusion-full/snapshots/db5169f1890d4e5d926ac4c5524da0cc3d4b9a5b: Error no file named diffusion_pytorch_model.safetensors found in directory /home/work/.cache/huggingface/hub/models--auffusion--auffusion-full/snapshots/db5169f1890d4e5d926ac4c5524da0cc3d4b9a5b.
+Removing weight norm...
+Defaulting to unsafe serialization. Pass `allow_pickle=False` to raise an error instead.
+Removing weight norm...
+An error occurred while trying to fetch /home/work/.cache/huggingface/hub/models--auffusion--auffusion-full/snapshots/db5169f1890d4e5d926ac4c5524da0cc3d4b9a5b: Error no file named diffusion_pytorch_model.safetensors found in directory /home/work/.cache/huggingface/hub/models--auffusion--auffusion-full/snapshots/db5169f1890d4e5d926ac4c5524da0cc3d4b9a5b.
+Defaulting to unsafe serialization. Pass `allow_pickle=False` to raise an error instead.
+An error occurred while trying to fetch /home/work/.cache/huggingface/hub/models--auffusion--auffusion-full/snapshots/db5169f1890d4e5d926ac4c5524da0cc3d4b9a5b: Error no file named diffusion_pytorch_model.safetensors found in directory /home/work/.cache/huggingface/hub/models--auffusion--auffusion-full/snapshots/db5169f1890d4e5d926ac4c5524da0cc3d4b9a5b.
+Defaulting to unsafe serialization. Pass `allow_pickle=False` to raise an error instead.
+INITIATED: ConditionAdapter: {'text_encoder_name': 'text_encoder_0', 'condition_adapter_name': 'condition_adapter_0', 'condition_type': 'clip-vit-large-patch14_text', 'pretrained_model_name_or_path': 'openai/clip-vit-large-patch14', 'condition_max_length': 77, 'condition_dim': 768, 'cross_attention_dim': 768}
+LOADED: ConditionAdapter from /home/work/.cache/huggingface/hub/models--auffusion--auffusion-full/snapshots/db5169f1890d4e5d926ac4c5524da0cc3d4b9a5b/condition_adapter_0
+An error occurred while trying to fetch /home/work/.cache/huggingface/hub/models--auffusion--auffusion-full/snapshots/db5169f1890d4e5d926ac4c5524da0cc3d4b9a5b: Error no file named diffusion_pytorch_model.safetensors found in directory /home/work/.cache/huggingface/hub/models--auffusion--auffusion-full/snapshots/db5169f1890d4e5d926ac4c5524da0cc3d4b9a5b.
+Defaulting to unsafe serialization. Pass `allow_pickle=False` to raise an error instead.
+An error occurred while trying to fetch /home/work/.cache/huggingface/hub/models--auffusion--auffusion-full/snapshots/db5169f1890d4e5d926ac4c5524da0cc3d4b9a5b: Error no file named diffusion_pytorch_model.safetensors found in directory /home/work/.cache/huggingface/hub/models--auffusion--auffusion-full/snapshots/db5169f1890d4e5d926ac4c5524da0cc3d4b9a5b.
+Defaulting to unsafe serialization. Pass `allow_pickle=False` to raise an error instead.
+The config attributes {'decay': 0.9999, 'inv_gamma': 1.0, 'min_decay': 0.0, 'optimization_step': 100000, 'power': 0.6666666666666666, 'update_after_step': 0, 'use_ema_warmup': False} were passed to UNet2DConditionModel, but are not expected and will be ignored. Please verify your config.json configuration file.
+Removing weight norm...
+An error occurred while trying to fetch /home/work/.cache/huggingface/hub/models--auffusion--auffusion-full/snapshots/db5169f1890d4e5d926ac4c5524da0cc3d4b9a5b: Error no file named diffusion_pytorch_model.safetensors found in directory /home/work/.cache/huggingface/hub/models--auffusion--auffusion-full/snapshots/db5169f1890d4e5d926ac4c5524da0cc3d4b9a5b.
+Defaulting to unsafe serialization. Pass `allow_pickle=False` to raise an error instead.
+INITIATED: ConditionAdapter: {'text_encoder_name': 'text_encoder_0', 'condition_adapter_name': 'condition_adapter_0', 'condition_type': 'clip-vit-large-patch14_text', 'pretrained_model_name_or_path': 'openai/clip-vit-large-patch14', 'condition_max_length': 77, 'condition_dim': 768, 'cross_attention_dim': 768}
+LOADED: ConditionAdapter from /home/work/.cache/huggingface/hub/models--auffusion--auffusion-full/snapshots/db5169f1890d4e5d926ac4c5524da0cc3d4b9a5b/condition_adapter_0
+An error occurred while trying to fetch /home/work/.cache/huggingface/hub/models--auffusion--auffusion-full/snapshots/db5169f1890d4e5d926ac4c5524da0cc3d4b9a5b: Error no file named diffusion_pytorch_model.safetensors found in directory /home/work/.cache/huggingface/hub/models--auffusion--auffusion-full/snapshots/db5169f1890d4e5d926ac4c5524da0cc3d4b9a5b.
+Defaulting to unsafe serialization. Pass `allow_pickle=False` to raise an error instead.
+The config attributes {'decay': 0.9999, 'inv_gamma': 1.0, 'min_decay': 0.0, 'optimization_step': 100000, 'power': 0.6666666666666666, 'update_after_step': 0, 'use_ema_warmup': False} were passed to UNet2DConditionModel, but are not expected and will be ignored. Please verify your config.json configuration file.
+You are using a model of type clip_text_model to instantiate a model of type . This is not supported for all configurations of models and can yield errors.
+You are using a model of type clip_text_model to instantiate a model of type . This is not supported for all configurations of models and can yield errors.
+You are using a model of type clip_text_model to instantiate a model of type . This is not supported for all configurations of models and can yield errors.
+You are using a model of type clip_text_model to instantiate a model of type . This is not supported for all configurations of models and can yield errors.
+You are using a model of type clip_text_model to instantiate a model of type . This is not supported for all configurations of models and can yield errors.
+You are using a model of type clip_text_model to instantiate a model of type . This is not supported for all configurations of models and can yield errors.
+INITIATED: ConditionAdapter: {'text_encoder_name': 'text_encoder_0', 'condition_adapter_name': 'condition_adapter_0', 'condition_type': 'clip-vit-large-patch14_text', 'pretrained_model_name_or_path': 'openai/clip-vit-large-patch14', 'condition_max_length': 77, 'condition_dim': 768, 'cross_attention_dim': 768}
+LOADED: ConditionAdapter from /home/work/.cache/huggingface/hub/models--auffusion--auffusion-full/snapshots/db5169f1890d4e5d926ac4c5524da0cc3d4b9a5b/condition_adapter_0
+An error occurred while trying to fetch /home/work/.cache/huggingface/hub/models--auffusion--auffusion-full/snapshots/db5169f1890d4e5d926ac4c5524da0cc3d4b9a5b: Error no file named diffusion_pytorch_model.safetensors found in directory /home/work/.cache/huggingface/hub/models--auffusion--auffusion-full/snapshots/db5169f1890d4e5d926ac4c5524da0cc3d4b9a5b.
+Defaulting to unsafe serialization. Pass `allow_pickle=False` to raise an error instead.
+The config attributes {'decay': 0.9999, 'inv_gamma': 1.0, 'min_decay': 0.0, 'optimization_step': 100000, 'power': 0.6666666666666666, 'update_after_step': 0, 'use_ema_warmup': False} were passed to UNet2DConditionModel, but are not expected and will be ignored. Please verify your config.json configuration file.
+INITIATED: ConditionAdapter: {'text_encoder_name': 'text_encoder_0', 'condition_adapter_name': 'condition_adapter_0', 'condition_type': 'clip-vit-large-patch14_text', 'pretrained_model_name_or_path': 'openai/clip-vit-large-patch14', 'condition_max_length': 77, 'condition_dim': 768, 'cross_attention_dim': 768}INITIATED: ConditionAdapter: {'text_encoder_name': 'text_encoder_0', 'condition_adapter_name': 'condition_adapter_0', 'condition_type': 'clip-vit-large-patch14_text', 'pretrained_model_name_or_path': 'openai/clip-vit-large-patch14', 'condition_max_length': 77, 'condition_dim': 768, 'cross_attention_dim': 768}
+
+INITIATED: ConditionAdapter: {'text_encoder_name': 'text_encoder_0', 'condition_adapter_name': 'condition_adapter_0', 'condition_type': 'clip-vit-large-patch14_text', 'pretrained_model_name_or_path': 'openai/clip-vit-large-patch14', 'condition_max_length': 77, 'condition_dim': 768, 'cross_attention_dim': 768}
+INITIATED: ConditionAdapter: {'text_encoder_name': 'text_encoder_0', 'condition_adapter_name': 'condition_adapter_0', 'condition_type': 'clip-vit-large-patch14_text', 'pretrained_model_name_or_path': 'openai/clip-vit-large-patch14', 'condition_max_length': 77, 'condition_dim': 768, 'cross_attention_dim': 768}
+LOADED: ConditionAdapter from /home/work/.cache/huggingface/hub/models--auffusion--auffusion-full/snapshots/db5169f1890d4e5d926ac4c5524da0cc3d4b9a5b/condition_adapter_0LOADED: ConditionAdapter from /home/work/.cache/huggingface/hub/models--auffusion--auffusion-full/snapshots/db5169f1890d4e5d926ac4c5524da0cc3d4b9a5b/condition_adapter_0
+
+LOADED: ConditionAdapter from /home/work/.cache/huggingface/hub/models--auffusion--auffusion-full/snapshots/db5169f1890d4e5d926ac4c5524da0cc3d4b9a5b/condition_adapter_0LOADED: ConditionAdapter from /home/work/.cache/huggingface/hub/models--auffusion--auffusion-full/snapshots/db5169f1890d4e5d926ac4c5524da0cc3d4b9a5b/condition_adapter_0
+
+An error occurred while trying to fetch /home/work/.cache/huggingface/hub/models--auffusion--auffusion-full/snapshots/db5169f1890d4e5d926ac4c5524da0cc3d4b9a5b: Error no file named diffusion_pytorch_model.safetensors found in directory /home/work/.cache/huggingface/hub/models--auffusion--auffusion-full/snapshots/db5169f1890d4e5d926ac4c5524da0cc3d4b9a5b.
+An error occurred while trying to fetch /home/work/.cache/huggingface/hub/models--auffusion--auffusion-full/snapshots/db5169f1890d4e5d926ac4c5524da0cc3d4b9a5b: Error no file named diffusion_pytorch_model.safetensors found in directory /home/work/.cache/huggingface/hub/models--auffusion--auffusion-full/snapshots/db5169f1890d4e5d926ac4c5524da0cc3d4b9a5b.
+An error occurred while trying to fetch /home/work/.cache/huggingface/hub/models--auffusion--auffusion-full/snapshots/db5169f1890d4e5d926ac4c5524da0cc3d4b9a5b: Error no file named diffusion_pytorch_model.safetensors found in directory /home/work/.cache/huggingface/hub/models--auffusion--auffusion-full/snapshots/db5169f1890d4e5d926ac4c5524da0cc3d4b9a5b.
+Defaulting to unsafe serialization. Pass `allow_pickle=False` to raise an error instead.
+An error occurred while trying to fetch /home/work/.cache/huggingface/hub/models--auffusion--auffusion-full/snapshots/db5169f1890d4e5d926ac4c5524da0cc3d4b9a5b: Error no file named diffusion_pytorch_model.safetensors found in directory /home/work/.cache/huggingface/hub/models--auffusion--auffusion-full/snapshots/db5169f1890d4e5d926ac4c5524da0cc3d4b9a5b.
+Defaulting to unsafe serialization. Pass `allow_pickle=False` to raise an error instead.
+Defaulting to unsafe serialization. Pass `allow_pickle=False` to raise an error instead.
+Defaulting to unsafe serialization. Pass `allow_pickle=False` to raise an error instead.
+The config attributes {'decay': 0.9999, 'inv_gamma': 1.0, 'min_decay': 0.0, 'optimization_step': 100000, 'power': 0.6666666666666666, 'update_after_step': 0, 'use_ema_warmup': False} were passed to UNet2DConditionModel, but are not expected and will be ignored. Please verify your config.json configuration file.
+The config attributes {'decay': 0.9999, 'inv_gamma': 1.0, 'min_decay': 0.0, 'optimization_step': 100000, 'power': 0.6666666666666666, 'update_after_step': 0, 'use_ema_warmup': False} were passed to UNet2DConditionModel, but are not expected and will be ignored. Please verify your config.json configuration file.
+The config attributes {'decay': 0.9999, 'inv_gamma': 1.0, 'min_decay': 0.0, 'optimization_step': 100000, 'power': 0.6666666666666666, 'update_after_step': 0, 'use_ema_warmup': False} were passed to UNet2DConditionModel, but are not expected and will be ignored. Please verify your config.json configuration file.
+The config attributes {'decay': 0.9999, 'inv_gamma': 1.0, 'min_decay': 0.0, 'optimization_step': 100000, 'power': 0.6666666666666666, 'update_after_step': 0, 'use_ema_warmup': False} were passed to UNet2DConditionModel, but are not expected and will be ignored. Please verify your config.json configuration file.
+INITIATED: ConditionAdapter: {'text_encoder_name': 'text_encoder_0', 'condition_adapter_name': 'condition_adapter_0', 'condition_type': 'clip-vit-large-patch14_text', 'pretrained_model_name_or_path': 'openai/clip-vit-large-patch14', 'condition_max_length': 77, 'condition_dim': 768, 'cross_attention_dim': 768}
+LOADED: ConditionAdapter from /home/work/.cache/huggingface/hub/models--auffusion--auffusion-full/snapshots/db5169f1890d4e5d926ac4c5524da0cc3d4b9a5b/condition_adapter_0
+An error occurred while trying to fetch /home/work/.cache/huggingface/hub/models--auffusion--auffusion-full/snapshots/db5169f1890d4e5d926ac4c5524da0cc3d4b9a5b: Error no file named diffusion_pytorch_model.safetensors found in directory /home/work/.cache/huggingface/hub/models--auffusion--auffusion-full/snapshots/db5169f1890d4e5d926ac4c5524da0cc3d4b9a5b.
+Defaulting to unsafe serialization. Pass `allow_pickle=False` to raise an error instead.
+The config attributes {'decay': 0.9999, 'inv_gamma': 1.0, 'min_decay': 0.0, 'optimization_step': 100000, 'power': 0.6666666666666666, 'update_after_step': 0, 'use_ema_warmup': False} were passed to UNet2DConditionModel, but are not expected and will be ignored. Please verify your config.json configuration file.
+Generating:   0%|          | 0/61 [00:00<?, ?it/s]Generating:   2%|▏         | 1/61 [00:44<44:52, 44.88s/it]Generating:   3%|▎         | 2/61 [01:29<44:03, 44.81s/it]Generating:   5%|▍         | 3/61 [02:14<43:16, 44.76s/it]Generating:   7%|▋         | 4/61 [02:59<42:29, 44.73s/it]Generating:   8%|▊         | 5/61 [03:43<41:46, 44.76s/it]Generating:  10%|▉         | 6/61 [04:28<40:59, 44.72s/it]Generating:  11%|█▏        | 7/61 [05:13<40:14, 44.71s/it]Generating:  13%|█▎        | 8/61 [05:57<39:26, 44.66s/it]Generating:  15%|█▍        | 9/61 [06:42<38:43, 44.68s/it]Generating:  16%|█▋        | 10/61 [07:26<37:55, 44.62s/it]Generating:  18%|█▊        | 11/61 [08:11<37:08, 44.57s/it]Generating:  20%|█▉        | 12/61 [08:55<36:22, 44.55s/it]Generating:  21%|██▏       | 13/61 [09:40<35:38, 44.56s/it]Generating:  23%|██▎       | 14/61 [10:25<34:54, 44.57s/it]Generating:  25%|██▍       | 15/61 [11:09<34:08, 44.54s/it]Generating:  26%|██▌       | 16/61 [11:54<33:24, 44.55s/it]Generating:  28%|██▊       | 17/61 [12:38<32:38, 44.51s/it]Generating:  30%|██▉       | 18/61 [13:23<31:55, 44.55s/it]Generating:  31%|███       | 19/61 [14:07<31:12, 44.58s/it]Generating:  33%|███▎      | 20/61 [14:52<30:25, 44.53s/it]Generating:  34%|███▍      | 21/61 [15:36<29:40, 44.52s/it]Generating:  36%|███▌      | 22/61 [16:21<28:55, 44.49s/it]Generating:  38%|███▊      | 23/61 [17:05<28:11, 44.50s/it]Generating:  39%|███▉      | 24/61 [17:50<27:25, 44.46s/it]Generating:  41%|████      | 25/61 [18:34<26:40, 44.46s/it]Generating:  43%|████▎     | 26/61 [19:18<25:55, 44.46s/it]Generating:  44%|████▍     | 27/61 [20:03<25:12, 44.49s/it]Generating:  46%|████▌     | 28/61 [20:47<24:27, 44.48s/it]Generating:  48%|████▊     | 29/61 [21:32<23:43, 44.48s/it]Generating:  49%|████▉     | 30/61 [22:16<22:59, 44.49s/it]Generating:  51%|█████     | 31/61 [23:01<22:13, 44.47s/it]Generating:  52%|█████▏    | 32/61 [23:45<21:29, 44.47s/it]Generating:  54%|█████▍    | 33/61 [24:30<20:45, 44.49s/it]Generating:  56%|█████▌    | 34/61 [25:15<20:03, 44.57s/it]Generating:  57%|█████▋    | 35/61 [25:59<19:18, 44.56s/it]Generating:  59%|█████▉    | 36/61 [26:44<18:33, 44.54s/it]Generating:  61%|██████    | 37/61 [27:28<17:48, 44.53s/it]Generating:  62%|██████▏   | 38/61 [28:13<17:03, 44.48s/it]Generating:  64%|██████▍   | 39/61 [28:57<16:18, 44.49s/it]Generating:  66%|██████▌   | 40/61 [29:42<15:34, 44.48s/it]Generating:  67%|██████▋   | 41/61 [30:26<14:50, 44.51s/it]Generating:  69%|██████▉   | 42/61 [31:11<14:05, 44.50s/it]Generating:  70%|███████   | 43/61 [31:55<13:21, 44.51s/it]Generating:  72%|███████▏  | 44/61 [32:39<12:35, 44.46s/it]Generating:  74%|███████▍  | 45/61 [33:24<11:51, 44.49s/it]Generating:  75%|███████▌  | 46/61 [34:08<11:07, 44.48s/it]Generating:  77%|███████▋  | 47/61 [34:53<10:22, 44.48s/it]Generating:  79%|███████▊  | 48/61 [35:37<09:38, 44.47s/it]Generating:  80%|████████  | 49/61 [36:22<08:53, 44.48s/it]Generating:  82%|████████▏ | 50/61 [37:06<08:09, 44.49s/it]Generating:  84%|████████▎ | 51/61 [37:51<07:24, 44.48s/it]Generating:  85%|████████▌ | 52/61 [38:35<06:40, 44.51s/it]Generating:  87%|████████▋ | 53/61 [39:20<05:55, 44.46s/it]Generating:  89%|████████▊ | 54/61 [40:04<05:11, 44.47s/it]Generating:  90%|█████████ | 55/61 [40:49<04:26, 44.47s/it]Generating:  92%|█████████▏| 56/61 [41:33<03:42, 44.49s/it]Generating:  93%|█████████▎| 57/61 [42:18<02:57, 44.46s/it]Generating:  95%|█████████▌| 58/61 [43:02<02:13, 44.52s/it]Generating:  97%|█████████▋| 59/61 [43:47<01:29, 44.52s/it]Generating:  98%|█████████▊| 60/61 [44:31<00:44, 44.48s/it]Generating: 100%|██████████| 61/61 [44:56<00:00, 38.59s/it]Generating: 100%|██████████| 61/61 [44:56<00:00, 44.21s/it]
+Process 0: Completed inference. Results saved in /home/work/kby_hgh/MMG_Inferencce_folder/0406_MMG_1e-4_1e-4_8gpu_abl_combined_no_crop_checkpoint-step-47999.
+Inference finished!
+[rank0]:[W408 10:52:46.096962648 ProcessGroupNCCL.cpp:1496] Warning: WARNING: destroy_process_group() was not called before program exit, which can leak resources. For more info, please see https://pytorch.org/docs/stable/distributed.html#shutdown (function operator())

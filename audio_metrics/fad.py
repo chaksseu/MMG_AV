@@ -56,7 +56,7 @@ class FrechetAudioDistance:
                 'releases/download/v0.1/vggish_pca_params-970ea276.pth'
         }
 
-        self.model = VGGish(urls=model_urls)
+        self.model = VGGish(urls=model_urls, device=self.device)
 
 
         if not use_pca:

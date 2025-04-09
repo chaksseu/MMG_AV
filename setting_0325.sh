@@ -17,7 +17,9 @@ pip install -U xformers --index-url https://download.pytorch.org/whl/cu124
 # conda install cuda-cudart cuda-version=12 -y
 conda install -c conda-forge moviepy -y
 pip install -r requirements.txt
-pip install numpy==1.23.5 scipy==1.11.1
+conda install numpy==1.23.5 scipy==1.11.1 -y
+# pip install flash-attn --no-build-isolation
+# pip install decord ffmpeg-python imageio opencv-python
 
 
 accelerate config
@@ -27,3 +29,5 @@ nano /home/work/miniconda3/envs/mmg/lib/python3.10/site-packages/pytorchvideo/tr
 nano /home/work/miniconda3/envs/mmg/lib/python3.10/site-packages/laion_clap/clap_module/factory.py
 # torch.load -> , weights_only=False
 
+
+# pip install opencv-python==4.8.0.74

@@ -175,5 +175,5 @@ if __name__ == "__main__":
     for batch in tqdm(dataloader, desc="Processing Batches", unit="batch"):
         print("Spectrogram shape:", batch["spec"].shape)
         print("Video tensor shape:", batch["video_tensor"].shape)
-        print("Captions:", batch["caption"])
+        # print("Captions:", batch["caption"])
         # print("IDs:", batch["id"])

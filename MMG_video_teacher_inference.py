@@ -414,7 +414,7 @@ def main():
     video_model.to(device=device,dtype=dtype)
     video_unet = video_model.model.diffusion_model.eval()
     
-    video_unet = load_accelerator_ckpt(video_unet, args.video_lora_ckpt_path)
+    # video_unet = load_accelerator_ckpt(video_unet, args.video_lora_ckpt_path)
 
 
     # 모델을 Accelerator 디바이스로 이동

@@ -1,18 +1,18 @@
 #!/bin/bash
 
 # ========================= 기본값 설정 =========================
-DATE="0326_MMG"
-LOG_NAME="HJ_8gpu_continue"
+DATE="test_0406_MMG_1e-4"
+LOG_NAME="8gpu_abl_combined_no_crop"
 
 
-LEARNING_RATE=1e-5
-NUM_EPOCHS=128
+LEARNING_RATE=1e-4
+NUM_EPOCHS=32
 NUM_GPU=8
 TRAIN_BATCH_SIZE=2 # 2
 GRADIENT_ACCUMULATION=32 # 256
 INFERENCE_BATCH_SIZE=2
 
-EVAL_EVERY=10000
+EVAL_EVERY=300
 
 TENSORBOARD_LOG_DIR="tensorboard/${DATE}_${LEARNING_RATE}_${LOG_NAME}"
 
@@ -31,14 +31,15 @@ FRAMES=40
 FPS=12.5
 AUDIO_LOSS_WEIGHT=1.0
 VIDEO_LOSS_WEIGHT=1.5
-CSV_PATH="/home/work/kby_hgh/workspace/data/preprocessed_VGGSound_train_dataset_0318/New_VGGSound_0311.csv" #"/workspace/processed_vggsound_sparse_0218/processed_vggsound_sparse_mmg.csv"
+CSV_PATH="/home/work/kby_hgh/MMG_01/vggsound_processing/0403_combined_split_csvs/llm_combined_vgg_csv_0404.csv" #"/workspace/processed_vggsound_sparse_0218/processed_vggsound_sparse_mmg.csv"
 SPECTROGRAM_DIR="/home/work/kby_hgh/workspace/data/preprocessed_VGGSound_train_dataset_0318/preprocessed_VGGSound_train_spec_0310" #"/workspace/processed_vggsound_sparse_0218/spec"
-VIDEO_DIR="/home/work/kby_hgh/workspace/data/preprocessed_VGGSound_train_dataset_0318/preprocessed_VGGSound_train_videos_0313" #"/workspace/processed_vggsound_sparse_0218/video"
+VIDEO_DIR="/home/work/kby_hgh/workspace/data/preprocessed_VGGSound_train_no_crop_videos_0329" #"/home/work/kby_hgh/workspace/data/preprocessed_VGGSound_train_no_crop_videos_0329" #"/workspace/processed_vggsound_sparse_0218/video"
 SAMPLING_RATE=16000
 HOP_SIZE=160
 NUM_WORKERS=4
 
-CROSS_MODAL_CHECKPOINT_PATH="/home/work/kby_hgh/MMG_CHECKPOINT/checkpint_tensorboard/0325_MMG_1e-5_HJ_8gpu/checkpoint-step-19999"
+CROSS_MODAL_CHECKPOINT_PATH="/home/work/kby_hgh/MMG_CHECKPOINT/checkpint_tensorboard/0402_MMG_1e-4_1e-4_8gpu_abl_videollama3/checkpoint-step-57599"
+
 VIDEO_LORA_CKPT_PATH="/home/work/kby_hgh/video_lora_training_checkpoints_0213/checkpoint-step-16384/model.safetensors"
 AUDIO_LORA_CKPT_PATH="/home/work/kby_hgh/GCP_BACKUP_0213/checkpoint-step-6400/model.safetensors"
 INFERENCE_SAVE_PATH="/home/work/kby_hgh/MMG_Inferencce_folder"
@@ -122,7 +123,7 @@ echo "======================================================================="
 
 # ========================= 실행 명령어 =========================
 # 아래에서 "train.py"는 실제 실행할 Python 스크립트 파일 이름입니다.
-accelerate launch mmg_training/train_MMG_Model_0223_MMG_LoRA.py \
+accelerate launch mmg_training/train_MMG_Model_0331_MMG_LoRA.py \
     --seed "$SEED" \
     --duration "$DURATION" \
     --videocrafter_config "$VIDEOCRAFTER_CONFIG" \

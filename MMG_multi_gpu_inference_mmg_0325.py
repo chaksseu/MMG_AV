@@ -7,6 +7,7 @@ import re
 import sys
 import time
 import traceback
+import csv
 
 import numpy as np
 import torch
@@ -33,7 +34,7 @@ from safetensors.torch import load_file
 from moviepy.editor import VideoFileClip, AudioFileClip, ImageSequenceClip
 from peft import LoraConfig
 
-from scripts.evaluation.funcs import load_model_checkpoint, load_prompts
+from scripts.evaluation.funcs import load_model_checkpoint#, load_prompts
 from utils.utils import instantiate_from_config
 from lvdm.models.utils_diffusion import (
     make_ddim_sampling_parameters, make_ddim_timesteps, timestep_embedding
@@ -51,6 +52,26 @@ from mmg_inference.auffusion_pipe_functions import (
 
 # from mmg_training.train_MMG_Model_0223_MMG_LoRA import CrossModalCoupledUNet
 
+
+
+
+def load_prompts(prompt_file: str):
+    """
+    CSV 파일에서 'split'이 'test'인 행의 'caption'을 불러오는 함수
+    """
+    prompts = []
+    try:
+        with open(prompt_file, newline='', encoding='utf-8') as csvfile:
+            reader = csv.DictReader(csvfile)
+            for row in reader:
+                caption = row.get('caption', '').strip()
+                if caption:
+                    prompts.append(caption)
+    except Exception as e:
+        print(f"Error reading prompt file: {e}")
+
+    
+    return prompts
 
 
 
@@ -713,6 +734,7 @@ def run_inference(
         dtype =  torch.float32
         generator = torch.Generator(device=device).manual_seed(unique_seed)
 
+
         if not prompt_sublist:
             accelerator.print(f"Process {accelerator.process_index}: No prompts to process.")
             return
@@ -800,15 +822,20 @@ def run_inference(
             current_batch_size = end_idx - start_idx
             current_prompts = prompt_sublist[start_idx:end_idx]
 
+
+            # audio_prompts = []
+            # video_prompts = []
+
             # for i in range(len(current_prompts)):
-            #     print(current_prompts[i])
+            #     audio_prompts.append("a sound of " + current_prompts[i])
+            #     video_prompts.append("a video of " + current_prompts[i])
 
 
             video_noise_shape = [current_batch_size, channels, frames, latent_h, latent_w]
             fps_tensor = torch.tensor([args.fps] * current_batch_size).to(device).long()
 
             # Get text embedding for video
-            video_text_emb = video_pipeline.get_learned_conditioning(current_prompts)
+            video_text_emb = video_pipeline.get_learned_conditioning(current_prompts) ###
             video_cond = {"c_crossattn": [video_text_emb], "fps": fps_tensor}
 
             # Unconditional video
@@ -865,8 +892,6 @@ def run_inference(
             for step_idx, (video_step, audio_step) in enumerate(zip(time_range, audio_timesteps)):
                 index = total_steps - step_idx - 1
                 video_ts = torch.full((current_batch_size,), video_step, device=device, dtype=video_latents.dtype)
-
-                audio_latents
 
 
                 # CFG for audio/video
@@ -987,36 +1012,153 @@ def run_inference(
         traceback.print_exc()
 
 
+import argparse
+import os
+import torch
+from accelerate import Accelerator
+
+def get_parser():
+    """ 
+    스크립트 실행 시 필요한 인자들을 정의하고 반환합니다.
+    필요에 따라 default 값이나 help 문자열을 자유롭게 조정하세요.
+    """
+    parser = argparse.ArgumentParser(description="Multi-modal Generation Inference")
+
+    # 기본 설정
+    parser.add_argument("--prompt_file", type=str, default="",
+                        help="프롬프트가 저장된 텍스트 파일 경로")
+    parser.add_argument("--inference_save_path", type=str, default="/home/work/kby_hgh/MMG_Inferencce_folder",
+                        help="결과물을 저장할 경로(디렉토리)")
+    parser.add_argument("--ckpt_dir", type=str, default="/home/work/kby_hgh/MMG_CHECKPOINT/checkpint_tensorboard/",
+                        help="CrossModalCoupledUNet의 safetensors 체크포인트 파일 경로")
+    parser.add_argument("--seed", type=int, default=42,
+                        help="랜덤 시드를 설정합니다.")
+    
+    # 비디오 Crafter 관련 설정
+    parser.add_argument("--videocrafter_config", type=str, default="configs/inference_t2v_512_v2.0.yaml",
+                        help="VideoCrafter 모델의 config 파일(.yaml) 경로")
+    parser.add_argument("--videocrafter_ckpt_path", type=str, default="scripts/evaluation/model.ckpt",
+                        help="VideoCrafter 모델의 checkpoint(.ckpt) 경로")
+    
+    # Audio 모델 관련 설정
+    parser.add_argument("--audio_model_name", type=str, default="auffusion/auffusion-full",
+                        help="Hugging Face나 로컬 디렉토리 상의 audio diffusion 모델 경로/이름")
+
+    # 생성 파라미터
+    parser.add_argument("--duration", type=float, default=3.2,
+                        help="생성할 오디오 길이(초 단위)")
+    parser.add_argument("--fps", type=float, default=12.5,
+                        help="생성할 영상의 FPS(frames per second)")
+    parser.add_argument("--frames", type=int, default=40,
+                        help="영상의 프레임 수(기본 -1이면 VideoCrafter 기본 길이 사용)")
+    parser.add_argument("--height", type=int, default=320,
+                        help="생성할 영상의 세로 해상도(16의 배수 권장)")
+    parser.add_argument("--width", type=int, default=512,
+                        help="생성할 영상의 가로 해상도(16의 배수 권장)")
+
+    # 오디오/비디오 CFG 스케일
+    parser.add_argument("--audio_guidance_scale", type=float, default=7.5,
+                        help="오디오 CFG 스케일 (1.0 초과일 때만 CFG 적용)")
+    parser.add_argument("--video_unconditional_guidance_scale", type=float, default=12.0,
+                        help="비디오 uncond CFG 스케일 (1.0 초과일 때만 CFG 적용)")
+
+    # DDIM(혹은 다른) 스케줄러 설정
+    parser.add_argument("--num_inference_steps", type=int, default=25,
+                        help="Inference 시 확산 스텝 수")
+    parser.add_argument("--audio_ddim_eta", type=float, default=0.0,
+                        help="오디오 확산 시 DDIM eta 값")
+    parser.add_argument("--video_ddim_eta", type=float, default=0.0,
+                        help="비디오 확산 시 DDIM eta 값")
+    
+    # 배치 처리
+    parser.add_argument("--inference_batch_size", type=int, default=2,
+                        help="프롬프트별 배치 크기")
+
+    return parser
+
 
 def main():
+    # 인자 파서 준비
     parser = get_parser()
     args = parser.parse_args()
 
-    assert os.path.exists(args.prompt_file), f"Prompt file not found: {args.prompt_file}"
-    all_prompts = load_prompts(args.prompt_file)
+    # # audio
+    # args.prompt_file = "/home/work/kby_hgh/MMG_AC_test_dataset/0407_one_cap_AC_test.csv"
+    # args.ckpt_dir = "/home/work/kby_hgh/MMG_CHECKPOINT/checkpint_tensorboard/~"
+    # eval_id = "0407_AC_test_~model_info"
 
-    # Accelerate 초기화
-    accelerator = Accelerator(mixed_precision="bf16")
+    model_name= "0406_MMG_1e-4_1e-4_8gpu_abl_combined_no_crop"
+    checkpoint_dir = "checkpoint-step-28799"
+    
+    # 0406_MMG_1e-4_1e-4_8gpu_abl_combined_no_crop
+    # 0404_MMG_1e-4_1e-4_8gpu_abl_videollama
+    # 0404_MMG_1e-4_1e-4_8gpu_abl_combined_llm_caption
+    
+    model_name_list = ["0404_MMG_1e-4_1e-4_8gpu_abl_videollama"]#, "0404_MMG_1e-4_1e-4_8gpu_abl_combined_llm_caption"]#, "0406_MMG_1e-4_1e-4_8gpu_abl_combined_no_crop"]
+    checkpoint_dir_list = ["checkpoint-step-9599", "checkpoint-step-19199", "checkpoint-step-28799", "checkpoint-step-38399", "checkpoint-step-47999", "checkpoint-step-57599", "checkpoint-step-67199", "checkpoint-step-76799", "checkpoint-step-86399"]
+    
+    # model_name_list = ["0406_MMG_1e-4_1e-4_8gpu_abl_combined_no_crop"]
+    # checkpoint_dir_list = ["checkpoint-step-9599", "checkpoint-step-19199", "checkpoint-step-28799", "checkpoint-step-38399", "checkpoint-step-47999"]
+
+    # Original independent Model (Auffusion Or VideoCrfter2)
+
+    for model_name in model_name_list:
+        for checkpoint_dir in checkpoint_dir_list:
+            dataset="clotho" 
+            # clotho
+            # panda
+            # audiocaps
+            # webvid
+            
+            args.prompt_file = f"/home/work/kby_hgh/MMG_clotho_test_set/clotho_captions_evaluation.csv"
+            # Panda-70M # /home/work/kby_hgh/MMG_panda70m_test_dataset/onecap_processed_panda_70m_test.csv
+            # AudioCaps # /home/work/kby_hgh/MMG_AC_test_dataset/0407_one_cap_AC_test.csv
+            # Clotho # /home/work/kby_hgh/MMG_clotho_test_set/clotho_captions_evaluation.csv
+            ckpt_dir = f"/home/work/kby_hgh/MMG_CHECKPOINT/checkpint_tensorboard/{model_name}/{checkpoint_dir}"
+            eval_id = f"{dataset}_{model_name}_{checkpoint_dir}" # {dataset}_
 
 
-    # 전체 프롬프트를 num_processes에 맞게 균등 분배
-    num_processes = accelerator.num_processes
-    prompt_subsets = split_prompts_evenly(all_prompts, num_processes)
+            
+            # prompt 파일 존재 여부 확인
+            assert os.path.exists(args.prompt_file), f"Prompt file not found: {args.prompt_file}"
 
-    # 현재 프로세스 인덱스에 해당하는 프롬프트 subset
-    if accelerator.process_index < len(prompt_subsets):
-        process_prompts = prompt_subsets[accelerator.process_index]
-    else:
-        process_prompts = []
+            # Accelerate 초기화 (mixed_precision은 필요에 맞게 조정)
+            # accelerator = Accelerator(mixed_precision="bf16")
+            from accelerate import DistributedDataParallelKwargs
+            ddp_kwargs = DistributedDataParallelKwargs(find_unused_parameters=True)
 
-    dtype = torch.float32
+            accelerator = Accelerator(mixed_precision="bf16", kwargs_handlers=[ddp_kwargs])
+            # 전체 프롬프트 로드
+            all_prompts = load_prompts(args.prompt_file)
 
-    # Inference 실행
-    run_inference(args, accelerator, process_prompts, dtype)
+            # seed_everything(args.seed)
+            num_processes = accelerator.num_processes
 
-    # 모든 프로세스 동기화 후 종료
-    accelerator.wait_for_everyone()
+            prompt_subsets = split_prompts_evenly(all_prompts, num_processes)
+            if accelerator.process_index < len(prompt_subsets):
+                prompt_sublist = prompt_subsets[accelerator.process_index]
+            else:
+                prompt_sublist = []
+
+            inference_save_path = os.path.join(args.inference_save_path, eval_id)
 
 
-if __name__ == '__main__':
+            safetensor_path = os.path.join(ckpt_dir, "model.safetensors")
+
+
+            # run_inference 실행
+            run_inference(
+                args=args,
+                accelerator=accelerator,
+                prompt_sublist=prompt_sublist,
+                inference_save_path=inference_save_path,
+                ckpt_dir=safetensor_path
+            )
+
+            # 모든 프로세스 동기화
+            accelerator.wait_for_everyone()
+            accelerator.print("Inference finished!")
+
+
+if __name__ == "__main__":
     main()
