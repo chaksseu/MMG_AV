@@ -22,6 +22,9 @@ def clean_sentence(filename):
     cleaned_sentence = ' '.join(filtered_words)
     return cleaned_sentence
 
+
+
+
 def calculate_clap(model_clap, preds_audio, filename, freq):
     resampler = torchaudio.transforms.Resample(orig_freq=16000, new_freq=freq)
     preds_audio_clap = resampler(preds_audio)

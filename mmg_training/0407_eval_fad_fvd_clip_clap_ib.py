@@ -83,7 +83,7 @@ def main():
     parser.add_argument("--inference_save_path", type=str, default="/home/work/kby_hgh/MMG_panda70m_test_dataset/filtered_40f_panda70m_32s_test", help="모델 추론 결과 경로")
     parser.add_argument("--frames", type=int, default=40, help="FVD/CLIP 평가를 위한 프레임 수")
     parser.add_argument("--result_csv_path", type=str, default="eval_results.csv", help="결과를 저장할 CSV 파일 경로")
-    parser.add_argument("--device", type=int, default=0, help="CUDA 디바이스 번호")
+    parser.add_argument("--device", type=int, default=1, help="CUDA 디바이스 번호")
     args = parser.parse_args()
 
     device = torch.device(f"cuda:{args.device}" if torch.cuda.is_available() else "cpu")
@@ -92,21 +92,37 @@ def main():
     # model_name = "0408_AC_test_0406_MMG_1e-4_8gpu_abl_videollama_lossweight_1_1"
     # checkpoint_number = "checkpoint-step-28799"
 
-    target_path = "/home/work/kby_hgh/MMG_AC_test_dataset/0408_AC_test_trimmed_wavs"
+    target_path = "/home/work/kby_hgh/vggsound_sparse_test_curated_final_0320/video"
     # /home/work/kby_hgh/MMG_clotho_test_set/clotho_test_32s
     # /home/work/kby_hgh/MMG_AC_test_dataset/0408_AC_test_trimmed_wavs
     # /home/work/kby_hgh/MMG_panda70m_test_dataset/filtered_40f_panda70m_32s_test
     # webvid test set?
 
-    dataset = "clotho" # panda70m
-    modality ="audio"
+    dataset = "panda70m" # panda70m # clotho
+    modality ="video"
 
-    model_name_list = ["0404_MMG_1e-4_1e-4_8gpu_abl_videollama", "0404_MMG_1e-4_1e-4_8gpu_abl_combined_llm_caption"]#, "0406_MMG_1e-4_1e-4_8gpu_abl_combined_no_crop"]
-    checkpoint_dir_list = ["checkpoint-step-9599", "checkpoint-step-19199", "checkpoint-step-28799", "checkpoint-step-38399", "checkpoint-step-47999", "checkpoint-step-57599", "checkpoint-step-67199", "checkpoint-step-76799", "checkpoint-step-86399"]
+    model_name_list = ["0404_MMG_1e-4_1e-4_8gpu_abl_videollama"]#, "0406_MMG_1e-4_1e-4_8gpu_abl_combined_no_crop"]
+    checkpoint_dir_list = ["checkpoint-step-19199", "checkpoint-step-28799", "checkpoint-step-38399", "checkpoint-step-47999", "checkpoint-step-57599", "checkpoint-step-67199", "checkpoint-step-76799", "checkpoint-step-86399"]
+    checkpoint_dir_list = ["checkpoint-step-19199", "checkpoint-step-38399", "checkpoint-step-57599", "checkpoint-step-76799", "checkpoint-step-86399"]
+    checkpoint_dir_list = ["checkpoint-step-86399"]
+    device = torch.device("cuda:1")
+    #["checkpoint-step-9599"]
+    
+    # model_name_list = [0]
+    # checkpoint_dir_list = [0]
+
+    model_name_list = ["1e-4"]#, "1e-4", "1e-5"
+    checkpoint_dir_list = ["step_0", "step_4096", "step_8192", "step_12288", "step_16384", "step_20480", "step_24576", "step_28672", "step_32768", "step_36864", "step_40960", "step_45056", "step_49152", "step_53248", "step_57344"]
+
 
     for model_name in model_name_list:
         for checkpoint_num in checkpoint_dir_list:
-            inference_save_path = f"/home/work/kby_hgh/MMG_Inferencce_folder/{dataset}_{model_name}_{checkpoint_num}/{modality}"
+            # inference_save_path = f"/home/work/kby_hgh/MMG_Inferencce_folder/{dataset}_{model_name}_{checkpoint_num}/{modality}"
+
+            # inference_save_path = f"/home/work/kby_hgh/MMG_Inferencce_folder/{dataset}_Original/{modality}"
+
+            inference_save_path = f"/home/work/kby_hgh/video_lora_vggsound_sparse_inference_0410_{model_name}/{checkpoint_num}"
+
 
             results = evaluate_model(args, device, target_path, inference_save_path, modality)
 

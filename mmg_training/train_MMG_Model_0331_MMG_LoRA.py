@@ -223,12 +223,12 @@ def evaluate_model(args, accelerator, target_csv_files, eval_id, target_path, ck
             )
         accelerator.wait_for_everyone()
 
-        if accelerator.is_main_process:
-            av_align = evaluate_av_align_score(
-                audio_inference_path=audio_inference_path,
-                video_inference_path=video_inference_path
-            )
-        accelerator.wait_for_everyone()
+        # if accelerator.is_main_process:
+        #     av_align = evaluate_av_align_score(
+        #         audio_inference_path=audio_inference_path,
+        #         video_inference_path=video_inference_path
+        #     )
+        # accelerator.wait_for_everyone()
 
         # CAM_SCORE
         # if accelerator.is_main_process:
@@ -924,7 +924,6 @@ def main():
                 if (global_step+1) % (args.eval_every * args.gradient_accumulation) == 0:
                     ckpt_dir = os.path.join(args.ckpt_save_path, f"checkpint_{args.tensorboard_log_dir}/checkpoint-step-{global_step}")
 
-                    # ckpt_dir = "/home/work/kby_hgh/MMG_CHECKPOINT/checkpint_tensorboard/0401_MMG_again_again_agiain_1e-4_8gpu_abl_llm_captions/checkpoint-step-28799"
                     # save checkpoint
                     if accelerator.is_main_process:
                         accelerator.save_state(ckpt_dir)

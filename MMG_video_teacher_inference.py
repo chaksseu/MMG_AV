@@ -414,30 +414,45 @@ def main():
     video_model.to(device=device,dtype=dtype)
     video_unet = video_model.model.diffusion_model.eval()
     
-    # video_unet = load_accelerator_ckpt(video_unet, args.video_lora_ckpt_path)
+    args.prompt_file = f"/home/work/kby_hgh/processed_csv_files/0409_onecap_processed_panda_70m_test.csv"
+    lr_list = ["1e-4", "1e-5"]
+
+    if lr in lr_list:
+        save_dir = f"/home/work/kby_hgh/video_lora_vggsound_sparse_inference_0410_{lr}"
+        save_dir_list = ["panda_step_4096", "panda_step_16384","panda_step_28672", "panda_step_40960", "panda_step_53248"]
+        video_lora_ckpt = "/home/work/kby_hgh/VIDEO_LORA_CHECKPOINT_0410/{lr}"
+        video_lora_ckpt_path_list = ["checkpoint-step-4096", "checkpoint-step-16384", "checkpoint-step-28672", "checkpoint-step-40960", "checkpoint-step-53248"]
+
+        for i in range(len(video_lora_ckpt_path_list))
+            video_lora_ckpt_path = video_lora_ckpt + "/" + video_lora_ckpt_path_list[i] + "/model.safetensors"
+            save_path = save_dir + "/" + "save_dir_list"
+
+            video_unet = load_accelerator_ckpt(video_unet, video_lora_ckpt_path)
 
 
-    # 모델을 Accelerator 디바이스로 이동
-    video_unet.to(accelerator.device)
-    video_model.to(accelerator.device)
+            # 모델을 Accelerator 디바이스로 이동
+            video_unet.to(accelerator.device)
+            video_model.to(accelerator.device)
 
-    # run_inference 실행
-    run_inference(
-        accelerator=accelerator,
-        unet_model=video_unet,
-        video_model=video_model,
-        prompt_file=args.prompt_file,
-        savedir=args.savedir,
-        bs=args.bs,
-        seed=args.seed,
-        unconditional_guidance_scale=args.unconditional_guidance_scale,
-        num_inference_steps=args.num_inference_steps,
-        height=args.height,
-        width=args.width,
-        frames=args.frames,
-        ddim_eta=args.ddim_eta,
-        fps=args.fps
-    )
+
+
+            # run_inference 실행
+            run_inference(
+                accelerator=accelerator,
+                unet_model=video_unet,
+                video_model=video_model,
+                prompt_file=args.prompt_file,
+                savedir=save_path,
+                bs=args.bs,
+                seed=args.seed,
+                unconditional_guidance_scale=args.unconditional_guidance_scale,
+                num_inference_steps=args.num_inference_steps,
+                height=args.height,
+                width=args.width,
+                frames=args.frames,
+                ddim_eta=args.ddim_eta,
+                fps=args.fps
+            )
 
 if __name__ == "__main__":
     main()

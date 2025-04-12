@@ -1082,17 +1082,7 @@ def main():
     parser = get_parser()
     args = parser.parse_args()
 
-    # # audio
-    # args.prompt_file = "/home/work/kby_hgh/MMG_AC_test_dataset/0407_one_cap_AC_test.csv"
-    # args.ckpt_dir = "/home/work/kby_hgh/MMG_CHECKPOINT/checkpint_tensorboard/~"
-    # eval_id = "0407_AC_test_~model_info"
 
-    model_name= "0406_MMG_1e-4_1e-4_8gpu_abl_combined_no_crop"
-    checkpoint_dir = "checkpoint-step-28799"
-    
-    # 0406_MMG_1e-4_1e-4_8gpu_abl_combined_no_crop
-    # 0404_MMG_1e-4_1e-4_8gpu_abl_videollama
-    # 0404_MMG_1e-4_1e-4_8gpu_abl_combined_llm_caption
     
     model_name_list = ["0404_MMG_1e-4_1e-4_8gpu_abl_videollama"]#, "0404_MMG_1e-4_1e-4_8gpu_abl_combined_llm_caption"]#, "0406_MMG_1e-4_1e-4_8gpu_abl_combined_no_crop"]
     checkpoint_dir_list = ["checkpoint-step-9599", "checkpoint-step-19199", "checkpoint-step-28799", "checkpoint-step-38399", "checkpoint-step-47999", "checkpoint-step-57599", "checkpoint-step-67199", "checkpoint-step-76799", "checkpoint-step-86399"]
@@ -1104,14 +1094,14 @@ def main():
 
     for model_name in model_name_list:
         for checkpoint_dir in checkpoint_dir_list:
-            dataset="clotho" 
+            dataset="panda70m" 
             # clotho
-            # panda
+            # panda70m
             # audiocaps
             # webvid
             
-            args.prompt_file = f"/home/work/kby_hgh/MMG_clotho_test_set/clotho_captions_evaluation.csv"
-            # Panda-70M # /home/work/kby_hgh/MMG_panda70m_test_dataset/onecap_processed_panda_70m_test.csv
+            args.prompt_file = f"/home/work/kby_hgh/processed_csv_files/0409_onecap_processed_panda_70m_test.csv"
+            # Panda-70M # /home/work/kby_hgh/processed_csv_files/0409_onecap_processed_panda_70m_test.csv
             # AudioCaps # /home/work/kby_hgh/MMG_AC_test_dataset/0407_one_cap_AC_test.csv
             # Clotho # /home/work/kby_hgh/MMG_clotho_test_set/clotho_captions_evaluation.csv
             ckpt_dir = f"/home/work/kby_hgh/MMG_CHECKPOINT/checkpint_tensorboard/{model_name}/{checkpoint_dir}"

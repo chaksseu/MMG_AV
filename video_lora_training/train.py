@@ -31,6 +31,9 @@ import json
 from MMG_video_teacher_inference import run_inference
 from run_video_eval import evaluate_video_metrics
 
+from torch.utils.tensorboard import SummaryWriter  # <--- TensorBoard SummaryWriter 추가
+
+
 def parse_args():
     parser = argparse.ArgumentParser(description="Train LoRA on Audio+Text data")
     parser.add_argument("--csv_path", type=str, required=True, help="CSV 파일 경로")
@@ -101,14 +104,14 @@ def evaluate_model(accelerator, unet_model, video_model, csv_path, inference_pat
 
         # 실제 fvd, CLIP 등 계산
         fvd, clip_avg = -1111, -1111
-        if accelerator.is_main_process:
-            fvd, clip_avg = evaluate_video_metrics(
-                preds_folder=inference_path,
-                target_folder=target_folder,
-                metrics=['fvd','clip'],
-                device=accelerator.device,
-                num_frames=frames
-            )
+        # if accelerator.is_main_process:
+        #     fvd, clip_avg = evaluate_video_metrics(
+        #         preds_folder=inference_path,
+        #         target_folder=target_folder,
+        #         metrics=['fvd','clip'],
+        #         device=accelerator.device,
+        #         num_frames=frames
+        #     )
 
         unet_model.train()
         accelerator.wait_for_everyone()
@@ -133,6 +136,7 @@ def main(args):
     device = accelerator.device
     # wandb
     if accelerator.is_main_process:
+        os.environ["WANDB_MODE"] = "offline"
         wandb.init(project=args.wandb_project, name="video_lora_training")
     else:
         os.environ["WANDB_MODE"] = "offline"
@@ -195,23 +199,26 @@ def main(args):
     start_epoch = 0
     global_step = 0
     resume_step = 0
-    if args.resume_checkpoint is not None:
-        # accelerator가 저장했던 전체 상태를 로드합니다.
-        accelerator.load_state(args.resume_checkpoint)
-        training_state_path = os.path.join(args.resume_checkpoint, "training_state.json")
-        if os.path.exists(training_state_path):
-            with open(training_state_path, "r") as f:
-                training_state = json.load(f)
-            global_step = training_state.get("global_step", 0)
-            # 마지막 저장된 에폭 이후부터 재개하도록 (+1)
-            start_epoch = training_state.get("epoch", 0)
-            resume_step = training_state.get("step", -1) + 1
-            print(f"체크포인트로부터 학습 재개: 에폭 {start_epoch}부터, 글로벌 스텝 {global_step}")
-        else:
-            print("체크포인트 내 training_state.json 파일을 찾을 수 없어, 새롭게 시작합니다.")
-    # =================================================
+    # if args.resume_checkpoint is not None:
+    #     # accelerator가 저장했던 전체 상태를 로드합니다.
+    #     accelerator.load_state(args.resume_checkpoint)
+    #     training_state_path = os.path.join(args.resume_checkpoint, "training_state.json")
+    #     if os.path.exists(training_state_path):
+    #         with open(training_state_path, "r") as f:
+    #             training_state = json.load(f)
+    #         global_step = training_state.get("global_step", 0)
+    #         # 마지막 저장된 에폭 이후부터 재개하도록 (+1)
+    #         start_epoch = training_state.get("epoch", 0)
+    #         resume_step = training_state.get("step", -1) + 1
+    #         print(f"체크포인트로부터 학습 재개: 에폭 {start_epoch}부터, 글로벌 스텝 {global_step}")
+    #     else:
+    #         print("체크포인트 내 training_state.json 파일을 찾을 수 없어, 새롭게 시작합니다.")
+    # # =================================================
 
 
+    writer = None
+    if accelerator.is_main_process:
+        writer = SummaryWriter(log_dir="/home/work/kby_hgh/MMG_01/tensorboard_audio_lora_0410")
 
     video_unet.train()
 
@@ -246,33 +253,12 @@ def main(args):
                     "eval/vgg_fvd": vgg_fvd,
                     "eval/vgg_clip_avg": vgg_clip_avg,
                     "step": global_step
-
                 })
+            if accelerator.is_main_process and writer is not None:
+                writer.add_scalar("eval/vgg_fvd", vgg_fvd, global_step)
+                writer.add_scalar("eval/vgg_clap_avg", vgg_clip_avg, global_step)
 
-        fvd, clip_avg = evaluate_model(
-                accelerator=accelerator,
-                unet_model=video_unet,
-                video_model=video_model,
-                csv_path=args.csv_path,
-                inference_path=args.inference_save_path,
-                inference_batch_size=args.inference_batch_size,
-                seed=args.seed,
-                guidance_scale=args.guidance_scale,
-                num_inference_steps=args.num_inference_steps,
-                step=global_step,
-                height=args.height,
-                width=args.width,
-                frames=args.target_frames,
-                ddim_eta=args.ddim_eta,
-                fps=args.video_fps,
-                target_folder=args.target_folder
-            )
-        if accelerator.is_main_process:
-            wandb.log({
-                "eval/fvd": fvd,
-                "eval/clip_avg": clip_avg,
-                "step": global_step
-            })
+            accelerator.wait_for_everyone()
 
 
         for step, batch in enumerate(loop):
@@ -328,7 +314,7 @@ def main(args):
                 )
 
                 loss = F.mse_loss(video_original_output, noise_video)
-                loss *= video_loss_weight 
+                # loss *= args.video_loss_weight 
                 losses.append(loss.item())
 
                 accelerator.backward(loss)
@@ -344,9 +330,11 @@ def main(args):
                         "train/loss": avg_loss,
                         "epoch": epoch + 1,
                         "step": global_step,
-                        "step": global_step
                     })
                     losses = []
+                if writer is not None:
+                    writer.add_scalar("train/loss", avg_loss, global_step)
+                    writer.add_scalar("epoch", epoch, global_step)
 
 
                 # -----  스텝 단위로 평가 -----
@@ -379,31 +367,10 @@ def main(args):
                                 "eval/vgg_clip_avg": vgg_clip_avg,
                                 "step": global_step
                             })
+                        if accelerator.is_main_process and writer is not None:
+                            writer.add_scalar("eval/vgg_fvd", vgg_fvd, global_step)
+                            writer.add_scalar("eval/vgg_clip_avg", vgg_clip_avg, global_step)
 
-                    fvd, clip_avg = evaluate_model(
-                            accelerator=accelerator,
-                            unet_model=video_unet,
-                            video_model=video_model,
-                            csv_path=args.csv_path,
-                            inference_path=args.inference_save_path,
-                            inference_batch_size=args.inference_batch_size,
-                            seed=args.seed,
-                            guidance_scale=args.guidance_scale,
-                            num_inference_steps=args.num_inference_steps,
-                            step=global_step,
-                            height=args.height,
-                            width=args.width,
-                            frames=args.target_frames,
-                            ddim_eta=args.ddim_eta,
-                            fps=args.video_fps,
-                            target_folder=args.target_folder
-                        )
-                    if accelerator.is_main_process:
-                        wandb.log({
-                            "eval/fvd": fvd,
-                            "eval/clip_avg": clip_avg,
-                            "step": global_step
-                        })
 
                 # Checkpoint 저장
                 if global_step > 0 and (global_step % args.eval_every == 0) and accelerator.is_main_process:

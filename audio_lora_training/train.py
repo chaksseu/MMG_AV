@@ -25,6 +25,7 @@ from diffusers import AutoencoderKL
 from diffusers.image_processor import VaeImageProcessor
 from transformers import AutoTokenizer
 
+from torch.utils.tensorboard import SummaryWriter  # <--- TensorBoard SummaryWriter 추가
 
 
 # import sys
@@ -34,7 +35,7 @@ from mmg_inference.auffusion_pipe_functions_copy_0123 import (
     encode_audio_prompt,
     ConditionAdapter,
     import_model_class_from_model_name_or_path,
-    retrieve_latents,
+    retrieve_latents
 )
 
 
@@ -77,20 +78,21 @@ def evaluate_model(accelerator, unet_model, vae, image_processor, text_encoder_l
         accelerator.wait_for_everyone()
 
         # TODO: real FAD, CLAP calculation
-        fad, clap_avg, clap_std = 0.0, 0.0, 0.0
-        if accelerator.is_main_process:
-            fad, clap_avg, clap_std = evaluate_audio_metrics(
-                preds_folder=inference_path,
-                target_folder=target_folder,
-                metrics=['FAD','CLAP'],
-                clap_model=1,
-                device=accelerator.device
-            )
-        unet_model.train()
+        fad, clap_avg, fvd, clip_avg= 0.0, 0.0, 0.0, 0.0
+
+        # if accelerator.is_main_process:
+        #     fad, clap_avg, _ = evaluate_audio_metrics(
+        #         preds_folder=inference_path,
+        #         target_folder=target_folder,
+        #         metrics=['FAD','CLAP'],
+        #         clap_model=1,
+        #         device=accelerator.device
+        #     )
         accelerator.wait_for_everyone()
+        unet_model.train()
 
 
-        return fad, clap_avg, clap_std
+        return fad, clap_avg
 
 
 
@@ -161,6 +163,7 @@ def main():
     
     # wandb
     if accelerator.is_main_process:
+        os.environ["WANDB_MODE"] = "offline"
         wandb.init(project=args.wandb_project, name="audio_lora_training")
     else:
         os.environ["WANDB_MODE"] = "offline"
@@ -178,13 +181,11 @@ def main():
     train_loader = DataLoader(train_dataset, batch_size=args.train_batch_size, shuffle=True,
                               num_workers=args.num_workers, pin_memory=True)
 
-    # UNet + LoRA
-    unet_model = UNet2DConditionModel.from_pretrained(
-        args.pretrained_model_name_or_path,
-        subfolder="unet"
-    )
-    unet_model.eval()
-    for param in unet_model.parameters():
+    args.audio_model_name = args.pretrained_model_name_or_path
+    # Audio Models
+    audio_unet = UNet2DConditionModel.from_pretrained(args.audio_model_name, subfolder="unet")
+    audio_unet.eval()
+    for param in audio_unet.parameters():
         param.requires_grad = False
 
     # LoRA config
@@ -194,7 +195,68 @@ def main():
         init_lora_weights=True,
         target_modules=["to_k", "to_q", "to_v", "to_out.0"],
     )
-    unet_model.add_adapter(lora_config)
+    audio_unet.add_adapter(lora_config)
+
+
+    # audio_unet = load_accelerator_ckpt(audio_unet, args.audio_lora_ckpt_path)
+
+    if not os.path.isdir(args.audio_model_name):
+        pretrained_model_name_or_path = snapshot_download(args.audio_model_name)
+    else:
+        pretrained_model_name_or_path = args.audio_model_name
+
+    # 2-2) VAE 로드
+    with torch.no_grad():
+        audio_vae = AutoencoderKL.from_pretrained(
+            pretrained_model_name_or_path,
+            subfolder="vae"
+        )
+    audio_vae = audio_vae.to(device=device,dtype=dtype)
+    audio_vae.requires_grad_(False)
+
+    # 2-3) VAE scale factor 기반 ImageProcessor
+    audio_vae_scale_factor = 2 ** (len(audio_vae.config.block_out_channels) - 1)
+    audio_image_processor = VaeImageProcessor(vae_scale_factor=audio_vae_scale_factor)
+
+    # 2-4) condition_config.json 기반으로 text_encoder_list, tokenizer_list, adapter_list 로딩
+    audio_condition_json_path = os.path.join(pretrained_model_name_or_path, "condition_config.json")
+    with open(audio_condition_json_path, "r", encoding="utf-8") as f:
+        audio_condition_json_list = json.load(f)
+
+    audio_text_encoder_list = []
+    audio_tokenizer_list = []
+    audio_adapter_list = []
+
+    with torch.no_grad():
+        for cond_item in audio_condition_json_list:
+            # text encoder / tokenizer
+            audio_text_encoder_path = os.path.join(pretrained_model_name_or_path, cond_item["text_encoder_name"])
+            audio_tokenizer = AutoTokenizer.from_pretrained(audio_text_encoder_path)
+            
+            audio_text_encoder_cls = import_model_class_from_model_name_or_path(audio_text_encoder_path)
+            audio_text_encoder = audio_text_encoder_cls.from_pretrained(audio_text_encoder_path)
+
+            audio_text_encoder.requires_grad_(False)
+            audio_text_encoder = audio_text_encoder.to(device=device, dtype=dtype)
+
+            audio_tokenizer_list.append(audio_tokenizer)
+            audio_text_encoder_list.append(audio_text_encoder)
+
+            # condition adapter
+            audio_adapter_path = os.path.join(pretrained_model_name_or_path, cond_item["condition_adapter_name"])
+            audio_adapter = ConditionAdapter.from_pretrained(audio_adapter_path)
+            audio_adapter.requires_grad_(False)
+            audio_adapter = audio_adapter.to(device=device,dtype=dtype)
+
+            audio_adapter_list.append(audio_adapter)
+
+
+    seed = args.seed
+    # PyTorch Generator 설정
+    generator = torch.Generator(device=device).manual_seed(seed)
+    random.seed(seed)
+
+    unet_model = audio_unet
 
     # Only LoRA params will be trained
     total_params = sum(p.numel() for p in unet_model.parameters())
@@ -218,91 +280,40 @@ def main():
     )
 
 
-    seed = args.seed
-    # 랜덤 시드 설정
-    generator = torch.Generator(device=device).manual_seed(seed)
-    random.seed(seed)
-
-    # ================================================
-    # 2) 모델/토크나이저/어댑터 등 로딩 (auffusion 예시)
-    # ================================================
-
-    # 2-1) pretrained_model_name_or_path가 로컬 폴더가 아니면 snapshot_download
-    if not os.path.isdir(args.pretrained_model_name_or_path):
-        pretrained_model_name_or_path = snapshot_download(args.pretrained_model_name_or_path)
-    else:
-        pretrained_model_name_or_path = args.pretrained_model_name_or_path
-
-    # 2-2) VAE 로드
-    with torch.no_grad():
-        vae = AutoencoderKL.from_pretrained(
-            pretrained_model_name_or_path,
-            subfolder="vae"
-        )
-    vae.requires_grad_(False)
-
-    # 2-3) VAE scale factor 기반 ImageProcessor
-    vae_scale_factor = 2 ** (len(vae.config.block_out_channels) - 1)
-    image_processor = VaeImageProcessor(vae_scale_factor=vae_scale_factor)
-
-    # 2-4) condition_config.json 기반으로 text_encoder_list, tokenizer_list, adapter_list 로딩
-    condition_json_path = os.path.join(pretrained_model_name_or_path, "condition_config.json")
-    with open(condition_json_path, "r", encoding="utf-8") as f:
-        condition_json_list = json.load(f)
-
-    text_encoder_list = []
-    tokenizer_list = []
-    adapter_list = []
-
-    with torch.no_grad():
-        for cond_item in condition_json_list:
-            # text encoder / tokenizer
-            text_encoder_path = os.path.join(pretrained_model_name_or_path, cond_item["text_encoder_name"])
-            tokenizer = AutoTokenizer.from_pretrained(text_encoder_path)
-            text_encoder_cls = import_model_class_from_model_name_or_path(text_encoder_path)
-            text_encoder = text_encoder_cls.from_pretrained(text_encoder_path)
-
-            text_encoder.requires_grad_(False)
-
-            tokenizer_list.append(tokenizer)
-            text_encoder_list.append(text_encoder)
-
-            # condition adapter
-            adapter_path = os.path.join(pretrained_model_name_or_path, cond_item["condition_adapter_name"])
-            adapter = ConditionAdapter.from_pretrained(adapter_path)
-            adapter.requires_grad_(False)
-            adapter_list.append(adapter)
-        
-
-
 
     # Prepare
     unet_model, optimizer, train_loader, vae, image_processor, text_encoder_list, adapter_list = accelerator.prepare(
-        unet_model, optimizer, train_loader, vae, image_processor, text_encoder_list, adapter_list
+        unet_model, optimizer, train_loader, audio_vae, audio_image_processor, audio_text_encoder_list, audio_adapter_list
     )
-
+    tokenizer_list = audio_tokenizer_list
 
     # ====== 체크포인트에서 resume하는 부분 추가 ======
     start_epoch = 0
     global_step = 0
     resume_batch_idx = 0
-    if args.resume_checkpoint is not None:
-        # accelerator가 저장했던 전체 상태를 로드합니다.
-        accelerator.load_state(args.resume_checkpoint)
-        training_state_path = os.path.join(args.resume_checkpoint, "training_state.json")
-        if os.path.exists(training_state_path):
-            with open(training_state_path, "r") as f:
-                training_state = json.load(f)
-            global_step = training_state.get("global_step", 0)
-            # 마지막 저장된 에폭 이후부터 재개하도록 (+1)
-            start_epoch = training_state.get("epoch", 0) + 1
-            resume_batch_idx = training_state.get("batch_idx", -1) + 1
-            print(f"체크포인트로부터 학습 재개: 에폭 {start_epoch}부터, 글로벌 스텝 {global_step}")
-        else:
-            print("체크포인트 내 training_state.json 파일을 찾을 수 없어, 새롭게 시작합니다.")
+    # if args.resume_checkpoint is not None:
+    #     # accelerator가 저장했던 전체 상태를 로드합니다.
+    #     accelerator.load_state(args.resume_checkpoint)
+    #     training_state_path = os.path.join(args.resume_checkpoint, "training_state.json")
+    #     if os.path.exists(training_state_path):
+    #         with open(training_state_path, "r") as f:
+    #             training_state = json.load(f)
+    #         global_step = training_state.get("global_step", 0)
+    #         # 마지막 저장된 에폭 이후부터 재개하도록 (+1)
+    #         start_epoch = training_state.get("epoch", 0) + 1
+    #         resume_batch_idx = training_state.get("batch_idx", -1) + 1
+    #         print(f"체크포인트로부터 학습 재개: 에폭 {start_epoch}부터, 글로벌 스텝 {global_step}")
+    #     else:
+    #         print("체크포인트 내 training_state.json 파일을 찾을 수 없어, 새롭게 시작합니다.")
     # =================================================
 
     unet_model.train()
+
+
+
+    writer = None
+    if accelerator.is_main_process:
+        writer = SummaryWriter(log_dir="/home/work/kby_hgh/MMG_01/tensorboard_audio_lora_0410")
 
     for epoch in range(start_epoch, args.num_epochs):
         losses = []
@@ -312,7 +323,7 @@ def main():
         # 초기 평가
         if global_step==0:
             accelerator.wait_for_everyone()
-            vgg_fad, vgg_clap_avg, vgg_clap_std = evaluate_model(
+            vgg_fad, vgg_clap_avg = evaluate_model(
                 accelerator=accelerator,
                 unet_model=unet_model,
                 vae=vae,
@@ -332,29 +343,19 @@ def main():
                 eval_id=f"step_{global_step}",  # 스텝 단위 표시
                 target_folder=args.vgg_target_folder
             )
-            accelerator.wait_for_everyone()
 
-            # Audiocaps/Wavcaps 등 기본 csv로 평가
-            fad, clap_avg, clap_std = evaluate_model(
-                accelerator=accelerator,
-                unet_model=unet_model,
-                vae=vae,
-                image_processor=image_processor,
-                text_encoder_list=text_encoder_list,
-                adapter_list=adapter_list,
-                tokenizer_list=tokenizer_list,
-                csv_path=args.csv_path,
-                inference_path=args.inference_save_path,
-                inference_batch_size=args.inference_batch_size,
-                pretrained_model_name_or_path=args.pretrained_model_name_or_path,
-                seed=args.seed,
-                duration=args.slice_duration,
-                guidance_scale=args.guidance_scale,
-                num_inference_steps=args.num_inference_steps,
-                eta_audio=args.eta_audio,
-                eval_id=f"step_{global_step}",  # 스텝 단위 표시
-                target_folder=args.target_folder
-            )
+            # if accelerator.is_main_process:
+            #     wandb.log({
+            #         "eval/vgg_fvd": vgg_fvd,
+            #         "eval/vgg_clip_avg": vgg_clip_avg,
+            #         "step": global_step
+
+            #     })
+                
+            if accelerator.is_main_process and writer is not None:
+                writer.add_scalar("eval/vgg_fad", vgg_fad, global_step)
+                writer.add_scalar("eval/vgg_clap_avg", vgg_clap_avg, global_step)
+
             accelerator.wait_for_everyone()
 
 
@@ -389,16 +390,15 @@ def main():
                 # print(f"Image - Min: {image_min:.6f}, Max: {image_max:.6f}, Mean: {image_mean:.6f}")
 
                 # 텍스트/오디오 프롬프트 인코딩
-                with accelerator.autocast():
-                    audio_text_embed = encode_audio_prompt(
-                        text_encoder_list=text_encoder_list,
-                        tokenizer_list=tokenizer_list,
-                        adapter_list=adapter_list,
-                        tokenizer_model_max_length=77,
-                        dtype=dtype,
-                        prompt=caption_text,
-                        device=accelerator.device
-                    )
+                audio_text_embed = encode_audio_prompt(
+                    text_encoder_list=text_encoder_list,
+                    tokenizer_list=tokenizer_list,
+                    adapter_list=adapter_list,
+                    tokenizer_model_max_length=77,
+                    dtype=dtype,
+                    prompt=caption_text,
+                    device=accelerator.device
+                )
 
                 # VAE 인코딩 -> latents
                 with accelerator.autocast():
@@ -445,6 +445,14 @@ def main():
 
                 if accelerator.is_main_process:
                     avg_loss = sum(losses) / len(losses)
+
+                    # 텐서보드에 로그
+                    if writer is not None:
+                        writer.add_scalar("train/loss", avg_losses, global_step)
+                        writer.add_scalar("train/loss_audio", avg_losses_audio, global_step)
+                        writer.add_scalar("train/loss_video", avg_losses_video, global_step)
+                        writer.add_scalar("epoch", epoch, global_step)
+
                     wandb.log({
                         "train/loss": avg_loss,
                         "epoch": epoch + 1,
@@ -457,7 +465,7 @@ def main():
                     accelerator.wait_for_everyone()
 
                     # VGG 데이터셋으로 평가
-                    vgg_fad, vgg_clap_avg, vgg_clap_std = evaluate_model(
+                    vgg_fad, vgg_clap_avg = evaluate_model(
                         accelerator=accelerator,
                         unet_model=unet_model,
                         vae=vae,
@@ -479,41 +487,17 @@ def main():
                     )
                     accelerator.wait_for_everyone()
 
-                    # Audiocaps/Wavcaps 등 기본 csv로 평가
-                    fad, clap_avg, clap_std = evaluate_model(
-                        accelerator=accelerator,
-                        unet_model=unet_model,
-                        vae=vae,
-                        image_processor=image_processor,
-                        text_encoder_list=text_encoder_list,
-                        adapter_list=adapter_list,
-                        tokenizer_list=tokenizer_list,
-                        csv_path=args.csv_path,
-                        inference_path=args.inference_save_path,
-                        inference_batch_size=args.inference_batch_size,
-                        pretrained_model_name_or_path=args.pretrained_model_name_or_path,
-                        seed=args.seed,
-                        duration=args.slice_duration,
-                        guidance_scale=args.guidance_scale,
-                        num_inference_steps=args.num_inference_steps,
-                        eta_audio=args.eta_audio,
-                        eval_id=f"step_{global_step}",  # 스텝 단위 표시
-                        target_folder=args.target_folder
-                    )
-                    accelerator.wait_for_everyone()
 
                     # wandb 로깅
                     if accelerator.is_main_process:
                         wandb.log({
                             "eval/vggsparse_fad": vgg_fad,
                             "eval/vggsparse_clap_avg": vgg_clap_avg,
-                            "eval/vggsparse_clap_std": vgg_clap_std,
-                            "eval/fad": fad,
-                            "eval/clap_avg": clap_avg,
-                            "eval/clap_std": clap_std,
                             "step": global_step
                         })
-
+                    if accelerator.is_main_process and writer is not None:
+                        writer.add_scalar("eval/vgg_fad", vgg_fad, global_step)
+                        writer.add_scalar("eval/vgg_clap_avg", vgg_clap_avg, global_step)
 
                 # Save checkpoint
                 # 체크포인트 저장 (평가 주기마다)

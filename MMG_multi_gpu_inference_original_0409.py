@@ -271,13 +271,13 @@ class CrossModalCoupledUNet(nn.Module):
         # ---- Prepare Audio Branch ----
         audio_timesteps = audio_timestep
         if not torch.is_tensor(audio_timesteps):
-            dtype = torch.int64 if isinstance(audio_timestep, int) else torch.float32
+            dtype = torch.int64 if isinstance(audio_timestep, int) else torch.bfloat16
             audio_timesteps = torch.tensor([audio_timestep], dtype=dtype, device=audio_latents.device)
         elif audio_timesteps.dim() == 0:
             audio_timesteps = audio_timesteps[None].to(audio_latents.device)
         audio_timesteps = audio_timesteps.expand(audio_latents.shape[0])
 
-        audio_t_emb = self.audio_unet.time_proj(audio_timesteps).to(dtype=audio_latents.dtype)
+        audio_t_emb = self.audio_unet.time_proj(audio_timesteps).to(dtype=torch.float32)
         audio_emb = self.audio_unet.time_embedding(audio_t_emb)
         if self.audio_unet.time_embed_act is not None:
             audio_emb = self.audio_unet.time_embed_act(audio_emb)
@@ -709,8 +709,8 @@ def load_cross_modal_unet(
         'device': device
     }
     cross_modal_model = CrossModalCoupledUNet(audio_unet, video_unet, cross_modal_config, device, dtype)
-    # checkpoint = load_file(checkpoint_path)
-    # cross_modal_model.load_state_dict(checkpoint)
+    checkpoint = load_file(checkpoint_path)
+    cross_modal_model.load_state_dict(checkpoint)
     cross_modal_model = cross_modal_model.to(device, dtype).eval()
     return cross_modal_model
 
@@ -721,7 +721,6 @@ def run_inference(
     accelerator,
     prompt_sublist,
     inference_save_path,
-    ckpt_dir
 ):
     try:
         print("Start Inference")
@@ -768,19 +767,14 @@ def run_inference(
         
         audio_unet = load_audio_unet(model_dir, device, dtype)
 
-        #     # LoRA config
-        # lora_config = LoraConfig(
-        #     r=128,
-        #     lora_alpha=128,
-        #     init_lora_weights=True,
-        #     target_modules=["to_k", "to_q", "to_v", "to_out.0"],
-        # )
-        # audio_unet.add_adapter(lora_config)
+        cross_modal_config = {
+            'layer_channels': [320, 640, 1280, 1280, 1280, 640],
+            'd_head': 64,
+            'device': device
+        }
+        cross_modal_model = CrossModalCoupledUNet(audio_unet, video_unet, cross_modal_config, device, dtype)
+        cross_modal_model = cross_modal_model.to(device, dtype).eval()
 
-
-
-        # Load MMG components
-        cross_modal_model = load_cross_modal_unet(audio_unet, video_unet, ckpt_dir, device, dtype)
 
  
 
@@ -1036,7 +1030,7 @@ def get_parser():
                         help="랜덤 시드를 설정합니다.")
     
     # 비디오 Crafter 관련 설정
-    parser.add_argument("--videocrafter_config", type=str, default="configs/inference_t2v_512_v2.0_no_LoRA.yaml", # _no_LoRA.yaml",
+    parser.add_argument("--videocrafter_config", type=str, default="configs/inference_t2v_512_v2.0.yaml",
                         help="VideoCrafter 모델의 config 파일(.yaml) 경로")
     parser.add_argument("--videocrafter_ckpt_path", type=str, default="scripts/evaluation/model.ckpt",
                         help="VideoCrafter 모델의 checkpoint(.ckpt) 경로")
@@ -1082,83 +1076,58 @@ def main():
     # 인자 파서 준비
     parser = get_parser()
     args = parser.parse_args()
-
-    # # audio
-    # args.prompt_file = "/home/work/kby_hgh/MMG_AC_test_dataset/0407_one_cap_AC_test.csv"
-    # args.ckpt_dir = "/home/work/kby_hgh/MMG_CHECKPOINT/checkpint_tensorboard/~"
-    # eval_id = "0407_AC_test_~model_info"
-
-    model_name= "0406_MMG_1e-4_1e-4_8gpu_abl_combined_no_crop"
-    checkpoint_dir = "checkpoint-step-28799"
     
-    # 0406_MMG_1e-4_1e-4_8gpu_abl_combined_no_crop
-    # 0404_MMG_1e-4_1e-4_8gpu_abl_videollama
-    # 0404_MMG_1e-4_1e-4_8gpu_abl_combined_llm_caption
+    dataset="panda70m" 
+    # clotho
+    # panda
+    # audiocaps
+    # webvid
     
-    model_name_list = ["0404_MMG_1e-4_1e-4_8gpu_abl_videollama"]#, "0404_MMG_1e-4_1e-4_8gpu_abl_combined_llm_caption"]#, "0406_MMG_1e-4_1e-4_8gpu_abl_combined_no_crop"]
-    checkpoint_dir_list = ["checkpoint-step-9599", "checkpoint-step-19199", "checkpoint-step-28799", "checkpoint-step-38399", "checkpoint-step-47999", "checkpoint-step-57599", "checkpoint-step-67199", "checkpoint-step-76799", "checkpoint-step-86399"]
+    args.prompt_file = f"/home/work/kby_hgh/processed_csv_files/0409_onecap_processed_panda_70m_test.csv"
+    # Panda-70M # /home/work/kby_hgh/processed_csv_files/0409_onecap_processed_panda_70m_test.csv
+    # AudioCaps # /home/work/kby_hgh/MMG_AC_test_dataset/0407_one_cap_AC_test.csv
+    # Clotho # /home/work/kby_hgh/MMG_clotho_test_set/clotho_captions_evaluation.csv
     
-    # model_name_list = ["0406_MMG_1e-4_1e-4_8gpu_abl_combined_no_crop"]
-    # checkpoint_dir_list = ["checkpoint-step-9599", "checkpoint-step-19199", "checkpoint-step-28799", "checkpoint-step-38399", "checkpoint-step-47999"]
-
-    # Original independent Model (Auffusion Or VideoCrfter2)
-
-    for model_name in model_name_list:
-        for checkpoint_dir in checkpoint_dir_list:
-            dataset="clotho" 
-            # clotho
-            # panda
-            # audiocaps
-            # webvid
-            
-            args.prompt_file = f"/home/work/kby_hgh/MMG_clotho_test_set/clotho_captions_evaluation.csv"
-            # Panda-70M # /home/work/kby_hgh/MMG_panda70m_test_dataset/onecap_processed_panda_70m_test.csv
-            # AudioCaps # /home/work/kby_hgh/MMG_AC_test_dataset/0407_one_cap_AC_test.csv
-            # Clotho # /home/work/kby_hgh/MMG_clotho_test_set/clotho_captions_evaluation.csv
-            ckpt_dir = f"/home/work/kby_hgh/MMG_CHECKPOINT/checkpint_tensorboard/{model_name}/{checkpoint_dir}"
-            eval_id = f"{dataset}_Original_Auffusion_VideoCrafter" # {dataset}_
+    eval_id = f"{dataset}_Original"
 
 
-            
-            # prompt 파일 존재 여부 확인
-            assert os.path.exists(args.prompt_file), f"Prompt file not found: {args.prompt_file}"
+    
+    # prompt 파일 존재 여부 확인
+    assert os.path.exists(args.prompt_file), f"Prompt file not found: {args.prompt_file}"
 
-            # Accelerate 초기화 (mixed_precision은 필요에 맞게 조정)
-            # accelerator = Accelerator(mixed_precision="bf16")
-            from accelerate import DistributedDataParallelKwargs
-            ddp_kwargs = DistributedDataParallelKwargs(find_unused_parameters=True)
+    # Accelerate 초기화 (mixed_precision은 필요에 맞게 조정)
+    # accelerator = Accelerator(mixed_precision="bf16")
+    from accelerate import DistributedDataParallelKwargs
+    ddp_kwargs = DistributedDataParallelKwargs(find_unused_parameters=True)
 
-            accelerator = Accelerator(mixed_precision="bf16", kwargs_handlers=[ddp_kwargs])
-            # 전체 프롬프트 로드
-            all_prompts = load_prompts(args.prompt_file)
+    accelerator = Accelerator(mixed_precision="bf16", kwargs_handlers=[ddp_kwargs])
+    # 전체 프롬프트 로드
+    all_prompts = load_prompts(args.prompt_file)
 
-            # seed_everything(args.seed)
-            num_processes = accelerator.num_processes
+    # seed_everything(args.seed)
+    num_processes = accelerator.num_processes
 
-            prompt_subsets = split_prompts_evenly(all_prompts, num_processes)
-            if accelerator.process_index < len(prompt_subsets):
-                prompt_sublist = prompt_subsets[accelerator.process_index]
-            else:
-                prompt_sublist = []
+    prompt_subsets = split_prompts_evenly(all_prompts, num_processes)
+    if accelerator.process_index < len(prompt_subsets):
+        prompt_sublist = prompt_subsets[accelerator.process_index]
+    else:
+        prompt_sublist = []
 
-            inference_save_path = os.path.join(args.inference_save_path, eval_id)
-
-
-            safetensor_path = os.path.join(ckpt_dir, "model.safetensors")
+    inference_save_path = os.path.join(args.inference_save_path, eval_id)
 
 
-            # run_inference 실행
-            run_inference(
-                args=args,
-                accelerator=accelerator,
-                prompt_sublist=prompt_sublist,
-                inference_save_path=inference_save_path,
-                ckpt_dir=safetensor_path
-            )
 
-            # 모든 프로세스 동기화
-            accelerator.wait_for_everyone()
-            accelerator.print("Inference finished!")
+    # run_inference 실행
+    run_inference(
+        args=args,
+        accelerator=accelerator,
+        prompt_sublist=prompt_sublist,
+        inference_save_path=inference_save_path,
+    )
+
+    # 모든 프로세스 동기화
+    accelerator.wait_for_everyone()
+    accelerator.print("Inference finished!")
 
 
 if __name__ == "__main__":

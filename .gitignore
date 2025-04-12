@@ -17,10 +17,10 @@ results
 *.pt
 *.mp4
 *.wav
-*.csv
 *.out
 *.ckpt
 *.tar.gz
 *.tar
 *.zip
 *.pth
+*.csv

@@ -86,20 +86,22 @@ class VideoTextDataset(Dataset):
 
             target_height, target_width = 320, 512
 
-            if sliced_video.shape[1] != target_height or sliced_video.shape[2] != target_width:
-                print("video_id:", video_id)
-                print("caption:", caption_text)
-                print("sliced_video.shape before padding:", sliced_video.shape)
-                
-                batch, height, width, channels = sliced_video.shape
+            if sliced_video.shape[1] < target_height or sliced_video.shape[2] < target_width:
+                pad_h = max(0, target_height - sliced_video.shape[1])
+                pad_w = max(0, target_width - sliced_video.shape[2])
+                # (T, H, W, C) -> (T, C, H, W)
+                sliced_video = sliced_video.permute(0, 3, 1, 2)
+                # F.pad의 패딩 순서는 (pad_left, pad_right, pad_top, pad_bottom)
+                sliced_video = F.pad(sliced_video, (0, pad_w, 0, pad_h), mode="constant", value=0)
+                # 다시 (T, H, W, C)로 변환
+                sliced_video = sliced_video.permute(0, 2, 3, 1)
 
-                pad_h = max(0, target_height - height)
-                pad_w = max(0, target_width - width)
-
-                # Apply padding: (left, right, top, bottom)
-                sliced_video = F.pad(sliced_video, (0, 0, 0, pad_w, 0, pad_h), mode="constant", value=0)
-
-                print("sliced_video.shape after padding:", sliced_video.shape)
+            start_h, start_w = 0, 0
+            if sliced_video.shape[1] > target_height:
+                start_h = random.randint(0, sliced_video.shape[1] - target_height)
+            if sliced_video.shape[2] > target_width:
+                start_w = random.randint(0, sliced_video.shape[2] - target_width)
+            sliced_video = sliced_video[:, start_h:start_h + target_height, start_w:start_w + target_width, :]
 
 
 

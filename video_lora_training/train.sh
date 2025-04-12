@@ -1,13 +1,13 @@
 #!/bin/bash
 
 # ========================= 기본값 설정 =========================
-VIDEO_CSV_PATH="/home/jupyter/preprocessed_WebVid_10M_videos_0208_test_1k.csv"               # 실제 CSV 파일 경로
-VIDEO_DIR="/home/jupyter/preprocessed_WebVid_10M_train_videos_0130"                   # 비디오 파일 폴더 경로
-OUTPUT_DIR="/home/jupyter/video_lora_training_checkpoints_0213"               # 체크포인트 저장 폴더 경로
+VIDEO_CSV_PATH="/home/work/kby_hgh/0411_processed_Openvid_train.csv"               # 실제 CSV 파일 경로
+VIDEO_DIR="/home/work/kby_hgh/processed_OpenVid_1M_videos"                   # 비디오 파일 폴더 경로
+
 WANDB_PROJECT="video_teacher_lora_training_0213"                 # WandB 프로젝트 이름
-TRAIN_BATCH_SIZE=1 # 1
-GRAD_ACC_STEPS=128 # 128
-LR=1e-5
+TRAIN_BATCH_SIZE=2 # 1
+GRAD_ACC_STEPS=64 # 128
+LR=1e-4
 NUM_EPOCHS=16
 MIXED_PRECISION="bf16"                                        # ["no", "fp16", "bf16"] 중 선택
 NUM_WORKERS=4
@@ -22,7 +22,7 @@ VIDEO_LOSS_WEIGHT=4.0
 # RESUME_CHECKPOINT="/home/jupyter/video_lora_training_checkpoints_0211/checkpoint-step-12288"
 
 # ========================= 평가 관련 설정 =========================
-EVAL_EVERY=8192                # N step마다 평가
+EVAL_EVERY=4096                # N step마다 평가
 INFERENCE_BATCH_SIZE=2
 INFERENCE_SAVE_PATH="/home/jupyter/video_lora_inference_0213"
 GUIDANCE_SCALE=12.0
@@ -31,10 +31,12 @@ TARGET_FOLDER="/home/jupyter/preprocessed_WebVid_10M_gt_test_videos_1k_random_cr
 SEED=42
 DDIM_ETA=0.0
 
+OUTPUT_DIR="/home/work/kby_hgh/VIDEO_LORA_CHECKPOINT_0410/${LR}" # checkpoint 저장 폴더 경로
+
 # (필요 시) VGG 관련 설정
-VGG_CSV_PATH="/home/jupyter/vggsound_sparse_curated_292.csv"                        # VGG eval 용 CSV 파일
-VGG_INFERENCE_SAVE_PATH="/home/jupyter/video_lora_vgg_inference_0213"             # VGG eval 시 inference 저장 폴더
-VGG_TARGET_FOLDER="/home/jupyter/vggsound_sparse_test_curated_final/video"                   # VGG eval 시 GT 폴더 (비워두면 실행 안 됨)
+VGG_CSV_PATH="/home/work/kby_hgh/vggsound_sparse_test_curated_final_0320/vggsound_sparse_curated_292.csv"                        # VGG eval 용 CSV 파일
+VGG_INFERENCE_SAVE_PATH="/home/work/kby_hgh/video_lora_vggsound_sparse_inference_0410_${LR}"             # VGG eval 시 inference 저장 폴더
+VGG_TARGET_FOLDER="/home/work/kby_hgh/vggsound_sparse_test_curated_final_0320/video"                   # VGG eval 시 GT 폴더 (비워두면 실행 안 됨)
 
 
 
@@ -55,10 +57,10 @@ if [ ! -d "$VIDEO_DIR" ]; then
 fi
 
 # 평가용 GT 폴더 체크
-if [ ! -d "$TARGET_FOLDER" ]; then
-    echo "Error: 평가용 GT 폴더를 찾을 수 없습니다: $TARGET_FOLDER"
-    exit 1
-fi
+# if [ ! -d "$TARGET_FOLDER" ]; then
+#     echo "Error: 평가용 GT 폴더를 찾을 수 없습니다: $TARGET_FOLDER"
+#     exit 1
+# fi
 
 # # (필요 시) VGG 관련 폴더 체크
 # if [ -n "$VGG_CSV_PATH" ] && [ ! -f "$VGG_CSV_PATH" ]; then
