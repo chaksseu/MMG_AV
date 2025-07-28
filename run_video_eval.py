@@ -47,6 +47,7 @@ from visual_metrics.calculate_vif import calculate_vif
 import json
 
 import re  
+import pandas as pd
 
 
 def load_video_frames(video_path, num_frames, frame_size=(224, 224)):
@@ -94,10 +95,34 @@ def clean_sentence(filename):
         if not pattern_words.match(word) and not pattern_numbers.match(word)
     ]
     cleaned_sentence = ' '.join(filtered_words)
-
-    # print(cleaned_sentence)
-
     return cleaned_sentence
+
+def get_new_caption_from_csv(cleaned, csv_path="/home/work/kby_hgh/vggsound_sparse_test_curated_final_0320/vggsound_sparse_curated_292.csv"):
+    # cleaned = clean_sentence(filename)
+    
+    # CSV 읽기
+    df = pd.read_csv(csv_path)
+    
+    # caption 열에서 cleaned_sentence와 일치하는 행 찾기
+    match = df[df['caption'] == cleaned]
+    
+    if not match.empty:
+        return match.iloc[0]['new_caption']
+    else:
+        return None  # 또는 'Not found' 등 사용자 정의 처리
+
+def get_new_caption_from_csv_0603(id, csv_path="/home/work/kby_hgh/vggsound_sparse_test_curated_final_0320/vggsound_sparse_curated_292.csv"):
+    
+    # CSV 읽기
+    df = pd.read_csv(csv_path)
+    
+    # caption 열에서 cleaned_sentence와 일치하는 행 찾기
+    match = df[df['caption'] == id]
+    
+    if not match.empty:
+        return match.iloc[0]['new_caption']
+    else:
+        return None  # 또는 'Not found' 등 사용자 정의 처리
 
 def load_videos_with_caps(folder_path, num_frames):
     videos_tensor_list_orig = []
@@ -106,7 +131,9 @@ def load_videos_with_caps(folder_path, num_frames):
     vid_fnames = sorted(os.listdir(folder_path))
     for video_name in vid_fnames:
         fname = video_name[:-4]
-        caps.append(clean_sentence(fname))
+        video_caption = get_new_caption_from_csv(clean_sentence(fname))
+        print(video_caption)
+        caps.append(video_caption)
         video_path = os.path.join(folder_path, video_name)
         video_tensor = load_video_frames(video_path, num_frames)
         videos_tensor_list_orig.append(video_tensor)
@@ -176,7 +203,7 @@ def main():
     parser.add_argument(
         "--preds_folder",
         type=str,
-        required=True,
+        default="True",
         help="예측 비디오 파일들이 있는 폴더 경로"
     )
     parser.add_argument(
@@ -214,21 +241,31 @@ def main():
     #     print(f"타겟 폴더 {args.target_folder} 가 존재하지 않습니다.")
     #     exit(1)
 
-    # 평가 실행
-    fvd_value, clip_value = evaluate_video_metrics(
-        args.preds_folder,
-        args.target_folder,
-        args.metrics,
-        args.device,
-        args.num_frames
-    )
+    checkpoint_dir_list = ["20255", "40511", "60767", "81023", "101279"]
 
-    # 결과 출력
-    print("\n=== Video Metrics Evaluation Results ===")
-    if "fvd" in args.metrics:
-        print(f"FVD Score: {fvd_value}")
-    if "clip" in args.metrics:
-        print(f"CLIP Score: {clip_value}")
+    for checkpoint in checkpoint_dir_list:
+        args.metrics = "clip"
+        args.device = "cuda:0"
+
+        # args.preds_folder = f"/workspace/VideoCAM_MIIL/NEW_MMG_step_{checkpoint}_vggsound_sparse/video"        
+        args.preds_folder = f"/workspace/VideoCAM_MIIL/MMG_NEW_NAIVE_DISTILL_step_{checkpoint}_vggsound_sparse/video"
+
+        # 평가 실행
+        fvd_value, clip_value = evaluate_video_metrics(
+            args.preds_folder,
+            args.target_folder,
+            args.metrics,
+            args.device,
+            args.num_frames
+        )
+
+        # 결과 출력
+        print("\n=== Video Metrics Evaluation Results ===")
+        print(args.preds_folder)
+        if "fvd" in args.metrics:
+            print(f"FVD Score: {fvd_value}")
+        if "clip" in args.metrics:
+            print(f"CLIP Score: {clip_value}")
 
 if __name__ == "__main__":
     main()

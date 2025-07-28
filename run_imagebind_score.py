@@ -17,6 +17,8 @@ def evaluate_imagebind_score(inference_save_path, device):
 
     # make csv for imagebind score
     base_dir = inference_save_path
+
+
     output_csv = f"{base_dir}/imagebind_score_file_pairs.csv"
     audio_dir = os.path.join(base_dir, "audio")
     video_dir = os.path.join(base_dir, "video")
@@ -28,8 +30,8 @@ def evaluate_imagebind_score(inference_save_path, device):
     #     '/workspace/MMG_Inferencce_folder/0227_video_teacher',
     # ]
 
-    # audio_dir = '/workspace/MMG_Inferencce_folder/0227_audio_teacher'
-    # video_dir = '/workspace/MMG_Inferencce_folder/0227_video_teacher'
+    # audio_dir = '/home/work/kby_hgh/audio_lora_vggsound_sparse_inference_0416_1e-6/step_43800'
+    # video_dir = '/home/work/kby_hgh/video_lora_vggsound_sparse_inference_0413_1e-5/step_40960'
 
 
 
@@ -100,7 +102,7 @@ def main():
     parser.add_argument(
         "--inference_save_path",
         type=str,
-        required=True,
+        default=None,
         help="audio와 video 폴더를 포함한 inference 결과 저장 경로"
     )
     parser.add_argument(
@@ -111,7 +113,11 @@ def main():
     )
     args = parser.parse_args()
 
+    args.inference_save_path = "/home/work/kby_hgh/0622_full_teacher_vggsound_sparse"
+    args.device = "cuda:0"
+
     avg_score_av = evaluate_imagebind_score(args.inference_save_path, args.device)
+    
     print("\n=== ImageBind Score Evaluation ===")
     print(f"Average ImageBind Score: {avg_score_av}")
 

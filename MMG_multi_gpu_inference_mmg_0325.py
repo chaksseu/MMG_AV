@@ -485,7 +485,7 @@ def save_video_with_audio(video_path, audio_path, savedir, base_filename, fps=10
     
     video_with_audio = video_clip.set_audio(audio_clip)
     
-    savepath = os.path.join(savedir, f"{base_filename}_combined.mp4")
+    savepath = os.path.join(savedir, f"{base_filename}.mp4")
     
     video_with_audio.write_videofile(
         savepath,
@@ -740,7 +740,6 @@ def run_inference(
             return
 
         audio_length = int(args.duration * 16000)
-        #latent_time = int(args.fps * args.duration)
         latent_time = int(12.5 * args.duration)
 
         do_audio_cfg = args.audio_guidance_scale > 1.0
@@ -979,7 +978,7 @@ def run_inference(
             for i, prompt in enumerate(current_prompts):
                 safe_prompt = sanitize_filename(prompt)
                 sample_index = start_idx + i
-                base_filename = f"{safe_prompt}_batch_{sample_index}_proc_{accelerator.process_index}_batch"
+                base_filename = f"{safe_prompt}_batch_{sample_index}_proc_{accelerator.process_index}"
 
                 # Save audio
                 audio_filepath = os.path.join(audio_dir, f"{base_filename}.wav")
@@ -990,14 +989,14 @@ def run_inference(
                 single_video_frames = video_frames[i].unsqueeze(0)  
                 save_videos(single_video_frames, video_dir, base_filename, fps=args.fps)
 
-                # 오디오가 포함된 비디오 파일 저장
-                save_video_with_audio(
-                    video_path=video_filepath,
-                    audio_path=audio_filepath,
-                    savedir=combined_dir,
-                    base_filename=base_filename,
-                    fps=args.fps
-                )
+                # # 오디오가 포함된 비디오 파일 저장
+                # save_video_with_audio(
+                #     video_path=video_filepath,
+                #     audio_path=audio_filepath,
+                #     savedir=combined_dir,
+                #     base_filename=base_filename,
+                #     fps=args.fps
+                # )
 
             if pbar is not None:
                 pbar.update(1)
@@ -1027,7 +1026,7 @@ def get_parser():
     # 기본 설정
     parser.add_argument("--prompt_file", type=str, default="",
                         help="프롬프트가 저장된 텍스트 파일 경로")
-    parser.add_argument("--inference_save_path", type=str, default="/home/work/kby_hgh/MMG_Inferencce_folder",
+    parser.add_argument("--inference_save_path", type=str, default="/home/work/kby_hgh/",
                         help="결과물을 저장할 경로(디렉토리)")
     parser.add_argument("--ckpt_dir", type=str, default="/home/work/kby_hgh/MMG_CHECKPOINT/checkpint_tensorboard/",
                         help="CrossModalCoupledUNet의 safetensors 체크포인트 파일 경로")
@@ -1082,32 +1081,50 @@ def main():
     parser = get_parser()
     args = parser.parse_args()
 
-
+    model_name_list = [0]
+    # checkpoint_dir_list = ["checkpoint-step-20287", "checkpoint-step-40575", "checkpoint-step-60863", "checkpoint-step-38399", "checkpoint-step-47999", "checkpoint-step-57599", "checkpoint-step-67199", "checkpoint-step-76799", "checkpoint-step-86399"]
+    # checkpoint_dir_list = ["checkpoint-step-10143", "checkpoint-step-30431", "checkpoint-step-50719", "checkpoint-step-71007", "checkpoint-step-91295"]
     
-    model_name_list = ["0404_MMG_1e-4_1e-4_8gpu_abl_videollama"]#, "0404_MMG_1e-4_1e-4_8gpu_abl_combined_llm_caption"]#, "0406_MMG_1e-4_1e-4_8gpu_abl_combined_no_crop"]
-    checkpoint_dir_list = ["checkpoint-step-9599", "checkpoint-step-19199", "checkpoint-step-28799", "checkpoint-step-38399", "checkpoint-step-47999", "checkpoint-step-57599", "checkpoint-step-67199", "checkpoint-step-76799", "checkpoint-step-86399"]
     
-    # model_name_list = ["0406_MMG_1e-4_1e-4_8gpu_abl_combined_no_crop"]
-    # checkpoint_dir_list = ["checkpoint-step-9599", "checkpoint-step-19199", "checkpoint-step-28799", "checkpoint-step-38399", "checkpoint-step-47999"]
+    
+    # dataset_list = ["OOD_gpt_prompt"]
+    
+    checkpoint_dir_list = ["91295"] #, "checkpoint-step-40575", "checkpoint-step-60863", "checkpoint-step-81151", "checkpoint-step-101439"]
 
-    # Original independent Model (Auffusion Or VideoCrfter2)
+    dataset_list = ["vbench", "ac"]
+    dataset_list = ["vbench"]
 
-    for model_name in model_name_list:
-        for checkpoint_dir in checkpoint_dir_list:
-            dataset="panda70m" 
+    for checkpoint_dir in checkpoint_dir_list:
+        for dataset in dataset_list:
             # clotho
             # panda70m
             # audiocaps
             # webvid
-            
-            args.prompt_file = f"/home/work/kby_hgh/processed_csv_files/0409_onecap_processed_panda_70m_test.csv"
+            # vbench
+            if dataset == "vbench":
+                args.prompt_file = "/home/work/kby_hgh/vbench_all_captions.csv"
+            if dataset == "ac":
+                args.prompt_file = "/home/work/kby_hgh/MMG_AC_test_dataset/0407_one_cap_AC_test.csv"
+            if dataset == "OOD_gpt_prompt":
+                args.prompt_file = "/home/work/kby_hgh/audio_video_100_prompts.csv"
+
             # Panda-70M # /home/work/kby_hgh/processed_csv_files/0409_onecap_processed_panda_70m_test.csv
             # AudioCaps # /home/work/kby_hgh/MMG_AC_test_dataset/0407_one_cap_AC_test.csv
             # Clotho # /home/work/kby_hgh/MMG_clotho_test_set/clotho_captions_evaluation.csv
-            ckpt_dir = f"/home/work/kby_hgh/MMG_CHECKPOINT/checkpint_tensorboard/{model_name}/{checkpoint_dir}"
-            eval_id = f"{dataset}_{model_name}_{checkpoint_dir}" # {dataset}_
+            # VBench # /home/work/kby_hgh/vbench_all_captions.csv
 
+            if checkpoint_dir == "checkpoint-step-10143":
+                ckpt_dir = "/home/work/kby_hgh/MMG_CHECKPOINT/checkpint_tensorboard/0419_MMG_OURS_1e-4_8gpu_videocaption/checkpoint-step-10143"
+            else:
+                ckpt_dir = f"/home/work/kby_hgh/MMG_CHECKPOINT/checkpint_tensorboard/0420_MMG_OURS_1e-4_8gpu_videocaption_continue/checkpoint-step-{checkpoint_dir}"
 
+            # ckpt_dir = f"/home/work/kby_hgh/MMG_CHECKPOINT/checkpint_tensorboard/0501_1138_MMG_NAIVE_DISTILL_continue_1e-4_ta_tv_weight_1_1/checkpoint-step-{checkpoint_dir}"
+            
+            # ckpt_dir = f"/home/work/kby_hgh/MMG_CHECKPOINT/checkpint_tensorboard/0429_1625_MMG_RC_DISTILL_1e-4_ta_tv_weight_1_1/checkpoint-step-{checkpoint_dir}"
+
+            eval_id = "MMG_OURS_{dataset}_checkpoint-step-{checkpoint_dir}"
+            eval_id = f"MMG_NAIVE_DISTILL_step_{checkpoint_dir}_{dataset}"
+            # eval_id = f"MMG_RC_DISTILL_{dataset}_{checkpoint_dir}"
             
             # prompt 파일 존재 여부 확인
             assert os.path.exists(args.prompt_file), f"Prompt file not found: {args.prompt_file}"

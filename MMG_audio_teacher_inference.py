@@ -36,10 +36,10 @@ def load_prompts(prompt_file: str) -> List[str]:
         with open(prompt_file, newline='', encoding='utf-8') as csvfile:
             reader = csv.DictReader(csvfile)
             for row in reader:
-                if row.get('split') == 'test':
-                    caption = row.get('caption', '').strip()
-                    if caption:
-                        prompts.append(caption)
+                # if row.get('split') == 'test':
+                caption = row.get('caption', '').strip()
+                if caption:
+                    prompts.append(caption)
     except Exception as e:
         print(f"Error reading prompt file: {e}")
 
@@ -428,13 +428,13 @@ from huggingface_hub import snapshot_download
 
 def main():
     parser = argparse.ArgumentParser(description="Audio Generation Inference")
-    parser.add_argument("--prompt_file", type=str, default="/workspace/processed_unseen_AVSync15/unseen_AVSync15_669.csv", help="CSV 파일 경로 (프롬프트 파일)")
-    parser.add_argument("--savedir", type=str, default="/workspace/MMG_Inferencce_folder/0227_avsync_audio_teacher", help="결과 비디오 저장 디렉토리")
-    parser.add_argument("--bs", type=int, default=4, help="배치 사이즈")
+    parser.add_argument("--prompt_file", type=str, default="/home/work/kby_hgh/audio_video_100_prompts.csv", help="CSV 파일 경로 (프롬프트 파일)")
+    parser.add_argument("--savedir", type=str, default="/home/work/kby_hgh/audio_lora_teacher_43800_OOD_gpt_prompt_inference", help="결과 비디오 저장 디렉토리")
+    parser.add_argument("--bs", type=int, default=2, help="배치 사이즈")
     parser.add_argument("--seed", type=int, default=42, help="랜덤 시드")
     parser.add_argument("--audio_model_name", type=str, default="auffusion/auffusion-full", 
                         help="사전 학습된 모델 디렉토리 또는 identifier")
-    parser.add_argument("--audio_lora_ckpt_path", type=str, default="/workspace/GCP_BACKUP_0213/checkpoint-step-6400/model.safetensors")
+    parser.add_argument("--audio_lora_ckpt_path", type=str, default="/home/work/kby_hgh/AUDIO_LORA_CHECKPOINT_0416/1e-6/checkpoint-step-43800/model.safetensors")
 
     parser.add_argument("--duration", type=float, default=3.2, help="오디오 길이 (초)")
     parser.add_argument("--guidance_scale", type=float, default=7.5, help="Guidance scale 값")

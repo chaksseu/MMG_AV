@@ -171,10 +171,10 @@ class Cnn14(nn.Module):
 
         # self.init_weight()
         if sample_rate == 16000:
-            state_dict = torch.load("ckpt/Cnn14_16k_mAP=0.438.pth")
+            state_dict = torch.load("ckpt/Cnn14_16k_mAP=0.438.pth", weights_only=False)
             self.load_state_dict(state_dict["model"])
         elif sample_rate == 32000:
-            state_dict = torch.load("ckpt/Cnn14_mAP=0.431.pth")
+            state_dict = torch.load("ckpt/Cnn14_mAP=0.431.pth", weights_only=False)
             self.load_state_dict(state_dict["model"])
 
     def init_weight(self):

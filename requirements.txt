@@ -37,3 +37,4 @@ pytorchvideo
 av
 tensorboard
 tensorboardX
+ffmpeg

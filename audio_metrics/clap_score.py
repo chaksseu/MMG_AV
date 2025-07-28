@@ -3,6 +3,7 @@ import torchaudio
 import numpy as np
 from scipy.spatial.distance import cosine
 import re  
+import pandas as pd
 
 
 excluded_words = ['clip', 'test', 'sparse', 'vggsound','batch', 'proc', 'sample', 'audio', 'video']
@@ -24,8 +25,35 @@ def clean_sentence(filename):
 
 
 
+def get_new_caption_from_csv_0603(id, csv_path="/home/work/kby_hgh/vggsound_sparse_test_curated_final_0320/vggsound_sparse_curated_292.csv"):
+    
+    # CSV 읽기
+    df = pd.read_csv(csv_path)
+    
+    # caption 열에서 cleaned_sentence와 일치하는 행 찾기
+    match = df[df['id'] == id]
+    
+    if not match.empty:
+        return match.iloc[0]['caption']
+    else:
+        id = id + '.mp4'
+        match = df[df['id'] == id]
+        if not match.empty:
+            return match.iloc[0]['caption']
+        else:
+            id = id + '.wav'
+            match = df[df['id'] == id]
+            if not match.empty:
+                return match.iloc[0]['caption']
+                id = id + '.flac'
+                match = df[df['id'] == id]
+                if not match.empty:
+                    return match.iloc[0]['caption']
+                else:
+                    return None  
 
-def calculate_clap(model_clap, preds_audio, filename, freq):
+
+def calculate_clap(model_clap, preds_audio, filename, freq, csv_path=None):
     resampler = torchaudio.transforms.Resample(orig_freq=16000, new_freq=freq)
     preds_audio_clap = resampler(preds_audio)
 
@@ -36,11 +64,14 @@ def calculate_clap(model_clap, preds_audio, filename, freq):
     audio_embed = model_clap.get_audio_embedding_from_data(x=audio_data, use_tensor=False)
 
     # Get text embeddings from texts
-    sentence_clean = clean_sentence(filename)
-        
+    # sentence_clean = clean_sentence(filename)
+    
+    filename = filename.split('_batch_')[0]
+    sentence_clean = get_new_caption_from_csv_0603(filename, csv_path)
+
     text_data = [sentence_clean]
     
-    # print(text_data)
+    print(text_data)
 
     text_embed = model_clap.get_text_embedding(text_data)
 

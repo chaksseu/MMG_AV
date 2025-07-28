@@ -4,7 +4,7 @@ from tensorboard.backend.event_processing.event_accumulator import EventAccumula
 import matplotlib.pyplot as plt
 
 # 로그 경로 설정
-log_dir = 'tensorboard/0406_MMG_1e-4_8gpu_abl_videollama_lossweight_1_1'
+log_dir = '/home/work/kby_hgh/MMG_01/tensorboard/0425_1137_MMG_DISTILL_1e-4_ta_tv_weight_1_1'
 
 # 0406_MMG_1e-4_1e-4_8gpu_abl_combined_no_crop
 # 0406_MMG_1e-4_8gpu_abl_videollama_lossweight_1_1

@@ -62,7 +62,7 @@ class VideoTextDataset(Dataset):
         try:
             row = self.df.iloc[idx]
             video_id = row["id"]
-            caption_text = row["caption"]
+            caption_text = row["compressed_video_caption"] # caption
 
             video_path = os.path.join(self.video_dir, f"{video_id}")
             video, _, info = io.read_video(video_path, pts_unit="sec")

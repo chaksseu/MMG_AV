@@ -31,6 +31,10 @@ from mmg_inference.auffusion_pipe_functions import (
 from safetensors.torch import load_file
 
 import csv
+import pandas as pd
+
+
+
 
 def load_accelerator_ckpt(model: torch.nn.Module, checkpoint_path: str):
     checkpoint = load_file(checkpoint_path)
@@ -46,10 +50,10 @@ def load_prompts(prompt_file: str) -> List[str]:
         with open(prompt_file, newline='', encoding='utf-8') as csvfile:
             reader = csv.DictReader(csvfile)
             for row in reader:
-                if row.get('split') == 'test':
-                    caption = row.get('caption', '').strip()
-                    if caption:
-                        prompts.append(caption)
+                # if row.get('split') == 'test':
+                caption = row.get('new_caption', '').strip()
+                if caption:
+                    prompts.append(caption)
     except Exception as e:
         print(f"Error reading prompt file: {e}")
 
@@ -202,7 +206,6 @@ def run_inference(
         assert os.path.exists(prompt_file), f"Prompt file not found: {prompt_file}"
         all_prompts = load_prompts(prompt_file)
 
-
         ###all_prompts = all_prompts[:100]
         print("all_prompts length", len(all_prompts))
 
@@ -232,6 +235,11 @@ def run_inference(
             #return
 
         do_video_cfg = unconditional_guidance_scale > 1.0
+
+
+
+
+
 
         assert (height % 16 == 0) and (width % 16 == 0), "Video dimensions must be multiples of 16!"
         latent_h, latent_w = height // 8, width // 8
@@ -357,6 +365,7 @@ def run_inference(
             # 프로세스별로 구분하려면 파일명에 process_index 추가
             for i, prompt in enumerate(current_prompts):
                 safe_prompt = sanitize_filename(prompt)
+                # safe_prompt = prompt
                 sample_index = start_idx + i
                 base_filename = f"{safe_prompt}_batch_{sample_index}_proc_{accelerator.process_index}_batch"
                 # Save video
@@ -414,27 +423,29 @@ def main():
     video_model.to(device=device,dtype=dtype)
     video_unet = video_model.model.diffusion_model.eval()
     
-    args.prompt_file = f"/home/work/kby_hgh/processed_csv_files/0409_onecap_processed_panda_70m_test.csv"
-    lr_list = ["1e-4", "1e-5"]
+    args.prompt_file = "/home/work/kby_hgh/vggsound_sparse_test_curated_final_0320/vggsound_sparse_curated_292.csv"
 
-    if lr in lr_list:
-        save_dir = f"/home/work/kby_hgh/video_lora_vggsound_sparse_inference_0410_{lr}"
-        save_dir_list = ["panda_step_4096", "panda_step_16384","panda_step_28672", "panda_step_40960", "panda_step_53248"]
-        video_lora_ckpt = "/home/work/kby_hgh/VIDEO_LORA_CHECKPOINT_0410/{lr}"
-        video_lora_ckpt_path_list = ["checkpoint-step-4096", "checkpoint-step-16384", "checkpoint-step-28672", "checkpoint-step-40960", "checkpoint-step-53248"]
+    # "/home/work/kby_hgh/vggsound_sparse_test_curated_final_0320/vggsound_sparse_curated_292.csv"
+    # "/home/work/kby_hgh/processed_csv_files/0409_onecap_processed_panda_70m_test.csv"
+    lr_list = [0] # "1e-5" "1e-5"
 
-        for i in range(len(video_lora_ckpt_path_list))
+    for lr in lr_list:
+        save_dir = f"/home/work/kby_hgh/0716_teacher_vggsound_sparse"
+        save_dir_list = ["video"] #, "step_57344"] # ["step_8192", "step_24576", "step_40960" ]
+        video_lora_ckpt = f"/home/work/kby_hgh/AUDIO_FULL_CHECKPOINT_0709/1e-6"
+        video_lora_ckpt_path_list = ["checkpoint-step-46720"]#, "checkpoint-step-57344"]#, "checkpoint-step-40960"]
+
+        for i in range(len(video_lora_ckpt_path_list)):
             video_lora_ckpt_path = video_lora_ckpt + "/" + video_lora_ckpt_path_list[i] + "/model.safetensors"
-            save_path = save_dir + "/" + "save_dir_list"
+            save_path = save_dir + "/" + save_dir_list[i]
 
             video_unet = load_accelerator_ckpt(video_unet, video_lora_ckpt_path)
-
+            video_model.model.diffusion_model = video_unet            
 
             # 모델을 Accelerator 디바이스로 이동
             video_unet.to(accelerator.device)
             video_model.to(accelerator.device)
-
-
+            video_model.eval()
 
             # run_inference 실행
             run_inference(

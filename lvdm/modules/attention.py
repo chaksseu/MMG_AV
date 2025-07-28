@@ -222,11 +222,11 @@ class CrossAttention(nn.Module):
         return self.to_out(out)
 
 
-
+# on off lora
 class BasicTransformerBlock(nn.Module):
 
     def __init__(self, dim, n_heads, d_head, dropout=0., context_dim=None, gated_ff=True, checkpoint=True,
-                disable_self_attn=False, attention_cls=None, img_cross_attention=False, use_lora=True):
+                disable_self_attn=False, attention_cls=None, img_cross_attention=False, use_lora=False):
         super().__init__()
         attn_cls = CrossAttention if attention_cls is None else attention_cls
         self.disable_self_attn = disable_self_attn
@@ -616,8 +616,8 @@ class LoRALinear(nn.Module):
         self.lora_A = nn.Linear(in_features, r, bias=False)
         self.lora_B = nn.Linear(r, out_features, bias=False)
         
-        #nn.init.kaiming_uniform_(self.lora_A.weight, a=math.sqrt(5))
-        nn.init.zeros_(self.lora_A.weight)
+        nn.init.kaiming_uniform_(self.lora_A.weight, a=math.sqrt(5))
+        # nn.init.zeros_(self.lora_A.weight)
         nn.init.zeros_(self.lora_B.weight)
         # Scaling
         self.scaling = self.lora_alpha / self.r

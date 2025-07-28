@@ -124,7 +124,10 @@ def parse_args():
     parser.add_argument("--vgg_csv_path", type=str, default="/home/jupyter/MMG_TA_dataset_audiocaps_wavcaps/vggsound_sparse_curated_292.csv", help="Path to the folder with GT audio files.")
     parser.add_argument("--vgg_target_folder", type=str, default="/home/jupyter/MMG_TA_dataset_audiocaps_wavcaps/vggsound_sparse_test_curated_final/audio", help="Path to the folder with GT audio files.")
     parser.add_argument("--vgg_inference_path", type=str, default="/home/jupyter/audio_lora_vggsound_sparse_inference", help="inference 저장 위치")
-                
+    parser.add_argument("--ac_csv_path", type=str, default="/home/jupyter/MMG_TA_dataset_audiocaps_wavcaps/vggsound_sparse_curated_292.csv", help="Path to the folder with GT audio files.")
+    parser.add_argument("--ac_target_folder", type=str, default="/home/jupyter/MMG_TA_dataset_audiocaps_wavcaps/vggsound_sparse_test_curated_final/audio", help="Path to the folder with GT audio files.")
+    parser.add_argument("--ac_inference_path", type=str, default="/home/jupyter/audio_lora_vggsound_sparse_inference", help="inference 저장 위치")
+                                
 
 
     # 기타 dataset 파라미터
@@ -291,31 +294,33 @@ def main():
     start_epoch = 0
     global_step = 0
     resume_batch_idx = 0
-    # if args.resume_checkpoint is not None:
-    #     # accelerator가 저장했던 전체 상태를 로드합니다.
-    #     accelerator.load_state(args.resume_checkpoint)
-    #     training_state_path = os.path.join(args.resume_checkpoint, "training_state.json")
-    #     if os.path.exists(training_state_path):
-    #         with open(training_state_path, "r") as f:
-    #             training_state = json.load(f)
-    #         global_step = training_state.get("global_step", 0)
-    #         # 마지막 저장된 에폭 이후부터 재개하도록 (+1)
-    #         start_epoch = training_state.get("epoch", 0) + 1
-    #         resume_batch_idx = training_state.get("batch_idx", -1) + 1
-    #         print(f"체크포인트로부터 학습 재개: 에폭 {start_epoch}부터, 글로벌 스텝 {global_step}")
-    #     else:
-    #         print("체크포인트 내 training_state.json 파일을 찾을 수 없어, 새롭게 시작합니다.")
+    if args.resume_checkpoint is not None:
+        # accelerator가 저장했던 전체 상태를 로드합니다.
+        accelerator.load_state(args.resume_checkpoint)
+        training_state_path = os.path.join(args.resume_checkpoint, "training_state.json")
+        if os.path.exists(training_state_path):
+            with open(training_state_path, "r") as f:
+                training_state = json.load(f)
+            global_step = training_state.get("global_step", 0)
+            # 마지막 저장된 에폭 이후부터 재개하도록 (+1)
+            start_epoch = training_state.get("epoch", 0) + 1
+            resume_batch_idx = training_state.get("batch_idx", -1) + 1
+            print(f"체크포인트로부터 학습 재개: 에폭 {start_epoch}부터, 글로벌 스텝 {global_step}")
+        else:
+            print("체크포인트 내 training_state.json 파일을 찾을 수 없어, 새롭게 시작합니다.")
     # =================================================
 
     unet_model.train()
+    currunt_idx = 0
 
 
 
     writer = None
     if accelerator.is_main_process:
-        writer = SummaryWriter(log_dir="/home/work/kby_hgh/MMG_01/tensorboard_audio_lora_0410")
+        writer = SummaryWriter(log_dir="/home/work/kby_hgh/MMG_01/tensorboard_audio_lora_0416")
 
-    for epoch in range(start_epoch, args.num_epochs):
+
+    for epoch in range(args.num_epochs):
         losses = []
         loop = tqdm(train_loader, desc=f"Epoch [{epoch+1}/{args.num_epochs}]", disable=not accelerator.is_main_process)
 
@@ -343,14 +348,6 @@ def main():
                 eval_id=f"step_{global_step}",  # 스텝 단위 표시
                 target_folder=args.vgg_target_folder
             )
-
-            # if accelerator.is_main_process:
-            #     wandb.log({
-            #         "eval/vgg_fvd": vgg_fvd,
-            #         "eval/vgg_clip_avg": vgg_clip_avg,
-            #         "step": global_step
-
-            #     })
                 
             if accelerator.is_main_process and writer is not None:
                 writer.add_scalar("eval/vgg_fad", vgg_fad, global_step)
@@ -358,10 +355,45 @@ def main():
 
             accelerator.wait_for_everyone()
 
+            # AC 데이터셋으로 평가
+            ac_fad, ac_clap_avg = evaluate_model(
+                accelerator=accelerator,
+                unet_model=unet_model,
+                vae=vae,
+                image_processor=image_processor,
+                text_encoder_list=text_encoder_list,
+                adapter_list=adapter_list,
+                tokenizer_list=tokenizer_list,
+                csv_path=args.ac_csv_path,
+                inference_path=args.ac_inference_path,
+                inference_batch_size=args.inference_batch_size,
+                pretrained_model_name_or_path=args.pretrained_model_name_or_path,
+                seed=args.seed,
+                duration=args.slice_duration,
+                guidance_scale=args.guidance_scale,
+                num_inference_steps=args.num_inference_steps,
+                eta_audio=args.eta_audio,
+                eval_id=f"step_{global_step}",  # 스텝 단위 표시
+                target_folder=args.ac_target_folder
+            )
+            accelerator.wait_for_everyone()
+
+            # wandb 로깅
+            if accelerator.is_main_process:
+                wandb.log({
+                    "eval/ac_fad": ac_fad,
+                    "eval/ac_clap_avg": ac_clap_avg,
+                    "step": global_step
+                })
+            if accelerator.is_main_process and writer is not None:
+                writer.add_scalar("eval/ac_fad", ac_fad, global_step)
+                writer.add_scalar("eval/ac_clap_avg", ac_clap_avg, global_step)
+
 
 
         for batch_idx, batch in enumerate(loop):
-            if epoch == start_epoch and batch_idx < resume_batch_idx:
+            currunt_idx += 1
+            if currunt_idx < global_step: # and epoch+1 <= start_epoch: 
                 continue
            
             with accelerator.accumulate(unet_model):
@@ -448,9 +480,7 @@ def main():
 
                     # 텐서보드에 로그
                     if writer is not None:
-                        writer.add_scalar("train/loss", avg_losses, global_step)
-                        writer.add_scalar("train/loss_audio", avg_losses_audio, global_step)
-                        writer.add_scalar("train/loss_video", avg_losses_video, global_step)
+                        writer.add_scalar("train/loss", avg_loss, global_step)
                         writer.add_scalar("epoch", epoch, global_step)
 
                     wandb.log({
@@ -498,6 +528,42 @@ def main():
                     if accelerator.is_main_process and writer is not None:
                         writer.add_scalar("eval/vgg_fad", vgg_fad, global_step)
                         writer.add_scalar("eval/vgg_clap_avg", vgg_clap_avg, global_step)
+
+                    # AC 데이터셋으로 평가
+                    ac_fad, ac_clap_avg = evaluate_model(
+                        accelerator=accelerator,
+                        unet_model=unet_model,
+                        vae=vae,
+                        image_processor=image_processor,
+                        text_encoder_list=text_encoder_list,
+                        adapter_list=adapter_list,
+                        tokenizer_list=tokenizer_list,
+                        csv_path=args.ac_csv_path,
+                        inference_path=args.ac_inference_path,
+                        inference_batch_size=args.inference_batch_size,
+                        pretrained_model_name_or_path=args.pretrained_model_name_or_path,
+                        seed=args.seed,
+                        duration=args.slice_duration,
+                        guidance_scale=args.guidance_scale,
+                        num_inference_steps=args.num_inference_steps,
+                        eta_audio=args.eta_audio,
+                        eval_id=f"step_{global_step}",  # 스텝 단위 표시
+                        target_folder=args.ac_target_folder
+                    )
+                    accelerator.wait_for_everyone()
+
+
+                    # wandb 로깅
+                    if accelerator.is_main_process:
+                        wandb.log({
+                            "eval/ac_fad": ac_fad,
+                            "eval/ac_clap_avg": ac_clap_avg,
+                            "step": global_step
+                        })
+                    if accelerator.is_main_process and writer is not None:
+                        writer.add_scalar("eval/ac_fad", ac_fad, global_step)
+                        writer.add_scalar("eval/ac_clap_avg", ac_clap_avg, global_step)
+
 
                 # Save checkpoint
                 # 체크포인트 저장 (평가 주기마다)

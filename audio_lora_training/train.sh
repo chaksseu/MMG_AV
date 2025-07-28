@@ -3,22 +3,25 @@
 # 기본값 설정
 csv_path="/home/work/kby_hgh/again_mmg_TA_dataset_zip_0326/MMG_TA_dataset_filtered_0321.csv"  # 실제 CSV 파일 경로
 audio_dir="/home/work/kby_hgh/workspace/data/MMG_TA_dataset_audiocaps_wavcaps_spec_0320"  # spec path
-WANDB_PROJECT="audio_teacher_lora_training_0410"
-TRAIN_BATCH_SIZE=128
-GRAD_ACC_STEPS=1
-LR=1e-4 ## 1e-6
+WANDB_PROJECT="audio_teacher_lora_training_0416"
+TRAIN_BATCH_SIZE=64
+GRAD_ACC_STEPS=2
+LR=1e-6 ## 1e-6
 NUM_EPOCHS=128
 MIXED_PRECISION="no"
 PRETRAINED_MODEL="auffusion/auffusion-full"
-NUM_WORKERS=4
-RESUME_CHECKPOINT="/home/jupyter/audio_teacher_LoRA_checkpoint_0204_5/checkpoint-step-800"
+NUM_WORKERS=8
+RESUME_CHECKPOINT="/home/work/kby_hgh/AUDIO_LORA_CHECKPOINT_0416/1e-6/checkpoint-step-21900"
+
+DATE="0416"
+
 
 # Evaluation 관련
-EVAL_EVERY=300  # N step
-INFERENCE_BATCH_SIZE=32
+EVAL_EVERY=1460 # 730  # N step
+INFERENCE_BATCH_SIZE=16
 
-OUTPUT_DIR="/home/work/kby_hgh/AUDIO_LORA_CHECKPOINT_0410/${LR}" # checkpoint 저장 폴더 경로
-INFERENCE_SAVE_PATH="/home/work/kby_hgh/MMG_Inferencce_folder/audio_lora_inference_0410_${LR}" # inference 저장 경로
+OUTPUT_DIR="/home/work/kby_hgh/AUDIO_LORA_CHECKPOINT_${DATE}/${LR}" # checkpoint 저장 폴더 경로
+INFERENCE_SAVE_PATH="/home/work/kby_hgh/MMG_Inferencce_folder/audio_lora_inference_${DATE}_${LR}" # inference 저장 경로
 
 ETA_AUDIO=0.0
 GUIDANCE_SCALE=7.5
@@ -27,7 +30,11 @@ TARGET_FOLDER="/home/work/kby_hgh/vggsound_sparse_test_curated_final_0320" # 비
 
 VGG_CSV_PATH="/home/work/kby_hgh/vggsound_sparse_test_curated_final_0320/vggsound_sparse_curated_292.csv"
 VGG_TARGET_FOLDER="/home/work/kby_hgh/vggsound_sparse_test_curated_final_0320/audio"
-VGG_INFERENCE_PATH="/home/work/kby_hgh/audio_lora_vggsound_sparse_inference_0410_${LR}"
+VGG_INFERENCE_PATH="/home/work/kby_hgh/audio_lora_vggsound_sparse_inference_${DATE}_${LR}"
+
+AC_CSV_PATH="/home/work/kby_hgh/MMG_AC_test_dataset/0407_one_cap_AC_test.csv"
+AC_TARGET_FOLDER="/home/work/kby_hgh/MMG_AC_test_dataset/0408_AC_test_trimmed_wavs"
+AC_INFERENCE_PATH="/home/work/kby_hgh/audio_lora_audiocaps_inference_${DATE}_${LR}"
 
 #TARGET_FOLDER="/home/jupyter/MMG_01/"
 # 기타 dataset 파라미터
@@ -91,6 +98,10 @@ echo "Target Folder: $TARGET_FOLDER"
 echo "VGG_CSV_PATH: $VGG_CSV_PATH"
 echo "VGG_TARGET_FOLDER: $VGG_TARGET_FOLDER"
 echo "VGG_INFERENCE_PATH: $VGG_INFERENCE_PATH"
+echo "AC_CSV_PATH: $AC_CSV_PATH"
+echo "AC_TARGET_FOLDER: $AC_TARGET_FOLDER"
+echo "AC_INFERENCE_PATH: $AC_INFERENCE_PATH"
+
 
 echo "=========================================================================="
 
@@ -122,7 +133,10 @@ accelerate launch audio_lora_training/train.py \
     --vgg_csv_path "$VGG_CSV_PATH" \
     --vgg_target_folder "$VGG_TARGET_FOLDER" \
     --vgg_inference_path "$VGG_INFERENCE_PATH" \
-    #--resume_checkpoint "$RESUME_CHECKPOINT"
+    --ac_csv_path "$AC_CSV_PATH" \
+    --ac_target_folder "$AC_TARGET_FOLDER" \
+    --ac_inference_path "$AC_INFERENCE_PATH" \
+    --resume_checkpoint "$RESUME_CHECKPOINT"
 
 # 종료 메시지
 if [ $? -eq 0 ]; then

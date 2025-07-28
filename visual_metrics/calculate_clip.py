@@ -4,6 +4,9 @@ from torchmetrics.multimodal.clip_score import CLIPScore
 from tqdm import tqdm
 from math import inf
 import cv2
+
+import os
+
 '''
 
 def calculate_clip(videos1, caps, calculate_per_frame, calculate_final, clip_model, device):
