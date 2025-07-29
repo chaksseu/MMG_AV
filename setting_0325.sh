@@ -28,6 +28,8 @@ conda install numpy==1.23.5 scipy==1.11.1 -y
 
 accelerate config
 
+pip install soxr
+
 nano /home/work/miniconda3/envs/mmg/lib/python3.10/site-packages/pytorchvideo/transforms/augmentations.py
 # delete _tensor
 nano /home/work/miniconda3/envs/mmg/lib/python3.10/site-packages/laion_clap/clap_module/factory.py

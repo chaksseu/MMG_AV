@@ -1,20 +1,20 @@
 #!/bin/bash
 
 # ========================= 기본값 설정 =========================
-DATE="0728_FILTERED_FULL_MMG_RC_T"
+DATE="0729_FILTERED_FULL_MMG_RC"
 LOG_NAME="ta_tv_weight_1_2_1_2"
 
 LEARNING_RATE=1e-4
 NUM_EPOCHS=32
-NUM_GPU=8
+NUM_GPU=4
 TRAIN_BATCH_SIZE=1 # 2
-GRADIENT_ACCUMULATION=32 # 32 # 256
+GRADIENT_ACCUMULATION=64 # 32 # 256
 INFERENCE_BATCH_SIZE=1
 
 EVAL_EVERY=63 # 63 # 633 # 317 # 158 # 80
 
 TENSORBOARD_LOG_DIR="tensorboard/${DATE}_${LEARNING_RATE}_${LOG_NAME}"
-INFER_NAME="0728_FILTERED_FULL_MMG_RC_LENEAR_T_1_2_1_2_ge900"
+INFER_NAME="0729_FILTERED_FULL_MMG_RC_1_2_1_2"
 
 NUM_INFERENCE_STEPS=25
 DTYPE="bf16"
@@ -48,7 +48,7 @@ VIDEO_DIR="/home/work/kby_hgh/workspace/data/preprocessed_VGGSound_train_no_crop
 TA_CSV_PATH="/home/work/kby_hgh/0505_RC_MMG_TA_dataset_filtered_with_video_caption.csv" #"/workspace/processed_vggsound_sparse_0218/processed_vggsound_sparse_mmg.csv"
 TA_SPECTROGRAM_DIR="/home/work/kby_hgh/workspace/data/MMG_TA_dataset_audiocaps_wavcaps_spec_0320" #"/workspace/processed_vggsound_sparse_0218/spec"
 
-TV_CSV_PATH="/home/work/kby_hgh/MMG_01/video_lora_training/0602_processed_Openvid_train_with_audio_caption.csv" #"/workspace/processed_vggsound_sparse_0218/processed_vggsound_sparse_mmg.csv"
+TV_CSV_PATH="/home/work/kby_hgh/MMG_01/vggsound_processing/0626_compressed_openvid_csvs/0626_processed_Openvid_train_with_audio_caption_summerize_merge.csv"
 TV_VIDEO_DIR="/home/work/kby_hgh/processed_OpenVid_1M_videos" 
 
 
@@ -156,7 +156,7 @@ echo "AC_GT_TEST_PATH: $AC_GT_TEST_PATH"
 echo "======================================================================="
 
 # ========================= 실행 명령어 =========================
-accelerate launch mmg_training/train_MMG_Model_0728_MMG_RC_distillation.py \
+accelerate launch mmg_training/train_MMG_Model_0729_MMG_RCD.py \
     --seed "$SEED" \
     --duration "$DURATION" \
     --videocrafter_config "$VIDEOCRAFTER_CONFIG" \

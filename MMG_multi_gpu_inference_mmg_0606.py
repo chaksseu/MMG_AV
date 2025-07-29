@@ -1139,13 +1139,8 @@ def main():
     # dataset_list = ["ac", "vbench"]
     
     dataset_list = ["openvid", "audiocaps"]
-    # dataset_list = ["audiocaps"]
 
-    # checkpoint_dir_list = ["2015", "4031", "6047", "8063", "10079", "12095", "14111", "16127", "18143", "20159", "22175", "24191", "26207", "28223", "30239", "32255", "34271", "36287", "38303", "40319"]
-
-    # checkpoint_dir_list = ["2015", "4031", "6047", "8063", "10079", "12095", "14111", "16127", "18143", "20159", "22175", "24191", "26207", "28223", "30239", "32255", "34271", "36287", "38303", "40319", "42335", "44351", "46367", "48383", "50399", "52415", "54431", "56447", "58463", "60479"]
-    # checkpoint_dir_list = ["2015", "4031"] # , "6047", "8063", "10079", "12095", "14111", "16127", "18143", "20159", "22175", "24191", "26207", "28223", "30239", "32255", "34271", "36287", "38303", "40319", "42335", "44351", "46367", "48383", "50399", "52415", "54431", "56447", "58463", "60479"]
-    checkpoint_dir_list = ["32255"]
+    checkpoint_dir_list = ["4031", "8063", "12095", "16127", "20159", "24191", "28223", "32255", "36287", "40319", "44351", "48383", "52415", "56447", "60479"]
 
     for checkpoint_dir in checkpoint_dir_list:
         for dataset in dataset_list:
@@ -1202,8 +1197,13 @@ def main():
 
 
 
-            ckpt_dir = f"/home/work/kby_hgh/MMG_CHECKPOINT/checkpint_tensorboard/0710_FILTERED_FULL_MMG_OURS_1e-4_ta_tv_weight_1_2/checkpoint-step-32255"
-            eval_id = f"0710_FILTERED_FULL_MMG_OURS_step_32255_{dataset}"
+
+            ckpt_dir = f"/home/work/kby_hgh/MMG_CHECKPOINT/checkpint_tensorboard/0729_FILTERED_FULL_MMG_RC_1e-4_ta_tv_weight_1_2_1_2/checkpoint-step-{checkpoint_dir}"
+            eval_id = f"0729_MMG_FILTERED_RCD_{dataset}_step_{checkpoint_dir}"
+
+            ckpt_dir = f"/home/work/kby_hgh/MMG_CHECKPOINT/checkpint_tensorboard/0729_FILTERED_FULL_MMG_RC_ge900_1e-4_ta_tv_weight_1_2_1_2/checkpoint-step-{checkpoint_dir}"
+            eval_id = f"0729_MMG_FILTERED_RCD_ge900_{dataset}_step_{checkpoint_dir}"
+
 
             # prompt 파일 존재 여부 확인
             assert os.path.exists(args.prompt_file), f"Prompt file not found: {args.prompt_file}"
